@@ -37,10 +37,36 @@ These are synthetic functional metrics and are not real-media research results.
 All paths are read-only inputs. Derived manifests, decoded subsets, embeddings, checkpoints, and
 reports remain under `/home/changho.choi/deltaomni`.
 
+## First real SSV2 pilot
+
+Data: four direction-sensitive classes, 32 train clips and 16 source-disjoint validation clips, four
+uniform frames per clip, frozen DINOv2-base.
+
+- Held-out reconstruction MSE: initial `2.9179` → learned `2.8247`
+- Anchor / last-only / shuffled MSE: `2.8951 / 2.8746 / 2.9625`
+- Raw-pooled delta MSE: `2.1802` (stronger than the learned codec)
+- Frame retrieval R@1: anchor `0.3333` → learned `0.3750`
+- Full / reconstructed / delta-state action accuracy: `0.4375 / 0.3750 / 0.4375`
+- Chance: `0.25`
+
+Interpretation: a small real reconstruction/retrieval signal exists and downstream action accuracy
+does not collapse, but the learned codec does not beat the simple raw-pooled delta baseline.
+
+## First real frozen-Qwen caption pilot
+
+Projector-only target CE reduced and held-out four-way accuracy rose above chance, but the causal
+ablation failed.
+
+- Initial → final held-out accuracy: `0.25 → 0.375`
+- Normal / zero / last-only / shuffled accuracy: `0.375 / 0.375 / 0.3125 / 0.375`
+- Normal target NLL: `1.4586`; zero/shuffled NLL: `1.4186 / 1.4249`
+
+Interpretation: caption alignment is currently inconclusive. Qwen/projector learning occurs, but
+there is no evidence that accumulated delta rather than priors drives the held-out caption. More
+real clips or joint delta/projector alignment is required later; hyperparameter tuning is deferred.
+
 ## Immediate next pilot
 
-Use 16 train and 16 validation SSV2 clips with frozen DINOv2 embeddings. Compare full-current,
-anchor-only, raw feature difference, learned accumulated delta, last-only delta, zero delta, and
-shuffled delta. Advance to caption alignment as soon as held-out reconstruction and action-class
-performance show a non-trivial signal; do not wait for hyperparameter optimization.
-
+Add clip-end commit prediction on cached SSV2 embeddings, then prepare a small NExT-QA media subset
+for independent downstream evaluation. AudioSet media needs an indexed ID audit before use; avoid
+scanning its very large shared directories directly.

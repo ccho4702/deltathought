@@ -6,8 +6,8 @@ sources:
   something_something_v2:
     enabled: false
     resource_name: something_something_v2
-    media_dir: something_something_v2/videos
-    annotations_dir: something_something_v2/annotations
+    media_dir: /mnt/nfs_shared_data/dataset/ssv2/20bn-something-something-v2
+    annotations_dir: /mnt/nfs_shared_data/dataset/ssv2/labels
     required_annotations: [train.json, validation.json, labels.json]
     media_extensions: [.webm]
     license_record: inputs/licenses/something_something_v2.accepted.json

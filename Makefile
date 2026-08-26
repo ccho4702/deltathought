@@ -1,4 +1,4 @@
-.PHONY: setup lint test sanity verify provenance data-audit annotation-audit backbone-smoke language-smoke report verify-all
+.PHONY: setup lint test sanity verify provenance data-audit annotation-audit backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot report verify-all
 
 setup:
 	uv sync --group dev
@@ -29,6 +29,12 @@ backbone-smoke:
 
 language-smoke:
 	uv run deltaomni-language-smoke
+
+ssv2-pilot:
+	uv run deltaomni-ssv2-pilot --config configs/ssv2_pilot.yaml
+
+ssv2-caption-pilot:
+	uv run deltaomni-ssv2-caption-pilot --config configs/ssv2_pilot.yaml
 
 report:
 	uv run deltaomni-report

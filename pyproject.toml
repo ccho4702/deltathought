@@ -5,6 +5,7 @@ description = "Independent modality delta codecs with typed interleaving and lea
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+  "av>=14,<16",
   "librosa==0.11.0",
   "numpy>=1.26,<3",
   "pillow>=11,<12",
@@ -33,6 +34,8 @@ deltaomni-data-audit = "deltaomni.data.audit:main"
 deltaomni-annotation-audit = "deltaomni.data.annotation_audit:main"
 deltaomni-backbone-smoke = "deltaomni.backbone_smoke:main"
 deltaomni-language-smoke = "deltaomni.language_smoke:main"
+deltaomni-ssv2-pilot = "deltaomni.ssv2_pilot:main"
+deltaomni-ssv2-caption-pilot = "deltaomni.ssv2_caption_pilot:main"
 
 
 
