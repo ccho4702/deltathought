@@ -1,15 +1,16 @@
 {
-  "code_revision": "b2b03bc9d1d03352c2ef49aa41f5752f72925ff7",
-  "completed_at_utc": "2026-08-26T23:23:01.490493+00:00",
+  "code_revision": "1be1b8b4c24adf6eee081a03a47a642416ec8457",
+  "completed_at_utc": "2026-08-26T23:30:17.496304+00:00",
   "dataset": "nextqa",
-  "dataset_revision": "official-2021-ann-1955d89e-schema-v2",
-  "elapsed_seconds": 132.53497580438852,
+  "dataset_revision": "official-2021-ann-1955d89e-schema-v2-r2",
+  "elapsed_seconds": 4.600018244236708,
   "episodes": {
     "test": 1000,
     "train": 3870,
     "validation": 570
   },
-  "manifest": "/home/changho.choi/deltathought/intermediates/canonical/nextqa/official-2021-ann-1955d89e-schema-v2/manifest.json",
+  "license_record_present": false,
+  "manifest": "/home/changho.choi/deltathought/intermediates/canonical/nextqa/official-2021-ann-1955d89e-schema-v2-r2/manifest.json",
   "media_with_audio": {
     "test": 993,
     "train": 3843,

@@ -196,11 +196,21 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
     ):
         raise ValueError("SSV2 official splits overlap")
     jobs = []
-    for source_id in sorted(set().union(*split_ids.values())):
+    source_ids = sorted(set().union(*split_ids.values()))
+    discovery_started = time.perf_counter()
+    for index, source_id in enumerate(source_ids, start=1):
         path = config.media_root / f"{source_id}.webm"
         if not path.is_file():
             raise FileNotFoundError(path)
         jobs.append((source_id, path))
+        if index % 1000 == 0 or index == len(source_ids):
+            elapsed = time.perf_counter() - discovery_started
+            eta = elapsed / index * (len(source_ids) - index)
+            print(
+                f"ssv2_discovery={index}/{len(source_ids)} "
+                f"elapsed={elapsed:.1f}s eta={eta:.1f}s",
+                flush=True,
+            )
 
     started = time.perf_counter()
     media_index = _inspect_all_media(config, jobs)

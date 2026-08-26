@@ -21,11 +21,12 @@ dialogue history, and provenance. Null means the source does not provide the fie
 means the field is defined but has no episode items. Dataset revisions are immutable and written as
 atomic split JSONL files with a checksummed manifest.
 
-The first full conversion, NExT-QA `official-2021-ann-1955d89e-schema-v2`, completed in 132.5s:
+The corrected full conversion, NExT-QA `official-2021-ann-1955d89e-schema-v2-r2`, contains
 5,440 episodes and 47,692 QA items, with official train/validation/test counts and no cross-split
 source-group overlap. All 5,440 video files were present; 5,406 contain audio streams and 34 record
-audio as null. Manifest SHA-256 is
-`86b448318d98e01bd61f315af917a176e3b32b96658b2babec5331dcbad9c7a6`.
+audio as null. The missing local media-license record is explicitly null and blocks training until
+resolved. Manifest SHA-256 is
+`06abface4a7ca438e9cffbfc0d63fc182c253ce845be5c8f08f278d86368f00a`.
 
 Last updated: 2026-08-26
 

@@ -33,12 +33,15 @@ It caches immutable media hashes and stream metadata under `intermediates/cache/
 and ETA, and resumes from those per-media cache entries after interruption. It never writes to the
 shared raw-data tree.
 
-Completed NExT-QA revision `official-2021-ann-1955d89e-schema-v2` contains 3,870 train, 570
+Completed NExT-QA revision `official-2021-ann-1955d89e-schema-v2-r2` contains 3,870 train, 570
 validation, and 1,000 test episodes with 47,692 human QA items. All split files pass JSON Schema,
 checksum, count, round-trip, and source-group disjointness checks. Of 5,440 video containers, 5,406
 contain an audio stream and 34 correctly serialize `media.audio` as null. The retained compact
 summary is `outputs/reports/canonical_nextqa_v2.json`; generated canonical records remain under
-`intermediates/canonical/` and are reproducible from the immutable shared media.
+`intermediates/canonical/` and are reproducible from the immutable shared media. The media license
+acceptance record is not present locally and therefore serializes as null; training remains gated on
+resolving that record. The earlier non-r2 revision is deprecated because it recorded a nonexistent
+license-record path rather than null.
 
 ## Null semantics
 
