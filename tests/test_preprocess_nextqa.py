@@ -10,5 +10,6 @@ def test_nextqa_canonical_preprocessor_is_complete_and_immutable() -> None:
     assert set(config.annotations) == {"train", "validation", "test"}
     assert "schema-v2" in config.dataset_revision
     assert config.chunk_seconds == 2.0
+    assert config.license_record is None
     assert config.output_root == Path("intermediates/canonical").resolve()
     assert config.cache_root != config.output_root

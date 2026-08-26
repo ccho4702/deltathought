@@ -26,6 +26,7 @@ The first concrete preprocessor is:
 
 ```bash
 uv run deltaomni-preprocess-nextqa --config configs/canonical/nextqa.yaml
+uv run deltaomni-preprocess-ssv2 --config configs/canonical/ssv2.yaml
 ```
 
 It caches immutable media hashes and stream metadata under `intermediates/cache/`, displays progress

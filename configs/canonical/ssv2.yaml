@@ -1,0 +1,15 @@
+dataset: something_something_v2
+dataset_revision: official-v2-ann-b24e4609-schema-v2
+resource_name: something_something_v2
+chunk_seconds: 2.0
+cpu_workers: 8
+annotations:
+  train: /mnt/nfs_shared_data/dataset/ssv2/labels/train.json
+  validation: /mnt/nfs_shared_data/dataset/ssv2/labels/validation.json
+  test: /mnt/nfs_shared_data/dataset/ssv2/labels/test.json
+test_answers: /mnt/nfs_shared_data/dataset/ssv2/labels/test-answers.csv
+media_root: /mnt/nfs_shared_data/dataset/ssv2/20bn-something-something-v2
+license_record: null
+cache_root: intermediates/cache/canonical_ssv2/official-v2-ann-b24e4609-schema-v2
+output_root: intermediates/canonical
+report_path: outputs/reports/canonical_ssv2_v2.json
