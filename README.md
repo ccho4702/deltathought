@@ -71,6 +71,10 @@ Official raw datasets and annotations live only under `/mnt/nfs_shared_data/data
 Canonical manifests, extracted/derived media, embedding caches, checkpoints, logs, and reports stay
 under this project in `intermediates/`, `outputs/`, and `logs/`.
 
+Repository and storage management rules are mandatory and documented in [AGENTS.md](AGENTS.md):
+GitHub is authoritative for source/reproducibility material, while NAS is authoritative for raw data
+and selected large migration backups.
+
 ## Documentation
 
 - [Architecture and losses](docs/ARCHITECTURE.md)

@@ -7,7 +7,7 @@ Prepared: 2026-08-26
 - GitHub: `git@github.com:ccho4702/deltathought.git`
 - Branch: `main`
 - Base experiment commit: `10c09d6de6a12d548610cc5f6d244f48f58d8bc5`
-- Migration handoff tag: `migration-20260826`
+- Migration handoff tag: `migration-20260826-v2`
 
 Clone and recreate the locked environment:
 
@@ -70,3 +70,10 @@ sha256sum -c SHA256SUMS
 The `results_and_reports.tar.gz` archive contains the small result JSON/HTML files and logs without
 model checkpoints. Extract it at the new repository root if historical local reports are needed.
 Embedding caches are optional; rerunning the bounded preparation stages is preferred.
+
+## Ongoing management rule
+
+After migration, continue using GitHub as the source of truth for all code and reproducibility
+material. Push every verified milestone with updated status/results. Continue using NAS for immutable
+raw data and selected checksummed large-artifact backups only. Follow `AGENTS.md`; do not allow a
+local server copy to become the only authoritative source.

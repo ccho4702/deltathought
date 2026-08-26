@@ -14,6 +14,10 @@ research dataset.
 Generated files are never written into the raw NAS tree. Model weights remain in the project-local
 `inputs/models` cache because they are pinned runtime inputs rather than dataset distributions.
 
+GitHub `ccho4702/deltathought` is the authoritative copy of code, configs, lockfiles, tests, and
+compact result documentation. Selected large checkpoints are preserved only in the checksummed NAS
+project-backup tree. The detailed mandatory workflow is in `AGENTS.md` and `docs/MIGRATION.md`.
+
 ## Acceptance gate
 
 A core resource requires:
