@@ -1,0 +1,15 @@
+dataset: nextqa
+dataset_revision: official-2021-ann-1955d89e-schema-v2
+resource_name: nextqa_annotations
+chunk_seconds: 2.0
+cpu_workers: 8
+annotations:
+  train: /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/train.csv
+  validation: /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/val.csv
+  test: /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/test.csv
+video_mapping: /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/map_vid_vidorID.json
+media_root: /mnt/nfs_shared_data/dataset/NExT-QA/processed_for_gcg/NExTVideo
+license_record: inputs/licenses/nextqa_media.accepted.json
+cache_root: intermediates/cache/canonical_nextqa/official-2021-ann-1955d89e-schema-v2
+output_root: intermediates/canonical
+report_path: outputs/reports/canonical_nextqa_v2.json

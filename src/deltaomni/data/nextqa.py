@@ -25,6 +25,7 @@ def build_episode(
     dataset_revision: str,
     chunk_seconds: float,
     provenance_report: dict[str, Any],
+    audio_media: MediaAsset | None = None,
 ) -> CanonicalEpisode:
     require_approved(provenance_report, ["nextqa_annotations"])
     if media.duration_seconds is None:
@@ -56,7 +57,7 @@ def build_episode(
         split=split,
         source_id=source_id,
         source_group_id=f"nextqa:{source_id}",
-        media=MediaBundle(image=None, video=media, audio=None),
+        media=MediaBundle(image=None, video=media, audio=audio_media),
         duration_seconds=duration,
         temporal_blocks=temporal_grid(duration, chunk_seconds),
         captions=CaptionBundle(image=None, video=None, audio=None, joint=None),

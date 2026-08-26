@@ -1,4 +1,4 @@
-.PHONY: setup lint test sanity verify provenance data-audit annotation-audit backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot report verify-all
+.PHONY: setup lint test sanity verify provenance data-audit annotation-audit preprocess-nextqa backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot report verify-all
 
 setup:
 	uv sync --group dev
@@ -23,6 +23,9 @@ data-audit:
 
 annotation-audit:
 	uv run deltaomni-annotation-audit
+
+preprocess-nextqa:
+	uv run deltaomni-preprocess-nextqa
 
 backbone-smoke:
 	uv run deltaomni-backbone-smoke

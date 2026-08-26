@@ -22,6 +22,16 @@ manifest records the episode schema, source-file hashes, preprocessing-config ha
 split-file hashes, record counts, and field coverage. Loading verifies checksums, counts, record
 validity, and cross-split source separation.
 
+The first concrete preprocessor is:
+
+```bash
+uv run deltaomni-preprocess-nextqa --config configs/canonical/nextqa.yaml
+```
+
+It caches immutable media hashes and stream metadata under `intermediates/cache/`, displays progress
+and ETA, and resumes from those per-media cache entries after interruption. It never writes to the
+shared raw-data tree.
+
 ## Null semantics
 
 - `null`: the source dataset does not provide this media or annotation type.
