@@ -1,0 +1,11 @@
+seed: 42
+device: cuda:0
+ssv2_config: configs/ssv2_pilot_medium.yaml
+batch_size: 8
+learning_rate: 0.0001
+max_steps: 200
+checkpoint_interval_steps: 50
+reconstruction_weight: 1.0
+semantic_weight: 1.0
+output_root: outputs/real_pilots/ssv2_semantic
+

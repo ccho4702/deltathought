@@ -1,6 +1,6 @@
 import torch
 
-from deltaomni.language import DeltaLanguageProjector
+from deltaomni.language import ChangeAwareResampler, DeltaLanguageProjector
 
 
 def test_delta_language_prefix_preserves_full_then_delta_order() -> None:
@@ -15,3 +15,19 @@ def test_delta_language_prefix_preserves_full_then_delta_order() -> None:
     prefix.sum().backward()
     assert projector.projection[1].weight.grad is not None
 
+
+def test_change_aware_resampler_compresses_full_and_delta_evidence() -> None:
+    resampler = ChangeAwareResampler(
+        input_dim=4,
+        language_dim=8,
+        query_tokens=2,
+        num_heads=2,
+    )
+    anchor = torch.randn(3, 7, 4)
+    delta = torch.randn(3, 2, 4)
+
+    prefix = resampler(anchor, delta, modality_index=1)
+
+    assert prefix.shape == (3, 2, 8)
+    prefix.square().mean().backward()
+    assert resampler.queries.grad is not None

@@ -1,4 +1,4 @@
-.PHONY: setup lint test sanity verify provenance data-audit annotation-audit backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot audioset-timing-pilot nextqa-reconstruction-pilot report verify-all
+.PHONY: setup lint test sanity verify provenance data-audit annotation-audit backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-resampler-pilot audioset-timing-pilot nextqa-reconstruction-pilot report verify-all
 
 setup:
 	uv sync --group dev
@@ -35,6 +35,12 @@ ssv2-pilot:
 
 ssv2-caption-pilot:
 	uv run deltaomni-ssv2-caption-pilot --config configs/ssv2_pilot.yaml
+
+ssv2-semantic-pilot:
+	uv run deltaomni-ssv2-semantic-pilot --config configs/ssv2_semantic_pilot.yaml
+
+ssv2-resampler-pilot:
+	uv run deltaomni-ssv2-resampler-pilot --config configs/ssv2_resampler_pilot.yaml
 
 audioset-timing-pilot:
 	uv run deltaomni-audioset-timing-pilot --config configs/audioset_timing_pilot.yaml

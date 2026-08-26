@@ -30,6 +30,44 @@ class DeltaLanguageProjector(nn.Module):
         return torch.cat((full_prefix, delta_prefix), dim=1)
 
 
+class ChangeAwareResampler(nn.Module):
+    def __init__(
+        self,
+        input_dim: int,
+        language_dim: int,
+        query_tokens: int,
+        num_heads: int,
+        modalities: int = 3,
+    ) -> None:
+        super().__init__()
+        self.projection = nn.Sequential(
+            nn.LayerNorm(input_dim),
+            nn.Linear(input_dim, language_dim),
+        )
+        self.type_embeddings = nn.Parameter(torch.randn(2, language_dim) * 0.02)
+        self.modality_embeddings = nn.Embedding(modalities, language_dim)
+        self.queries = nn.Parameter(torch.randn(query_tokens, language_dim) * 0.02)
+        self.attention = nn.MultiheadAttention(language_dim, num_heads, batch_first=True)
+        self.output = nn.Sequential(
+            nn.LayerNorm(language_dim),
+            nn.Linear(language_dim, 4 * language_dim),
+            nn.GELU(),
+            nn.Linear(4 * language_dim, language_dim),
+        )
+        self.output_norm = nn.LayerNorm(language_dim)
+
+    def forward(self, anchor: Tensor, delta: Tensor, modality_index: int) -> Tensor:
+        if anchor.ndim != 3 or delta.ndim != 3 or anchor.shape[-1] != delta.shape[-1]:
+            raise ValueError("anchor and delta must be [batch, tokens, shared_dim]")
+        modality = self.modality_embeddings.weight[modality_index]
+        full_tokens = self.projection(anchor) + self.type_embeddings[0] + modality
+        delta_tokens = self.projection(delta) + self.type_embeddings[1] + modality
+        evidence = torch.cat((full_tokens, delta_tokens), dim=1)
+        queries = self.queries.unsqueeze(0).expand(anchor.shape[0], -1, -1)
+        attended, _ = self.attention(queries, evidence, evidence, need_weights=False)
+        return self.output_norm(queries + attended + self.output(attended))
+
+
 class FrozenCausalCaptionBackend(nn.Module):
     def __init__(
         self,
@@ -86,3 +124,16 @@ class FrozenCausalCaptionBackend(nn.Module):
             labels=labels,
         ).loss
 
+    @torch.no_grad()
+    def encode_text(self, texts: list[str]) -> Tensor:
+        tokens = self.tokenizer(
+            texts,
+            padding=True,
+            return_tensors="pt",
+            add_special_tokens=False,
+        )
+        tokens = {key: value.to(self.device) for key, value in tokens.items()}
+        outputs = self.model(**tokens, output_hidden_states=True)
+        hidden = outputs.hidden_states[-1]
+        mask = tokens["attention_mask"].unsqueeze(-1)
+        return (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp_min(1)

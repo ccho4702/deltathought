@@ -1,0 +1,14 @@
+seed: 42
+device: cuda:0
+ssv2_config: configs/ssv2_pilot_medium.yaml
+semantic_config: configs/ssv2_semantic_pilot.yaml
+query_tokens: 8
+num_heads: 8
+temperature: 0.07
+alignment_steps: 200
+alignment_learning_rate: 0.002
+caption_steps: 80
+caption_learning_rate: 0.001
+caption_ranking_weight: 1.0
+alignment_guard_weight: 1.0
+output_root: outputs/real_pilots/ssv2_resampler

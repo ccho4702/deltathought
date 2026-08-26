@@ -105,3 +105,31 @@ confirmed blocker, not a passed stage.
 Immediate next architecture work: replace the single pooled linear projector with a change-aware
 resampler trained first against text embeddings, then caption CE. Final NExT-QA evaluation remains
 deferred until normal generated captions beat zero and shuffled delta on held-out media.
+
+## Change-aware resampler result
+
+The proposed resampler compressed 257 full plus 8 delta tokens into 8 Qwen-width query tokens and
+was trained with text-embedding contrastive alignment before caption CE. It also failed the causal
+gate: alignment accuracy was `0.281` for normal, zero, last, and shuffled delta; caption accuracy was
+`0.375` for all four conditions. The frozen-Qwen caption path is now a no-go until the delta encoder
+receives an explicit semantic/action auxiliary objective.
+
+Final NExT-QA answer evaluation is intentionally not run: with captions independent of delta,
+normal-vs-shuffled QA cannot isolate useful feedback.
+
+## Semantic auxiliary objective
+
+Adding SSV2 action supervision directly to the accumulated delta state while retaining
+reconstruction produced a clear held-out signal:
+
+- Normal / zero / last-only / shuffled semantic accuracy: `0.500 / 0.250 / 0.281 / 0.406`
+- Reconstruction MSE: `2.5756 → 2.5596`, still below anchor `2.7185`
+
+This confirms that accumulated real delta can carry semantic action information when explicitly
+supervised. Re-running the change-aware Qwen resampler with this checkpoint improved normal text
+alignment to `0.469`, but shuffled remained higher at `0.500`; caption accuracy was `0.281` versus
+zero `0.313`. The current Qwen bridge still fails.
+
+Decision: preserve reconstruction, timing, cross-domain, and semantic-head positive signals. Stop
+open-ended caption/QA work with the current bridge. Next test should use a soft or discrete semantic
+token interface before attempting free-form caption generation.

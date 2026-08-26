@@ -60,6 +60,31 @@ accuracy was `25%` versus zero `34.4%`, last-only `31.3%`, and shuffled `28.1%`.
 Decision: the current typed linear projector into frozen Qwen does not establish semantic delta
 understanding. Do not run final QA claims until held-out zero/shuffle ablations pass.
 
+## Change-aware resampler
+
+An 8-query cross-attention resampler replaced the linear projector. It first aligned to frozen Qwen
+text hidden states with contrastive loss, then received caption CE, candidate ranking, and an
+alignment guard. Held-out text-alignment accuracy was `28.1%` for normal, zero, last-only, and
+shuffled delta. Caption accuracy was `37.5%` for every condition.
+
+Decision: the bottleneck is not fixed by a more expressive projector. Reconstruction-only delta
+states do not yet expose sufficiently discriminative semantic change information. The next caption
+attempt must add a semantic/action auxiliary objective to the delta encoder before LLM alignment.
+
+## Semantic delta supervision and resampler retry
+
+A four-way SSV2 semantic head was jointly trained with the delta encoder and reconstruction guard.
+Held-out accumulated-delta accuracy reached `50.0%`, compared with zero `25.0%`, last-only `28.1%`,
+and shuffled `40.6%`; reconstruction was preserved and slightly improved. This is the clearest real
+evidence so far that accumulated delta can carry task-relevant semantics.
+
+The semantic checkpoint was then passed to the change-aware Qwen resampler. Normal text alignment
+rose to `46.9%` and beat zero `40.6%`, but last-only matched it and shuffled reached `50.0%`.
+Candidate-caption accuracy remained near chance and did not beat zero/shuffled controls.
+
+Decision: semantic delta learning works at this scale; the current frozen-Qwen prefix bridge does
+not. Switch to an explicit soft/discrete semantic-token interface before more free-form caption work.
+
 ## Retained runs
 
 - Reconstruction: `ssv2-pilot-20260826T001020Z-ede4e09b`
@@ -69,5 +94,8 @@ understanding. Do not run final QA claims until held-out zero/shuffle ablations 
 - Medium reconstruction: `ssv2-pilot-20260826T003323Z-d9dd196a`
 - NExT-QA transfer: `nextqa-reconstruction-20260826T003401Z-3f4723b8`
 - Stabilized joint caption: `ssv2-caption-20260826T003931Z-8cfcdc23`
+- Change-aware resampler: `ssv2-resampler-20260826T004910Z-8859fd13`
+- Semantic delta: `ssv2-semantic-20260826T005359Z-bfc8fcc5`
+- Semantic resampler retry: `ssv2-resampler-20260826T005656Z-e04f0df0`
 
 Generated caches, checkpoints, and raw metrics remain project-local and are excluded from Git.

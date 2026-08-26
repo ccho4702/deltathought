@@ -56,6 +56,15 @@ Current gate: blocked. NExT-QA media and embedding caches are ready, and medium 
 transfers with a small positive signal, but the delta-caption projector does not yet beat zero and
 shuffled delta. Running final QA now would not isolate useful caption feedback.
 
+The change-aware resampler and text-alignment pretraining also failed zero/shuffle ablations. Do not
+try larger caption runs with the same representation objective. Add semantic/action supervision to
+the delta encoder and first require held-out normal delta to beat zero and shuffled conditions.
+
+Semantic/action supervision now passes that delta-state gate, but both text-alignment and caption
+resamplers still fail shuffled controls. The next authorized design is a typed soft/discrete semantic
+token bottleneck derived from the supervised delta state. Free-form captions and NExT-QA remain
+blocked until that interface passes normal/zero/last/shuffle ablations.
+
 ## R4 — Video commit timing
 
 SSV2 does not contain internal caption boundaries. This phase remains blocked until an established,
