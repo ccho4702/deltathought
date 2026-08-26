@@ -4,6 +4,7 @@ from pathlib import Path
 import torch
 
 from deltaomni.config import load_config
+from deltaomni.model import PairDeltaEncoder
 from deltaomni.train_sanity import train
 
 
@@ -27,16 +28,20 @@ def test_interrupted_run_resumes_to_identical_model(tmp_path: Path) -> None:
 
     assert interrupted["status"] == "interrupted"
     assert resumed["status"] in {"complete", "failed_sanity"}
-    resumed_state = torch.load(
+    resumed_checkpoint = torch.load(
         training.run_root / "resumed/checkpoints/step-000006.pt",
         map_location="cpu",
         weights_only=False,
-    )["model"]
-    uninterrupted_state = torch.load(
+    )
+    uninterrupted_checkpoint = torch.load(
         training.run_root / "uninterrupted/checkpoints/step-000006.pt",
         map_location="cpu",
         weights_only=False,
-    )["model"]
+    )
+    assert resumed_checkpoint["delta_algorithm"] == PairDeltaEncoder.ALGORITHM_VERSION
+    assert uninterrupted_checkpoint["delta_algorithm"] == PairDeltaEncoder.ALGORITHM_VERSION
+    resumed_state = resumed_checkpoint["model"]
+    uninterrupted_state = uninterrupted_checkpoint["model"]
     assert resumed_state.keys() == uninterrupted_state.keys()
     assert all(
         torch.equal(resumed_state[name], uninterrupted_state[name]) for name in resumed_state

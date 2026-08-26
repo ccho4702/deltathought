@@ -7,6 +7,7 @@ Prepared: 2026-08-26
 - GitHub: `git@github.com:ccho4702/deltathought.git`
 - Branch: `main`
 - Base experiment commit: `10c09d6de6a12d548610cc5f6d244f48f58d8bc5`
+- Layout-aware delta milestone: `1a79f7b2fb91798603246086c872879cc7cdb9bf`
 - Migration handoff tag: `migration-20260826-v2`
 
 Clone and recreate the locked environment:
@@ -70,6 +71,39 @@ sha256sum -c SHA256SUMS
 The `results_and_reports.tar.gz` archive contains the small result JSON/HTML files and logs without
 model checkpoints. Extract it at the new repository root if historical local reports are needed.
 Embedding caches are optional; rerunning the bounded preparation stages is preferred.
+
+## Layout-aware delta milestone backup
+
+The verified v4 video-delta artifacts for commit
+`1a79f7b2fb91798603246086c872879cc7cdb9bf` are stored separately at:
+
+```text
+/mnt/nfs_shared_data/project_backups/deltathought/
+  1a79f7b2fb91798603246086c872879cc7cdb9bf/
+```
+
+Retained checkpoints:
+
+- Balanced 17-token eight-frame codec: `checkpoints/video_delta_balanced_17tokens.pt`
+  - SHA-256 `ea25055b46d93bb1895c4f6043de40a489bca6a0037159113b7870676f3fbc38`
+- Fidelity 65-token eight-frame codec: `checkpoints/video_delta_fidelity_65tokens.pt`
+  - SHA-256 `49c778a5ee683bfc01602a7f3320b59b5e52e5dd9130460703f67c279d6edb41`
+
+The same directory contains the balanced, fidelity, per-step temporal, and four-frame multi-seed
+JSON reports plus `SHA256SUMS`. The complete backup is 120 MB. Verify it with:
+
+```bash
+cd /mnt/nfs_shared_data/project_backups/deltathought/1a79f7b2fb91798603246086c872879cc7cdb9bf
+sha256sum -c SHA256SUMS
+```
+
+The 483 MB eight-frame DINO embedding cache is intentionally omitted because it is reproducible
+from the immutable shared SSV2 raw media and pinned model revision.
+
+Synthetic checkpoints now record `PairDeltaEncoder.ALGORITHM_VERSION`. Automatic verification and
+resume reject unversioned or incompatible checkpoints rather than partially loading them. After
+restoring this milestone, create a fresh sanity run before verification if only older checkpoints
+are present.
 
 ## Ongoing management rule
 

@@ -16,14 +16,14 @@ Last updated: 2026-08-26
 
 ## Latest retained functional metrics
 
-Run: `delta-sanity-20260825T235249Z-b374b880`
+Run: `delta-sanity-20260826T134242Z-808038a4`
 
-- Accumulated commit reconstruction MSE: `5.1779e-5`
-- Last-delta-only reconstruction MSE: `1.7803e-2`
+- Accumulated reconstruction MSE: `1.1128e-4`
+- Last-delta-only reconstruction MSE: `1.7564e-2`
 - Accumulated caption exact: `1.0`
 - Last-delta-only caption exact: `0.5`
 - Accumulated-caption unseen QA: `1.0`
-- Last-delta-caption unseen QA: `0.71875`
+- Last-delta-caption unseen QA: `0.59375`
 - Trigger F1 and length accuracy: `1.0 / 1.0`
 
 These are synthetic functional metrics and are not real-media research results.

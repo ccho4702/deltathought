@@ -17,7 +17,7 @@ from torch.utils.data import DataLoader
 
 from deltaomni.config import SanityConfig, load_config
 from deltaomni.interleaving import StreamingDeltaEngine, render_interleaving
-from deltaomni.model import DeltaCodecModel
+from deltaomni.model import DeltaCodecModel, PairDeltaEncoder
 from deltaomni.synthetic import SyntheticInterleavedDataset, collate_examples, token_text
 
 
@@ -181,6 +181,12 @@ def train(
         payload = torch.load(checkpoint, map_location=device, weights_only=False)
         if payload["config_signature"] != config_signature:
             raise ValueError("Checkpoint configuration is incompatible with the current run")
+        if payload.get("delta_algorithm") != PairDeltaEncoder.ALGORITHM_VERSION:
+            raise ValueError(
+                "Checkpoint delta algorithm is incompatible with the current code: "
+                f"{payload.get('delta_algorithm', 'unversioned')} != "
+                f"{PairDeltaEncoder.ALGORITHM_VERSION}"
+            )
         model.load_state_dict(payload["model"])
         optimizer.load_state_dict(payload["optimizer"])
         start_step = int(payload["step"])
@@ -241,6 +247,7 @@ def train(
                     "model": model.state_dict(),
                     "optimizer": optimizer.state_dict(),
                     "step": step,
+                    "delta_algorithm": PairDeltaEncoder.ALGORITHM_VERSION,
                     "config_signature": config_signature,
                     "python_rng_state": random.getstate(),
                     "torch_rng_state": torch.random.get_rng_state(),

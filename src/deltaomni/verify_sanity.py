@@ -10,7 +10,7 @@ import torch
 from torch import Tensor, nn
 
 from deltaomni.config import SanityConfig, load_config
-from deltaomni.model import DeltaCodecModel
+from deltaomni.model import DeltaCodecModel, PairDeltaEncoder
 from deltaomni.synthetic import (
     CLASS_TOKEN_OFFSET,
     SyntheticInterleavedDataset,
@@ -116,9 +116,7 @@ def collect(
                 (step_reconstructed - current).square().mean(dim=(1, 2))
             )
             anchor_errors.append((anchor - current).square().mean(dim=(1, 2)))
-            shuffled_errors.append(
-                (shuffled_reconstructed - current).square().mean(dim=(1, 2))
-            )
+            shuffled_errors.append((shuffled_reconstructed - current).square().mean(dim=(1, 2)))
             trigger_true.append(target_commit)
             trigger_predicted.append(torch.sigmoid(trigger_logits).ge(0.5))
 
@@ -286,15 +284,39 @@ def verify(config: SanityConfig, run_id: str | None = None) -> dict[str, Any]:
         runs = sorted(config.training.run_root.glob("delta-sanity-*"))
         if not runs:
             raise FileNotFoundError("No sanity run is available")
-        run_dir = runs[-1]
+        compatible = []
+        for candidate in reversed(runs):
+            candidate_checkpoint = _latest_checkpoint(candidate)
+            if candidate_checkpoint is None:
+                continue
+            candidate_payload = torch.load(
+                candidate_checkpoint,
+                map_location="cpu",
+                weights_only=False,
+            )
+            if candidate_payload.get("delta_algorithm") == PairDeltaEncoder.ALGORITHM_VERSION:
+                compatible.append((candidate, candidate_checkpoint, candidate_payload))
+                break
+        if not compatible:
+            raise FileNotFoundError(
+                "No sanity checkpoint matches delta algorithm "
+                f"{PairDeltaEncoder.ALGORITHM_VERSION}; run deltaomni-sanity first"
+            )
+        run_dir, checkpoint, payload = compatible[0]
     else:
         run_dir = config.training.run_root / run_id
-    checkpoint = _latest_checkpoint(run_dir)
-    if checkpoint is None:
-        raise FileNotFoundError(f"No checkpoint found under {run_dir}")
+        checkpoint = _latest_checkpoint(run_dir)
+        if checkpoint is None:
+            raise FileNotFoundError(f"No checkpoint found under {run_dir}")
+        payload = torch.load(checkpoint, map_location="cpu", weights_only=False)
+        if payload.get("delta_algorithm") != PairDeltaEncoder.ALGORITHM_VERSION:
+            raise ValueError(
+                "Checkpoint delta algorithm is incompatible with the current code: "
+                f"{payload.get('delta_algorithm', 'unversioned')} != "
+                f"{PairDeltaEncoder.ALGORITHM_VERSION}"
+            )
 
     model = DeltaCodecModel(config.model, config.modalities)
-    payload = torch.load(checkpoint, map_location="cpu", weights_only=False)
     model.load_state_dict(payload["model"])
     train_data = SyntheticInterleavedDataset(config, config.training.examples, split_seed=10_000)
     validation_data = SyntheticInterleavedDataset(
@@ -331,9 +353,7 @@ def verify(config: SanityConfig, run_id: str | None = None) -> dict[str, Any]:
     metrics = {
         "full_tokens": config.model.embedding_tokens,
         "delta_tokens": config.model.delta_tokens,
-        "token_compression_ratio": (
-            config.model.embedding_tokens / config.model.delta_tokens
-        ),
+        "token_compression_ratio": (config.model.embedding_tokens / config.model.delta_tokens),
         "reconstruction_mse": validation.reconstruction_mse,
         "step_reconstruction_mse": validation.step_reconstruction_mse,
         "commit_reconstruction_mse": validation.commit_reconstruction_mse,
