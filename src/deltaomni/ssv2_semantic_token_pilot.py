@@ -147,6 +147,18 @@ def load_config(path: Path) -> SemanticTokenPilotConfig:
     return config
 
 
+def _assert_evaluation_checkpoint_compatible(
+    checkpoint_signature: str,
+    evaluation_signature: str,
+) -> None:
+    checkpoint_config = json.loads(checkpoint_signature)
+    evaluation_config = json.loads(evaluation_signature)
+    checkpoint_config.pop("evaluation_split", None)
+    evaluation_config.pop("evaluation_split", None)
+    if checkpoint_config != evaluation_config:
+        raise ValueError("evaluation checkpoint training configuration is incompatible")
+
+
 class CachedEmbeddingSplit:
     def __init__(self, manifest: dict[str, Any], split: str) -> None:
         self.records = manifest["splits"][split]
@@ -497,6 +509,7 @@ def run(
     backbone_config_path: Path,
     provenance_path: Path,
     run_id_override: str | None = None,
+    evaluation_source_run_id: str | None = None,
 ) -> dict[str, Any]:
     config = load_config(config_path)
     torch.set_num_threads(config.runtime.cpu_threads)
@@ -571,7 +584,25 @@ def run(
 
         start_step = 1
         resumed = _latest_checkpoint(run_dir) if config.resume == "auto" else None
-        if resumed is not None:
+        if evaluation_source_run_id is not None:
+            if evaluation_source_run_id == run_id:
+                raise ValueError("evaluation source and destination run IDs must differ")
+            source_run_dir = config.output_root / evaluation_source_run_id
+            source_checkpoint = _latest_checkpoint(source_run_dir)
+            if source_checkpoint is None:
+                raise FileNotFoundError(f"No checkpoint under {source_run_dir}")
+            checkpoint_path, payload = source_checkpoint
+            _assert_evaluation_checkpoint_compatible(
+                payload["config_signature"],
+                signature,
+            )
+            if int(payload["world_size"]) != context.world_size:
+                raise ValueError("evaluation requires the checkpoint's distributed world size")
+            unwrap(model).load_state_dict(payload["model"])
+            start_step = config.max_steps + 1
+            if context.is_primary:
+                print(f"evaluation_only={checkpoint_path}", flush=True)
+        elif resumed is not None:
             checkpoint_path, payload = resumed
             if payload["config_signature"] != signature:
                 raise ValueError("checkpoint configuration is incompatible")
@@ -731,6 +762,7 @@ def run(
         passed = all(checks.values())
         report = {
             "run_id": run_id,
+            "evaluation_source_run_id": evaluation_source_run_id,
             "source_semantic_run_id": source_run_id,
             "status": "signal" if passed else "inconclusive",
             "world_size": context.world_size,
@@ -775,8 +807,15 @@ def main() -> int:
     parser.add_argument("--backbones", type=Path, default=Path("configs/backbones.yaml"))
     parser.add_argument("--provenance", type=Path, default=Path("configs/provenance.yaml"))
     parser.add_argument("--run-id")
+    parser.add_argument("--evaluation-source-run-id")
     args = parser.parse_args()
-    report = run(args.config, args.backbones, args.provenance, args.run_id)
+    report = run(
+        args.config,
+        args.backbones,
+        args.provenance,
+        args.run_id,
+        args.evaluation_source_run_id,
+    )
     if int(os.environ.get("RANK", "0")) == 0:
         print(json.dumps(report, indent=2))
     return 0 if report["passed"] else 1

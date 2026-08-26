@@ -28,6 +28,7 @@ from deltaomni.ssv2_pilot import load_pilot_config
 from deltaomni.ssv2_semantic_token_pilot import (
     CachedEmbeddingSplit,
     SemanticTokenModel,
+    _assert_evaluation_checkpoint_compatible,
     _atomic_torch_save,
     _broadcast_run_id,
     _gather_rng_states,
@@ -235,7 +236,11 @@ def _evaluate(
     return metrics
 
 
-def run(config_path: Path, run_id_override: str | None = None) -> dict[str, Any]:
+def run(
+    config_path: Path,
+    run_id_override: str | None = None,
+    evaluation_source_run_id: str | None = None,
+) -> dict[str, Any]:
     config = load_config(config_path)
     torch.set_num_threads(config.runtime.cpu_threads)
     with distributed_context(
@@ -285,7 +290,25 @@ def run(config_path: Path, run_id_override: str | None = None) -> dict[str, Any]
             torch.distributed.barrier()
         start_step = 1
         resumed = _latest_checkpoint(run_dir)
-        if resumed is not None:
+        if evaluation_source_run_id is not None:
+            if evaluation_source_run_id == run_id:
+                raise ValueError("evaluation source and destination run IDs must differ")
+            source_run_dir = config.output_root / evaluation_source_run_id
+            source_checkpoint = _latest_checkpoint(source_run_dir)
+            if source_checkpoint is None:
+                raise FileNotFoundError(f"No checkpoint under {source_run_dir}")
+            checkpoint_path, payload = source_checkpoint
+            _assert_evaluation_checkpoint_compatible(
+                payload["config_signature"],
+                signature,
+            )
+            if int(payload["world_size"]) != context.world_size:
+                raise ValueError("evaluation requires the checkpoint's distributed world size")
+            unwrap(adapter).load_state_dict(payload["model"])
+            start_step = config.max_steps + 1
+            if context.is_primary:
+                print(f"evaluation_only={checkpoint_path}", flush=True)
+        elif resumed is not None:
             _, payload = resumed
             incompatible = (
                 payload["config_signature"] != signature
@@ -392,6 +415,7 @@ def run(config_path: Path, run_id_override: str | None = None) -> dict[str, Any]
         passed = all(checks.values())
         report = {
             "run_id": run_id,
+            "evaluation_source_run_id": evaluation_source_run_id,
             "delta_run_id": config.delta_run_id,
             "evaluation_split": config.evaluation_split,
             "world_size": context.world_size,
@@ -419,8 +443,9 @@ def main() -> int:
         default=Path("configs/ssv2_semantic_caption_a6000.yaml"),
     )
     parser.add_argument("--run-id")
+    parser.add_argument("--evaluation-source-run-id")
     args = parser.parse_args()
-    report = run(args.config, args.run_id)
+    report = run(args.config, args.run_id, args.evaluation_source_run_id)
     if int(os.environ.get("RANK", "0")) == 0:
         print(json.dumps(report, indent=2))
     return 0 if report["passed"] else 1

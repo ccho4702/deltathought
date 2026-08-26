@@ -31,6 +31,24 @@ def test_ssv2_selection_is_balanced_and_deterministic() -> None:
     assert len({record["id"] for record in first}) == 4
 
 
+def test_ssv2_selection_can_replace_short_media_deterministically() -> None:
+    records = [
+        {"id": str(index), "template": "up", "label": "caption"}
+        for index in range(8)
+    ]
+
+    selected = select_records(
+        records,
+        ("up",),
+        3,
+        seed=42,
+        eligibility=lambda record: int(record["id"]) >= 4,
+    )
+
+    assert len(selected) == 3
+    assert all(int(record["id"]) >= 4 for record in selected)
+
+
 def test_medium_pilot_scales_data_before_hyperparameter_tuning() -> None:
     small = load_pilot_config(Path("configs/ssv2_pilot.yaml"))
     medium = load_pilot_config(Path("configs/ssv2_pilot_medium.yaml"))

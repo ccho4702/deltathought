@@ -7,6 +7,7 @@ import os
 import random
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -75,6 +76,7 @@ class PilotConfig:
     validation_per_class: int
     test_per_class: int
     frames_per_clip: int
+    minimum_decoded_frames: int
     embedding_batch_size: int
     cache_root: Path
     output_root: Path
@@ -109,6 +111,7 @@ def load_pilot_config(path: Path) -> PilotConfig:
         validation_per_class=int(raw["validation_per_class"]),
         test_per_class=int(raw.get("test_per_class", 0)),
         frames_per_clip=int(raw["frames_per_clip"]),
+        minimum_decoded_frames=int(raw.get("minimum_decoded_frames", 0)),
         embedding_batch_size=int(raw["embedding_batch_size"]),
         cache_root=resolve(raw["cache_root"]),
         output_root=resolve(raw["output_root"]),
@@ -175,6 +178,7 @@ def select_records(
     classes: tuple[str, ...],
     count_per_class: int,
     seed: int,
+    eligibility: Callable[[dict[str, Any]], bool] | None = None,
 ) -> list[dict[str, Any]]:
     selected = []
     for label_index, template in enumerate(classes):
@@ -185,9 +189,17 @@ def select_records(
         candidates.sort(
             key=lambda record: hashlib.sha256(f"{seed}:{record['id']}".encode()).hexdigest()
         )
-        if len(candidates) < count_per_class:
-            raise ValueError(f"Only {len(candidates)} records found for {template}")
-        for record in candidates[:count_per_class]:
+        eligible_candidates = []
+        for record in candidates:
+            if eligibility is None or eligibility(record):
+                eligible_candidates.append(record)
+                if len(eligible_candidates) == count_per_class:
+                    break
+        if len(eligible_candidates) < count_per_class:
+            raise ValueError(
+                f"Only {len(eligible_candidates)} eligible records found for {template}"
+            )
+        for record in eligible_candidates:
             selected.append({**record, "class_index": label_index})
     return selected
 
@@ -223,12 +235,30 @@ def prepare_embeddings(
 ) -> dict[str, Any]:
     if config.access_mode != "read_only_existing_shared_copy":
         raise ValueError("SSV2 pilot must use the existing shared copy read-only")
+    checked_media = 0
+
+    def eligible(record: dict[str, Any]) -> bool:
+        nonlocal checked_media
+        if config.minimum_decoded_frames <= 0:
+            return True
+        media_path = config.media_dir / f"{record['id']}.webm"
+        if not media_path.is_file():
+            return False
+        with av.open(str(media_path), mode="r") as container:
+            decoded_frames = sum(1 for _ in container.decode(container.streams.video[0]))
+        checked_media += 1
+        if checked_media % 100 == 0:
+            print(f"eligibility_checked={checked_media}", flush=True)
+        return decoded_frames >= config.minimum_decoded_frames
+
+    eligibility = eligible if config.minimum_decoded_frames > 0 else None
     selected_by_split = {
         "train": select_records(
             _records(config.train_annotations),
             config.classes,
             config.train_per_class,
             config.seed,
+            eligibility,
         )
     }
     held_out = select_records(
@@ -236,6 +266,7 @@ def prepare_embeddings(
         config.classes,
         config.validation_per_class + config.test_per_class,
         config.seed + 1,
+        eligibility,
     )
     selected_by_split["validation"] = []
     if config.test_per_class:

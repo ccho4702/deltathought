@@ -28,3 +28,18 @@ def test_fidelity_caption_uses_65_grid_tokens() -> None:
     assert "layout65" in config.semantic_token_config.name
     assert config.learning_rate == 0.0003
     assert config.max_steps == 800
+
+
+def test_long_caption_uses_fifteen_delta_updates() -> None:
+    config = load_config(
+        Path("configs/ssv2_semantic_caption_layout65_16frames_a6000.yaml")
+    )
+
+    assert "16frames" in config.ssv2_config.name
+    assert "16frames" in config.semantic_token_config.name
+    assert config.delta_run_id == "layout65-16f-seed42-validation"
+
+    test_config = load_config(
+        Path("configs/ssv2_semantic_caption_layout65_16frames_test_a6000.yaml")
+    )
+    assert test_config.evaluation_split == "test"
