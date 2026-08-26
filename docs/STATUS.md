@@ -28,6 +28,13 @@ audio as null. The missing local media-license record is explicitly null and blo
 resolved. Manifest SHA-256 is
 `06abface4a7ca438e9cffbfc0d63fc182c253ce845be5c8f08f278d86368f00a`.
 
+SSV2 `official-v2-ann-b24e4609-schema-v2` is also fully canonicalized: 168,913 train, 24,777
+validation, and 27,157 test episodes, each with one official video caption and null QA/audio fields.
+All 220,847 media files were present and no split source IDs overlap. Media discovery took 90.8s,
+stream/hash caching 432.8s, and the complete conversion plus reload verification 486.5s. Manifest
+SHA-256 is `25b8fb4b524a32be41aece867e439c136f4943a01a96189c7d958d6230cd7459`.
+The absent local SSV2 media-license record is explicitly null and remains a training gate.
+
 Last updated: 2026-08-26
 
 ## Completed

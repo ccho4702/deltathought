@@ -1,0 +1,26 @@
+{
+  "caption_items": {
+    "test": 27157,
+    "train": 168913,
+    "validation": 24777
+  },
+  "code_revision": "df42a06b2bd8687459ba8970c1bb434e27852ced",
+  "completed_at_utc": "2026-08-26T23:42:57.991048+00:00",
+  "dataset": "something_something_v2",
+  "dataset_revision": "official-v2-ann-b24e4609-schema-v2",
+  "elapsed_seconds": 486.54521890357137,
+  "episodes": {
+    "test": 27157,
+    "train": 168913,
+    "validation": 24777
+  },
+  "license_record_present": false,
+  "manifest": "/home/changho.choi/deltathought/intermediates/canonical/something_something_v2/official-v2-ann-b24e4609-schema-v2/manifest.json",
+  "media_with_audio": {
+    "test": 0,
+    "train": 0,
+    "validation": 0
+  },
+  "schema": "deltaomni.canonical_preprocessing_summary.v1",
+  "status": "complete"
+}
