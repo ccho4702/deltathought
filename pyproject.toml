@@ -1,0 +1,52 @@
+[project]
+name = "deltaomni"
+version = "0.1.0"
+description = "Independent modality delta codecs with typed interleaving and learned commit policies"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "librosa==0.11.0",
+  "numpy>=1.26,<3",
+  "pillow>=11,<12",
+  "pyyaml>=6,<7",
+  "soundfile==0.13.1",
+  "torch==2.6.0",
+  "transformers==4.52.3",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3,<9",
+  "ruff>=0.11,<0.12",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+deltaomni-sanity = "deltaomni.train_sanity:main"
+deltaomni-verify = "deltaomni.verify_sanity:main"
+deltaomni-provenance = "deltaomni.provenance:main"
+deltaomni-report = "deltaomni.report:main"
+deltaomni-data-audit = "deltaomni.data.audit:main"
+deltaomni-annotation-audit = "deltaomni.data.annotation_audit:main"
+deltaomni-backbone-smoke = "deltaomni.backbone_smoke:main"
+deltaomni-language-smoke = "deltaomni.language_smoke:main"
+
+
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/deltaomni"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

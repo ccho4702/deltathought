@@ -1,0 +1,21 @@
+cache_dir: inputs/models/huggingface
+device: cpu
+models:
+  video:
+    resource_name: dinov2
+    model_id: facebook/dinov2-base
+    revision: f9e44c814b77203eaa57a6bdbbd535f21ede1415
+    delta_tokens: 8
+  audio:
+    resource_name: clap
+    model_id: laion/clap-htsat-unfused
+    revision: 8fa0f1c6d0433df6e97c127f64b2a1d6c0dcda8a
+    sample_rate: 48000
+    delta_tokens: 1
+  language:
+    resource_name: qwen2_5_0_5b_instruct
+    model_id: Qwen/Qwen2.5-0.5B-Instruct
+    revision: 7ae557604adf67be50417f59c2c2f167def9a775
+    smoke_anchor_tokens: 16
+    smoke_steps: 8
+    smoke_learning_rate: 0.01

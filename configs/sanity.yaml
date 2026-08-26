@@ -1,0 +1,34 @@
+seed: 42
+modalities: [audio, video]
+model:
+  embedding_dim: 16
+  hidden_dim: 32
+  embedding_tokens: 8
+  delta_tokens: 4
+  num_heads: 4
+  caption_vocab_size: 16
+  max_caption_length: 6
+stream:
+  trigger_threshold: 0.5
+  load_threshold: 100.0
+  max_section_steps: 4
+training:
+  device: cpu
+  cpu_threads: 2
+  num_workers: 0
+  examples: 48
+  validation_examples: 16
+  sequence_steps: 7
+  batch_size: 8
+  learning_rate: 0.01
+  max_steps: 160
+  checkpoint_interval_steps: 40
+  run_root: outputs/sanity
+  log_root: logs/experiments
+  resume: auto
+loss:
+  reconstruction: 1.0
+  identity: 0.05
+  trigger: 1.0
+  caption: 1.0
+  length: 0.5

@@ -1,0 +1,29 @@
+raw_root: /mnt/nfs_shared_data/dataset/deltaomni
+canonical_root: intermediates/manifests/canonical
+derived_root: intermediates/data
+chunk_seconds: 1.0
+sources:
+  something_something_v2:
+    enabled: false
+    resource_name: something_something_v2
+    media_dir: something_something_v2/videos
+    annotations_dir: something_something_v2/annotations
+    required_annotations: [train.json, validation.json, labels.json]
+    media_extensions: [.webm]
+    license_record: inputs/licenses/something_something_v2.accepted.json
+  audioset_strong:
+    enabled: false
+    resource_name: audioset_strong_annotations
+    media_dir: audioset_strong/media
+    annotations_dir: audioset_strong/annotations
+    required_annotations: [audioset_train_strong.tsv, audioset_eval_strong.tsv, mid_to_display_name.tsv]
+    media_extensions: [.wav, .flac, .mp4]
+    license_record: inputs/licenses/audioset_media.accepted.json
+  nextqa:
+    enabled: false
+    resource_name: nextqa_annotations
+    media_dir: nextqa/videos
+    annotations_dir: nextqa/annotations
+    required_annotations: [train.csv, val.csv, test.csv, map_vid_vidorID.json]
+    media_extensions: [.mp4, .webm]
+    license_record: inputs/licenses/nextqa_media.accepted.json

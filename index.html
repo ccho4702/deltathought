@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Factorized ThoughtCodec — Research Review &amp; Session Handoff</title>
+<style>
+:root {
+  --bg: #f5f7fb; --paper: #fff; --ink: #18212b; --muted: #617080; --line: #d8e1eb;
+  --navy: #102a43; --blue: #2457d6; --blue-soft: #edf3ff; --cyan: #087f8c;
+  --cyan-soft: #e8f8fa; --green: #24734a; --green-soft: #edf8f1; --amber: #956500;
+  --amber-soft: #fff6dd; --red: #a33636; --red-soft: #fff0f0; --purple: #6941c6;
+  --purple-soft: #f3efff; --code: #111a24;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; line-height: 1.68; }
+main { max-width: 1220px; margin: 0 auto; padding: 46px 30px 100px; }
+h1 { margin: 0 0 10px; color: var(--navy); font-size: 42px; line-height: 1.12; letter-spacing: -0.8px; }
+h2 { margin: 56px 0 20px; padding-bottom: 9px; border-bottom: 1px solid var(--line); font-size: 29px; }
+h3 { margin: 31px 0 11px; font-size: 21px; }
+h4 { margin: 22px 0 7px; font-size: 17px; }
+p { margin: 9px 0; }
+ul, ol { padding-left: 26px; }
+li { margin: 5px 0; }
+a { color: var(--blue); text-underline-offset: 2px; }
+code { padding: 2px 5px; border-radius: 4px; background: #edf1f5; }
+.kicker { color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.subtitle { max-width: 940px; color: var(--muted); font-size: 18px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 30px; }
+.tag { padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); font-size: 13px; }
+.card { margin: 16px 0; padding: 21px 23px; border: 1px solid var(--line); border-radius: 13px; background: var(--paper); }
+.core { border-left: 5px solid var(--blue); background: var(--blue-soft); }
+.good { border-left: 5px solid var(--green); background: var(--green-soft); }
+.warn { border-left: 5px solid #d29a00; background: var(--amber-soft); }
+.risk { border-left: 5px solid var(--red); background: var(--red-soft); }
+.purple { border-left: 5px solid var(--purple); background: var(--purple-soft); }
+.cyan { border-left: 5px solid var(--cyan); background: var(--cyan-soft); }
+.small { color: var(--muted); font-size: 14px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+.stat { min-height: 120px; }
+.stat strong { display: block; margin-bottom: 5px; color: var(--navy); font-size: 20px; }
+.toc { columns: 2; column-gap: 36px; }
+.toc a { text-decoration: none; }
+.diagram { margin: 15px 0; padding: 18px 20px; border-radius: 10px; background: var(--code); color: #eef4f8; white-space: pre-wrap; overflow: auto; font: 13.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.equation { margin: 15px 0; padding: 13px 17px; border: 1px solid var(--line); border-radius: 9px; background: #fafbfd; overflow: auto; font: 17px/1.65 Georgia, serif; }
+.figure { margin: 19px 0; padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); overflow-x: auto; }
+.figure svg { display: block; width: 100%; height: auto; min-width: 880px; }
+.caption { margin: 8px 4px 0; color: var(--muted); font-size: 13px; }
+table { width: 100%; margin: 15px 0; border-collapse: collapse; background: var(--paper); }
+th, td { padding: 9px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: #edf2f7; }
+.done { color: var(--green); font-weight: 750; }
+.todo { color: var(--amber); font-weight: 750; }
+.no { color: var(--red); font-weight: 750; }
+.pill { display: inline-block; margin: 1px 2px; padding: 2px 7px; border-radius: 999px; font-size: 12px; font-weight: 750; }
+.pill-a { background: #e5faf5; color: #08735f; } .pill-v { background: #e7efff; color: #2452bd; }
+.pill-i { background: #fff2d7; color: #805800; } .pill-j { background: #f1eaff; color: #6941c6; }
+.phase { position: relative; margin: 0 0 20px; padding-left: 31px; }
+.phase::before { content: ""; position: absolute; left: 8px; top: 9px; bottom: -27px; width: 2px; background: var(--line); }
+.phase:last-child::before { bottom: 20px; }
+.phase::after { content: ""; position: absolute; left: 0; top: 8px; width: 18px; height: 18px; border: 3px solid var(--blue); border-radius: 50%; background: white; }
+@media (max-width: 900px) { main { padding: 30px 16px 72px; } h1 { font-size: 32px; } .grid2,.grid3,.grid4 { grid-template-columns: 1fr; } .toc { columns: 1; } table { font-size: 13px; } }
+@media print { body { background: white; } main { max-width: none; padding: 18px; } .card,.figure,table { break-inside: avoid; } a { color: inherit; text-decoration: none; } }
+</style>
+</head>
+<body>
+<main>
+<div class="kicker">Standalone research review and new-session handoff · 2026-08-26</div>
+<h1>Factorized ThoughtCodec</h1>
+<p class="subtitle">Independent modality delta/commit cycles with a bounded cross-modal rendezvous buffer and a separate joint-relation delta lane.</p>
+<div class="meta">
+  <span class="tag">Repository: ccho4702/omnithought</span>
+  <span class="tag">Backbone: Qwen2.5-Omni-7B</span>
+  <span class="tag">Hardware: RTX 3090 24 GB</span>
+  <span class="tag">Pre-review commit: 1b88ec5</span>
+  <span class="tag">Method status: candidate, not validated</span>
+</div>
+
+<div class="card risk">
+<h3>Canonical status: falsification before implementation</h3>
+<p><strong>This is not an approved paper method yet.</strong> Private/shared multimodal factorization, asynchronous fusion, residual captions, and modality-specific text summarizers all have close prior work. The current candidate is useful and technically plausible only if four small falsification studies pass. Do not start a full trainer, large download, or long run before those studies.</p>
+</div>
+
+<div class="card core">
+<h3>Candidate hypothesis</h3>
+<p><strong>Each modality should preserve its own asynchronous temporal changes through a private delta accumulator and scoped text commits, while a short-lived rendezvous buffer retains selected aligned evidence long enough for a separate joint delta lane to capture cross-modal relation changes. Final reasoning uses both private and joint semantic memories.</strong></p>
+</div>
+
+<div class="grid4">
+  <div class="card stat"><strong>Private clocks</strong><span>Image, video, and audio commit and reset independently.</span></div>
+  <div class="card stat"><strong>Private memory</strong><span>No joint fusion may erase modality-exclusive facts.</span></div>
+  <div class="card stat"><strong>Joint delta</strong><span>Tracks changes in relations, not the sum of private deltas.</span></div>
+  <div class="card stat"><strong>Rendezvous</strong><span>Preserves bounded raw evidence until joint reasoning or timeout.</span></div>
+</div>
+
+<h2>Contents</h2>
+<div class="card toc"><ol>
+  <li><a href="#decision">Decision history and scope</a></li>
+  <li><a href="#architecture">Candidate architecture</a></li>
+  <li><a href="#private">Private modality cycles</a></li>
+  <li><a href="#joint">Joint delta and rendezvous</a></li>
+  <li><a href="#memory">Memory and reset semantics</a></li>
+  <li><a href="#prior">Similar work and novelty boundary</a></li>
+  <li><a href="#validity">Usefulness and validity review</a></li>
+  <li><a href="#data">Data feasibility</a></li>
+  <li><a href="#falsify">Four required falsification studies</a></li>
+  <li><a href="#alternatives">Alternative designs</a></li>
+  <li><a href="#repo">Current repository and verified progress</a></li>
+  <li><a href="#schema">Unified episode schema</a></li>
+  <li><a href="#roadmap">Conditional implementation roadmap</a></li>
+  <li><a href="#evaluation">Baselines and evaluation</a></li>
+  <li><a href="#risks">Failure modes and stop conditions</a></li>
+  <li><a href="#start">Exact next-session procedure</a></li>
+</ol></div>
+
+<h2 id="decision">1. Decision history and scope</h2>
+
+<table><thead><tr><th>Idea</th><th>Decision</th><th>Reason</th></tr></thead><tbody>
+<tr><td>Broad autonomous streaming thought over A/V</td><td class="no">Retired</td><td>ROMA, VST, Think-as-You-See, and AV-Flamingo/TAVIT cover most of the claim.</td></tr>
+<tr><td>Caption data as a universal modality extension interface</td><td class="no">Too weak alone</td><td>Close to standard multimodal caption/instruction tuning, VALOR, VAST, and AV-Flamingo curricula.</td></tr>
+<tr><td>Single-stream delta → caption → reset</td><td class="no">Insufficient novelty</td><td>CodecCap, CoPE-VideoLM, DeltaToken, streaming captioning, and semantic memory provide close components.</td></tr>
+<tr><td>Conditional residual after subtracting other modalities</td><td class="no">Rejected by user preference</td><td>It collapses private modality identity into one omni residual.</td></tr>
+<tr><td>Independent private cycles + one joint cycle</td><td class="todo">Technically plausible, incomplete</td><td>Private text reset can erase raw evidence needed for delayed joint relations.</td></tr>
+<tr><td>Private cycles + bounded rendezvous + joint relation delta</td><td class="todo">Current candidate</td><td>Best current balance of private preservation, asynchronous timing, and omni interaction; unvalidated.</td></tr>
+</tbody></table>
+
+<div class="card warn"><strong>Non-negotiable distinction:</strong> the overall input may contain all modalities, but private writers have scope-restricted access to raw sensory lanes. The joint writer alone receives cross-modal evidence. Final QA receives all semantic memories.</div>
+
+<h2 id="architecture">2. Candidate architecture</h2>
+
+<div class="figure">
+<svg viewBox="0 0 1240 600" role="img" aria-label="Factorized ThoughtCodec architecture">
+<defs>
+  <marker id="arrB" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#2457d6"/></marker>
+  <marker id="arrC" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#087f8c"/></marker>
+</defs>
+<rect x="30" y="50" width="220" height="125" rx="14" fill="#fff2d7" stroke="#d29a00" stroke-width="2"/>
+<text x="140" y="83" text-anchor="middle" font-weight="700">Image private lane</text><text x="140" y="112" text-anchor="middle">I-anchor → δᴵ → Aᴵ</text><text x="140" y="140" text-anchor="middle">IMAGE commit / reset I</text>
+<rect x="30" y="235" width="220" height="125" rx="14" fill="#e7efff" stroke="#2457d6" stroke-width="2"/>
+<text x="140" y="268" text-anchor="middle" font-weight="700">Video private lane</text><text x="140" y="297" text-anchor="middle">V-anchor → δⱽ → Aⱽ</text><text x="140" y="325" text-anchor="middle">VIDEO commit / reset V</text>
+<rect x="30" y="420" width="220" height="125" rx="14" fill="#e5faf5" stroke="#08735f" stroke-width="2"/>
+<text x="140" y="453" text-anchor="middle" font-weight="700">Audio private lane</text><text x="140" y="482" text-anchor="middle">A-anchor → δᴬ → Aᴬ</text><text x="140" y="510" text-anchor="middle">AUDIO commit / reset A</text>
+
+<rect x="345" y="55" width="230" height="115" rx="14" fill="#fafbfd" stroke="#d29a00" stroke-width="2"/>
+<text x="460" y="88" text-anchor="middle" font-weight="700">M_image</text><text x="460" y="118" text-anchor="middle">timestamped private text</text><text x="460" y="143" text-anchor="middle">persistent</text>
+<rect x="345" y="240" width="230" height="115" rx="14" fill="#fafbfd" stroke="#2457d6" stroke-width="2"/>
+<text x="460" y="273" text-anchor="middle" font-weight="700">M_video</text><text x="460" y="303" text-anchor="middle">timestamped private text</text><text x="460" y="328" text-anchor="middle">persistent</text>
+<rect x="345" y="425" width="230" height="115" rx="14" fill="#fafbfd" stroke="#08735f" stroke-width="2"/>
+<text x="460" y="458" text-anchor="middle" font-weight="700">M_audio</text><text x="460" y="488" text-anchor="middle">timestamped private text</text><text x="460" y="513" text-anchor="middle">persistent</text>
+
+<line x1="250" y1="112" x2="335" y2="112" stroke="#2457d6" stroke-width="3" marker-end="url(#arrB)"/>
+<line x1="250" y1="297" x2="335" y2="297" stroke="#2457d6" stroke-width="3" marker-end="url(#arrB)"/>
+<line x1="250" y1="482" x2="335" y2="482" stroke="#2457d6" stroke-width="3" marker-end="url(#arrB)"/>
+
+<path d="M 210 170 C 300 200, 640 210, 700 260" fill="none" stroke="#087f8c" stroke-width="2.5" marker-end="url(#arrC)"/>
+<path d="M 250 310 C 400 330, 630 320, 700 310" fill="none" stroke="#087f8c" stroke-width="2.5" marker-end="url(#arrC)"/>
+<path d="M 210 425 C 360 390, 630 390, 700 350" fill="none" stroke="#087f8c" stroke-width="2.5" marker-end="url(#arrC)"/>
+
+<rect x="700" y="220" width="245" height="175" rx="15" fill="#e8f8fa" stroke="#087f8c" stroke-width="2"/>
+<text x="823" y="253" text-anchor="middle" font-weight="700">Bounded rendezvous</text>
+<text x="823" y="283" text-anchor="middle">selected private residuals</text><text x="823" y="308" text-anchor="middle">timestamps + evidence pointers</text><text x="823" y="333" text-anchor="middle">timeout or joint commit</text><text x="823" y="367" text-anchor="middle" font-weight="700">Rₜ → δᴶ → Aᴶ</text>
+
+<rect x="1010" y="235" width="195" height="145" rx="15" fill="#f3efff" stroke="#6941c6" stroke-width="2"/>
+<text x="1108" y="270" text-anchor="middle" font-weight="700">Joint writer</text><text x="1108" y="300" text-anchor="middle">relation-change caption</text><text x="1108" y="330" text-anchor="middle">JOINT commit</text><text x="1108" y="357" text-anchor="middle">M_joint</text>
+<line x1="945" y1="307" x2="1000" y2="307" stroke="#2457d6" stroke-width="3" marker-end="url(#arrB)"/>
+
+<rect x="745" y="485" width="360" height="85" rx="14" fill="#edf8f1" stroke="#24734a" stroke-width="2"/>
+<text x="925" y="518" text-anchor="middle" font-weight="700">Final reasoner</text><text x="925" y="545" text-anchor="middle">question + M_image + M_video + M_audio + M_joint</text>
+<path d="M 575 112 C 690 130, 730 420, 820 475" fill="none" stroke="#2457d6" stroke-width="2" marker-end="url(#arrB)"/>
+<path d="M 575 297 C 680 320, 720 430, 860 475" fill="none" stroke="#2457d6" stroke-width="2" marker-end="url(#arrB)"/>
+<path d="M 575 482 C 660 490, 690 500, 735 515" fill="none" stroke="#2457d6" stroke-width="2" marker-end="url(#arrB)"/>
+<path d="M 1108 380 C 1090 430, 1040 455, 1000 475" fill="none" stroke="#6941c6" stroke-width="2.5" marker-end="url(#arrB)"/>
+</svg>
+<div class="caption">Figure 1. Private commits persist immediately, while selected residual evidence remains briefly in the rendezvous buffer so delayed cross-modal relations are not forced through text alone.</div>
+</div>
+
+<h3>2.1 Why the rendezvous buffer is necessary</h3>
+<div class="diagram">t=1.0  AUDIO: glass shattering → AUDIO commit → audio private reset
+        selected acoustic residual remains in rendezvous for W seconds
+
+t=2.0  VIDEO: person picks up transparent fragments → VIDEO commit
+        recent video residual meets retained audio evidence
+
+        JOINT commit: "The person is picking up the glass that just shattered."
+        relevant rendezvous entries are released</div>
+<p>Without the buffer, the joint writer sees only lossy private captions. With an unbounded buffer, the system loses its memory advantage. The buffer is therefore both a semantic and systems requirement.</p>
+
+<h2 id="private">3. Private modality cycles</h2>
+
+<div class="equation">δ<sub>t</sub><sup>m</sup> = z<sub>t</sub><sup>m</sup> − P<sub>m</sub>(z<sub>&lt;t</sub><sup>m</sup>), &nbsp; m ∈ {image, video, audio}</div>
+<div class="equation">A<sub>t</sub><sup>m</sup> = Update(A<sub>t−1</sub><sup>m</sup>, TopK(δ<sub>t</sub><sup>m</sup>))</div>
+<div class="equation">p<sub>commit</sub><sup>m</sup> = σ(g<sub>m</sub>(A<sub>t</sub><sup>m</sup>, q, M<sub>m</sub>, budget<sub>m</sub>))</div>
+
+<table><thead><tr><th>Lane</th><th>Private delta means</th><th>Commit example</th><th>Reset</th></tr></thead><tbody>
+<tr><td><span class="pill pill-i">Image</span></td><td>Change between still observations/screenshots, or one initial full observation</td><td><code>&lt;IMAGE_THINK&gt;</code> OCR/layout/static detail</td><td>Image accumulator only</td></tr>
+<tr><td><span class="pill pill-v">Video</span></td><td>Visual motion, object/state/scene change</td><td><code>&lt;VIDEO_THINK&gt;</code> visual event</td><td>Video accumulator only</td></tr>
+<tr><td><span class="pill pill-a">Audio</span></td><td>Sound onset/offset, speaker/acoustic transition</td><td><code>&lt;AUDIO_THINK&gt;</code> auditory event</td><td>Audio accumulator only</td></tr>
+</tbody></table>
+
+<h3>3.1 Attention contract</h3>
+<ul>
+  <li>Overall input can contain all modalities.</li>
+  <li>Private caption content is generated with raw-sensory attention restricted to its own lane.</li>
+  <li>Private writer may attend the initial question and prior semantic text memory.</li>
+  <li>Private writer must not use another raw modality as a shortcut.</li>
+  <li>Joint writer and final answer may attend all semantic lanes and allowed rendezvous evidence.</li>
+</ul>
+
+<h3>3.2 Independent clock semantics</h3>
+<div class="diagram">Audio: A-anchor → δA → AUDIO commit/reset ─────→ δA → ...
+Video: V-anchor → δV → δV → δV → VIDEO commit/reset → ...
+Image: I-anchor ─────────────────→ IMAGE update ─────→ ...
+Joint: relation anchor → δJ ─────────────→ JOINT commit/reset</div>
+<p>One modality committing must never reset another private accumulator. This is the central difference from one omni accumulator.</p>
+
+<h2 id="joint">4. Joint delta: the missing omni lane</h2>
+
+<div class="card core"><p><strong>Joint delta is not <code>δA + δV</code>.</strong> It is the temporal change of a cross-modal relation representation.</p></div>
+
+<div class="equation">R<sub>t</sub><sup>J</sup> = F<sub>joint</sub>(z<sub>t</sub><sup>I</sup>, z<sub>t</sub><sup>V</sup>, z<sub>t</sub><sup>A</sup>, alignment<sub>t</sub>)</div>
+<div class="equation">δ<sub>t</sub><sup>J</sup> = R<sub>t</sub><sup>J</sup> − P<sub>J</sub>(R<sub>&lt;t</sub><sup>J</sup>)</div>
+<div class="equation">A<sub>t</sub><sup>J</sup> = Update(A<sub>t−1</sub><sup>J</sup>, δ<sub>t</sub><sup>J</sup>, recent private commits)</div>
+
+<h3>4.1 Relation types</h3>
+<ul>
+  <li>Visible source ↔ sound event</li>
+  <li>Action ↔ acoustic onset/offset</li>
+  <li>Speech ↔ lip motion / speaker identity</li>
+  <li>Cross-modal causality and temporal order</li>
+  <li>Complementary disambiguation</li>
+  <li>Contradiction, asynchrony, dubbing, or off-screen evidence</li>
+</ul>
+
+<h3>4.2 Joint necessity check</h3>
+<div class="equation">
+L<sub>necessity</sub> = max(0, margin − log P(C<sup>J</sup>|A,V) + max(log P(C<sup>J</sup>|A,V′), log P(C<sup>J</sup>|A′,V)))
+</div>
+<p>This optional loss applies to the joint lane only. Private delta streams remain intact. A joint commit should become less likely or less correct when either required modality is swapped.</p>
+
+<h2 id="memory">5. Memory and reset semantics</h2>
+
+<table><thead><tr><th>State</th><th>Lifetime</th><th>Reset rule</th></tr></thead><tbody>
+<tr><td>Private raw/latent accumulator <code>Aᵐ</code></td><td>Until modality m commits or reaches max age</td><td>Reset only m</td></tr>
+<tr><td>Private semantic memory <code>Mᵐ</code></td><td>Whole episode or bounded text policy</td><td>Persistent</td></tr>
+<tr><td>Rendezvous evidence</td><td>Until joint commit, timeout, or capacity eviction</td><td>Evidence-specific release</td></tr>
+<tr><td>Joint accumulator <code>Aᴶ</code></td><td>Until joint commit/max age</td><td>Reset joint only</td></tr>
+<tr><td>Joint semantic memory <code>Mᴶ</code></td><td>Whole episode or bounded text policy</td><td>Persistent</td></tr>
+</tbody></table>
+
+<div class="diagram">M_final = M_image ⊕ M_video ⊕ M_audio ⊕ M_joint
+
+FinalAnswer = LM(initial_question, M_final, current_private_states, allowed_rendezvous_evidence)</div>
+
+<h2 id="prior">6. Similar work and novelty boundary</h2>
+
+<table><thead><tr><th>Prior family</th><th>Already covers</th><th>Implication</th></tr></thead><tbody>
+<tr><td>Private/shared multimodal representations</td><td>Separate modality-private and shared latent spaces</td><td>Private + joint factorization is not novel alone.</td></tr>
+<tr><td><a href="https://openaccess.thecvf.com/content/CVPR2026/papers/Yang_Information-Theoretic_Decomposition_for_Multimodal_Interaction_Learning_CVPR_2026_paper.pdf">Information-Theoretic Decomposition</a></td><td>Redundancy, uniqueness, synergy decomposition</td><td>Do not claim invention of private/joint information types.</td></tr>
+<tr><td><a href="https://openaccess.thecvf.com/content/WACV2024/papers/Xu_Rethink_Cross-Modal_Fusion_in_Weakly-Supervised_Audio-Visual_Video_Parsing_WACV_2024_paper.pdf">Rethink Cross-Modal Fusion</a></td><td>Strong fusion hurts exclusive events; no fusion hurts joint events</td><td>Supports the motivation, but is also a strong baseline/prior.</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2407.04955">MEA asynchronous fusion</a></td><td>Modality-exclusive and modality-agnostic representations for asynchronous streams</td><td>Independent clocks and exclusive/shared states are not novel alone.</td></tr>
+<tr><td><a href="https://doi.org/10.1038/s41746-025-02219-4">MoMA</a></td><td>Specialist modalities converted to text summaries then jointly reasoned</td><td>Private text → central LLM is close prior.</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2605.26967">CodecCap</a></td><td>Visual keyframe and residual captions</td><td>Delta + caption is not novel alone.</td></tr>
+<tr><td>ROMA / VST / AV-Flamingo</td><td>Streaming triggers, textual memory, timestamped A/V reasoning</td><td>Thinking/streaming/omni are not standalone contributions.</td></tr>
+</tbody></table>
+
+<div class="card warn">
+<h3>Only potentially defensible contribution</h3>
+<p>A bounded, asynchronous <strong>multi-clock semantic codec</strong> that preserves modality-private event memory while retaining only a small rendezvous set of raw residuals for delayed joint-relation commits, and that demonstrably improves the exclusive-event/joint-reasoning/streaming-memory Pareto frontier.</p>
+<p>This is a candidate claim, not a proven novelty claim. Strong empirical results and fair prior comparisons are mandatory.</p>
+</div>
+
+<h2 id="validity">7. Usefulness and validity review</h2>
+
+<div class="grid2">
+<div class="card good"><h3>Why it could work</h3><ul>
+  <li>Private lanes reduce modality dominance and preserve off-screen audio / visual-only events.</li>
+  <li>Independent clocks match heterogeneous event rates.</li>
+  <li>Text commits can bound long-term semantic memory.</li>
+  <li>Rendezvous evidence avoids forcing every joint relation through private text.</li>
+  <li>Typed commits are interpretable and naturally timestamped.</li>
+</ul></div>
+<div class="card risk"><h3>Why it could fail</h3><ul>
+  <li>Text commits may omit exact timing, count, direction, identity, or intensity.</li>
+  <li>Rendezvous buffer may grow or evict evidence before a delayed relation arrives.</li>
+  <li>Separate cycles plus joint processing can cost more than one dense omni pass.</li>
+  <li>Audio latent deltas are technically difficult and may track noise rather than semantics.</li>
+  <li>No public dataset supplies rich private+joint timestamps and final human QA together.</li>
+</ul></div>
+</div>
+
+<h3>7.1 Calibrated assessment</h3>
+<table><thead><tr><th>Dimension</th><th>Private cycles only</th><th>Private + rendezvous + joint delta</th></tr></thead><tbody>
+<tr><td>Technical feasibility</td><td>6/10</td><td>6/10</td></tr>
+<tr><td>Potential usefulness</td><td>5/10</td><td>7/10</td></tr>
+<tr><td>Data feasibility</td><td>3/10</td><td>3/10</td></tr>
+<tr><td>Method novelty</td><td>3/10</td><td>5/10 pending evidence</td></tr>
+<tr><td>Implementation complexity</td><td>Medium</td><td>High</td></tr>
+</tbody></table>
+
+<h3>7.2 Best application regimes</h3>
+<ul>
+  <li>Long streams with off-screen audio, visual-only events, or asynchronous sensor events</li>
+  <li>Robotics/wearables with missing or delayed modalities</li>
+  <li>Long meetings, surveillance, or egocentric streams where raw KV cannot grow indefinitely</li>
+  <li>Applications requiring provenance by modality</li>
+</ul>
+
+<h3>7.3 Weak application regimes</h3>
+<ul>
+  <li>Short synchronized clips where dense fusion already fits</li>
+  <li>Coarse QA that does not need private details</li>
+  <li>Tasks where exact raw evidence cannot be replaced by text</li>
+  <li>Cases where delta extraction costs approach full encoder cost</li>
+</ul>
+
+<h2 id="data">8. Data feasibility</h2>
+
+<table><thead><tr><th>Supervision</th><th>Best known source</th><th>Gap</th></tr></thead><tbody>
+<tr><td>Private A/V captions</td><td>AVCaps, FAVDBench</td><td>Mostly clip-level, not independent temporal events</td></tr>
+<tr><td>Joint captions</td><td>AVCaps, VALOR</td><td>Short clips / limited temporal relation labels</td></tr>
+<tr><td>Independent A/V event times</td><td>LLP/AVVP</td><td>Class labels, not rich captions</td></tr>
+<tr><td>Timestamped joint captions</td><td>LongVALE</td><td>No separate private caption streams; raw media not local</td></tr>
+<tr><td>Whole-input joint QA</td><td>AVQA, MUSIC-AVQA</td><td>No local private/joint commits on same sample</td></tr>
+</tbody></table>
+
+<div class="card risk"><strong>Core data gap:</strong> no trusted public dataset found provides independent timestamped private captions, timestamped joint-relation captions, and final human QA on the same long A/V stream. Pseudo-labeling or a custom bridge set is unavoidable for full training.</div>
+
+<h3>8.1 Current local raw snapshot</h3>
+<table><thead><tr><th>Dataset</th><th>Present</th><th>Restriction</th></tr></thead><tbody>
+<tr><td>AVCaps</td><td>Train/val videos+captions; test captions</td><td>Test videos missing</td></tr>
+<tr><td>LongVALE</td><td>Annotations/parquet</td><td>Raw video absent</td></tr>
+<tr><td>FLARE</td><td>Demo, V/A captions, archives 012/013</td><td>Partial, generated, Video-MME contamination; mechanics only</td></tr>
+</tbody></table>
+
+<h2 id="falsify">9. Four required falsification studies</h2>
+
+<div class="card core"><p>Run these before creating delta encoders, cache eviction, or trainers. They test the conceptual assumptions with existing annotations and frozen models.</p></div>
+
+<h3>F1 — Can private captions recover joint facts?</h3>
+<div class="diagram">Input: official AVCaps A-only captions + V-only captions
+Target: official human A+V caption facts
+
+Compare:
+  A captions only
+  V captions only
+  A + V private captions
+  official joint caption upper bound</div>
+<p><strong>Stop:</strong> if private-caption fusion cannot recover a useful fraction of joint facts, private text alone is insufficient and rendezvous evidence is mandatory.</p>
+
+<h3>F2 — Does bounded raw evidence add value beyond private text?</h3>
+<div class="diagram">Private captions only
+vs.
+Private captions + short aligned raw clip/evidence
+
+Metric: joint caption factual F1 / joint QA accuracy / modality necessity</div>
+<p><strong>Stop or simplify:</strong> if raw evidence adds no measurable value, remove the rendezvous mechanism and use private text fusion.</p>
+
+<h3>F3 — Do independent clocks beat a shared clock?</h3>
+<p>Use LLP dense A/V labels without LLM training. Simulate shared 1 s/2 s checkpoints and independent modality boundaries. Report event coverage, delay, commit count, simultaneous-event rate, and expected text cost.</p>
+<p><strong>Stop:</strong> if independent clocks offer negligible alignment/coverage advantage at matched commit rate.</p>
+
+<h3>F4 — Can text memory replace sensory evidence for QA?</h3>
+<div class="diagram">Final QA with:
+  full A/V evidence
+  private captions only
+  private + joint captions
+  private captions + bounded aligned raw evidence</div>
+<p><strong>Stop:</strong> if captions cause a large irrecoverable QA drop and bounded raw evidence does not close it.</p>
+
+<h3>9.1 Study order</h3>
+<ol>
+  <li>F1 and F3: annotation-only / low-cost analysis</li>
+  <li>F2 and F4: frozen-model inference</li>
+  <li>Only if F1–F4 support the hypothesis: build a deterministic cycle simulator</li>
+</ol>
+
+<h2 id="alternatives">10. Alternative designs</h2>
+
+<table><thead><tr><th>Design</th><th>Advantages</th><th>Disadvantages</th><th>Role</th></tr></thead><tbody>
+<tr><td>One omni accumulator</td><td>Simple; joint alignment natural</td><td>Modality dominance; no private timing</td><td>Required baseline</td></tr>
+<tr><td>Independent private cycles only</td><td>Modular; preserves exclusive events</td><td>Fine joint relations bottlenecked through text</td><td>Required baseline</td></tr>
+<tr><td>Private text + query-time fusion/retrieval</td><td>No joint training lane</td><td>Joint event may be absent from private text</td><td>Strong simple alternative</td></tr>
+<tr><td>Private cycles + bounded rendezvous + joint delta</td><td>Preserves private and raw joint evidence</td><td>Complex; data-poor; harder memory management</td><td>Current candidate</td></tr>
+<tr><td>Shared physical clock + private gates</td><td>Less state complexity, easier alignment</td><td>Less asynchronous flexibility</td><td>Preferred fallback if F3 fails</td></tr>
+</tbody></table>
+
+<h2 id="repo">11. Current repository and verified progress</h2>
+
+<h3>11.1 Locations</h3>
+<table><tbody>
+<tr><th>GitHub</th><td><a href="https://github.com/ccho4702/omnithought">github.com/ccho4702/omnithought</a>, <code>main</code></td></tr>
+<tr><th>Local</th><td><code>/home/changho.choi/omnithought</code></td></tr>
+<tr><th>NAS code backup</th><td><code>/home/changho.choi/siit-n24/omnithought</code>; SSHFS Git ownership limitation</td></tr>
+<tr><th>Raw data only</th><td><code>/mnt/nfs_shared_data/dataset/omnithought</code></td></tr>
+</tbody></table>
+
+<h3>11.2 Reusable implementation</h3>
+<table><thead><tr><th>File</th><th>Verified role</th><th>Possible reuse</th></tr></thead><tbody>
+<tr><td><code>src/omnithought/data/event_schedule.py</code></td><td>Independent timestamp event ordering</td><td>Oracle private/joint commits</td></tr>
+<tr><td><code>src/omnithought/training/physical_positions.py</code></td><td>Physical TMRoPE positions</td><td>Preserve time across independent resets</td></tr>
+<tr><td><code>src/omnithought/training/stream_packer.py</code></td><td>Question-first A/V repeated conversation</td><td>Reference only; do not bury factorized state here</td></tr>
+<tr><td><code>src/omnithought/evaluation/stream_rollout.py</code></td><td>Strict scoped START/END FSM and generated-history rollout</td><td>Private/joint commit grammar</td></tr>
+<tr><td><code>src/omnithought/training/comparison_packer.py</code></td><td>Fingerprint-aware cache invalidation</td><td>Canonical/delta cache pattern</td></tr>
+<tr><td><code>src/omnithought/training/segmented_stream_trainer.py</code></td><td>3090-compatible truncated training fallback</td><td>Correctness only; not final efficient path</td></tr>
+</tbody></table>
+
+<h3>11.3 Always-multimodal input change included in current working tree</h3>
+<ul>
+  <li>AVCaps video/audio/joint caption targets all receive synchronized A+V input.</li>
+  <li>Scope is an evidence target, not an input-removal switch.</li>
+  <li>Oracle cache schema was bumped so old single-input tensors are invalid.</li>
+  <li>Regenerated tiny manifest: 24 records, 8 video + 8 audio + 8 joint, all <code>input_modalities=[video,audio]</code>.</li>
+  <li>Image input is planned in the canonical schema; image thought tokens are not implemented.</li>
+</ul>
+
+<h3>11.4 Pre-pivot measured results</h3>
+<table><thead><tr><th>Measurement</th><th>Value</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>Bounded train/validation</td><td>128 windows / 12 windows, 12 / 4 disjoint sources</td><td>Small implementation study only</td></tr>
+<tr><td>Base / instruction / stream word F1</td><td>0.161 / 0.663 / 0.208</td><td>No proposed-method win</td></tr>
+<tr><td>Manual semantic correctness</td><td>75.0% / 75.0% / 83.3% on 12 samples</td><td>One-sample difference, not significant</td></tr>
+<tr><td>Exact / ±1 trigger F1</td><td>0.625 / 0.750</td><td>Partial old timing learning</td></tr>
+<tr><td>Exact full-control success</td><td>0/3</td><td>Old stream policy was not solved</td></tr>
+<tr><td>Streaming step / peak</td><td>30.98 s / 23.23 GiB</td><td>3090 VRAM and recomputation bottleneck</td></tr>
+</tbody></table>
+
+<div class="card warn"><strong>Historical data warning:</strong> FLARE bounded positives were all <code>video→audio→advance</code>, final QA was constructed from captions, and 12-word truncation damaged most targets. These results prove executability only.</div>
+
+<h2 id="schema">12. Unified episode schema</h2>
+
+<p>Canonical data is model-independent. It stores assets, modality lanes, timestamps, private/joint supervision, and QA. Delta tensors are derived caches keyed by model and algorithm version.</p>
+<div class="diagram">{
+  "schema": "factorized-thoughtcodec.episode.v1",
+  "episode_id": "dataset:split:source",
+  "dataset": {"name": "...", "revision": "...", "split": "...", "tier": "human_gold"},
+  "inputs": {
+    "image": [{"asset_id": "i0", "time_seconds": 0.0, "source": "video_frame"}],
+    "video": {"raw_relative_path": "...", "span_seconds": [0.0, 30.0]},
+    "audio": {"raw_relative_path": "...", "span_seconds": [0.0, 30.0]}
+  },
+  "question": {"text": "...", "reveal_seconds": 0.0},
+  "private_events": [
+    {"id": "a0", "scope": ["audio"], "span": [1.0, 2.2], "captions": [...]},
+    {"id": "v0", "scope": ["video"], "span": [1.7, 3.0], "captions": [...]}
+  ],
+  "joint_events": [
+    {"id": "j0", "required_modalities": ["audio", "video"], "span": [1.0, 3.0], "captions": [...]}
+  ],
+  "final_qa": [
+    {"id": "q0", "question": "...", "answers": ["..."], "required_modalities": ["audio", "video"]}
+  ]
+}</div>
+
+<h3>12.1 Layout</h3>
+<div class="diagram">/mnt/nfs_shared_data/dataset/omnithought/     # immutable raw distributions only
+intermediates/manifests/canonical/&lt;dataset&gt;/        # model-independent episodes
+intermediates/data/&lt;dataset&gt;/                       # extracted/derived media
+intermediates/cache/factorized-thoughtcodec/&lt;hash&gt;/ # model-specific anchors/deltas
+outputs/reports/&lt;run-id&gt;/
+outputs/predictions/&lt;run-id&gt;/
+logs/experiments/&lt;run-id&gt;/</div>
+
+<h2 id="roadmap">13. Conditional implementation roadmap</h2>
+
+<div class="phase"><h3>Gate 0 — Finish and document F1–F4</h3><p>No new model modules. Produce retained JSON/Markdown results and an explicit go/no-go decision.</p></div>
+<div class="phase"><h3>Phase 1 — Canonical schema and event simulation</h3><p>Only if Gate 0 passes. Implement schema validation and independent/shared-clock simulation with LLP/AVCaps annotations.</p></div>
+<div class="phase"><h3>Phase 2 — Deterministic private cycles</h3><p>Simple feature differences, fixed thresholds, exact private reset; no joint lane or training.</p></div>
+<div class="phase"><h3>Phase 3 — Bounded rendezvous and oracle joint commits</h3><p>Copy selected residuals, enforce timeout/capacity, generate oracle joint caption, prove memory bounds.</p></div>
+<div class="phase"><h3>Phase 4 — Learned private/joint commit policies</h3><p>Existing action-token FSM first; joint necessity negatives; generated-history inference.</p></div>
+<div class="phase"><h3>Phase 5 — Accuracy–memory frontier</h3><p>Human QA, cost penalties, private/joint ablations, multiple seeds only after one stable seed.</p></div>
+
+<h3>13.1 Suggested files only after Gate 0</h3>
+<div class="diagram">src/omnithought/data/canonical_episode.py
+src/omnithought/data/avcaps_episode.py
+src/omnithought/training/private_delta.py
+src/omnithought/training/rendezvous_buffer.py
+src/omnithought/training/joint_delta.py
+src/omnithought/training/factorized_controller.py
+src/omnithought/evaluation/factorized_eval.py
+
+tests/test_canonical_episode.py
+tests/test_private_delta.py
+tests/test_rendezvous_buffer.py
+tests/test_joint_delta.py
+tests/test_factorized_controller.py</div>
+
+<h2 id="evaluation">14. Baselines and evaluation</h2>
+
+<h3>14.1 Required baselines</h3>
+<ol>
+  <li>Dense omni streaming input</li>
+  <li>One omni delta accumulator</li>
+  <li>Independent private cycles only</li>
+  <li>Private text + final query-time fusion</li>
+  <li>Private cycles + rendezvous, no joint delta</li>
+  <li>Private cycles + joint delta, no modality-swap necessity</li>
+  <li>Full candidate</li>
+</ol>
+
+<h3>14.2 Primary metrics</h3>
+<table><thead><tr><th>Axis</th><th>Metrics</th></tr></thead><tbody>
+<tr><td>Private understanding</td><td>A/V/image event F1, scoped caption factuality, cross-modality leakage</td></tr>
+<tr><td>Omni understanding</td><td>Joint event/caption F1, joint QA accuracy, full vs modality-swapped gap</td></tr>
+<tr><td>Timing</td><td>Early, late, missed, repeated commits; onset/offset error</td></tr>
+<tr><td>Memory</td><td>Private latent tokens, rendezvous tokens, semantic text tokens, peak KV</td></tr>
+<tr><td>Efficiency</td><td>Encoder time, prefill time, generation latency, end-to-end throughput</td></tr>
+<tr><td>Causal utility</td><td>Normal vs hidden/shuffled/wrong private and joint commits</td></tr>
+</tbody></table>
+
+<h3>14.3 Result table template</h3>
+<table><thead><tr><th>Method</th><th>Private F1 ↑</th><th>Joint QA ↑</th><th>Leakage ↓</th><th>KV ↓</th><th>Latency ↓</th></tr></thead><tbody>
+<tr><td>Dense omni</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>One omni delta</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Private only</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Private + query-time fusion</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td><strong>Private + rendezvous + joint delta</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+</tbody></table>
+
+<h2 id="risks">15. Failure modes and stop conditions</h2>
+
+<table><thead><tr><th>Failure</th><th>Detection</th><th>Response</th></tr></thead><tbody>
+<tr><td>Private text loses joint facts</td><td>F1/F2</td><td>Require rendezvous or stop text-only design.</td></tr>
+<tr><td>Independent clocks add no benefit</td><td>F3</td><td>Use shared clock + private gates.</td></tr>
+<tr><td>Text cannot replace raw evidence</td><td>F4</td><td>Use hierarchical raw+text memory or no-go.</td></tr>
+<tr><td>Rendezvous grows unbounded</td><td>100/1,000-chunk simulation</td><td>Hard capacity/timeout; report eviction loss.</td></tr>
+<tr><td>Joint writer repeats private captions</td><td>Fact overlap and swap tests</td><td>Relation-only targets and necessity loss.</td></tr>
+<tr><td>Audio delta tracks noise</td><td>Silence/steady tone/transient fixtures</td><td>Projected feature predictor, not PCM subtraction.</td></tr>
+<tr><td>Complexity costs exceed dense fusion</td><td>End-to-end profiling</td><td>Stop the systems claim.</td></tr>
+<tr><td>No clean data</td><td>Dataset audit</td><td>Limit to analysis/benchmark or obtain human bridge set.</td></tr>
+</tbody></table>
+
+<div class="card risk"><h3>Research no-go</h3><p>Stop if F1 or F4 shows that private/joint text cannot preserve downstream QA, if F3 shows no independent-clock advantage, or if a bounded rendezvous cannot improve joint reasoning over private captions alone. Do not rescue a failed assumption by adding more modules.</p></div>
+
+<h2 id="start">16. Exact next-session procedure</h2>
+
+<div class="card core"><h3>Instruction to the next agent</h3><p>Read this HTML fully. Treat the method as unvalidated. Preserve all user changes. Run F1–F4 in order before implementing Factorized ThoughtCodec. Continue automatically only after each study has an explicit pass criterion and retained result.</p></div>
+
+<h3>16.1 Initial read-only checks</h3>
+<div class="diagram">cd /home/changho.choi/omnithought
+git status --short
+git log -3 --oneline
+uv run ruff check src tests
+uv run pytest -q
+nvidia-smi
+df -h . /mnt/nfs_shared_data/dataset
+free -h</div>
+
+<h3>16.2 First actual task</h3>
+<ol>
+  <li>Create a focused plan for F1 only.</li>
+  <li>Snapshot every changed file under <code>temp/snapshots/&lt;session-id&gt;/</code>.</li>
+  <li>Use official AVCaps private and joint captions already present locally.</li>
+  <li>Evaluate whether A+V private text recovers joint facts; include A-only and V-only baselines.</li>
+  <li>Store resolved config, exact sample count, predictions, judge prompt/metric, and report under a unique run ID.</li>
+  <li>Decide pass/fail before F2.</li>
+</ol>
+
+<h3>16.3 Project rules</h3>
+<ul>
+  <li>Use project-local <code>uv</code>; never modify system Python/packages.</li>
+  <li>Raw NAS contains only immutable downloaded distributions.</li>
+  <li>Use <code>apply_patch</code> for source edits and preserve unrelated changes.</li>
+  <li>Before expensive work inspect GPU/CPU/RAM/storage; never interfere with other users.</li>
+  <li>Long operations need progress and ETA within one minute.</li>
+  <li>Every experiment needs unique ID, resolved config, revision, hardware, logs, atomic checkpoints, and resume when applicable.</li>
+</ul>
+
+<h3>16.4 Key documentation</h3>
+<ul>
+  <li><a href="../omnithought/PROJECT_SUMMARY.md">PROJECT_SUMMARY.md</a></li>
+  <li><a href="../omnithought/MODEL_AND_LOSS_SPEC.md">MODEL_AND_LOSS_SPEC.md</a></li>
+  <li><a href="../omnithought/DATASET_AND_EVAL_REVIEW.md">DATASET_AND_EVAL_REVIEW.md</a></li>
+  <li><a href="../omnithought/AUDIO_VIDEO_TEXT_DATASETS.md">AUDIO_VIDEO_TEXT_DATASETS.md</a></li>
+  <li><a href="../omnithought/LESSONS_LEARNED.md">LESSONS_LEARNED.md</a></li>
+  <li><a href="../omnithought/EXPERIMENT_12H_RESULTS.md">EXPERIMENT_12H_RESULTS.md</a></li>
+</ul>
+
+<div class="card good"><h3>Final summary</h3><p>The existing repository proves that Qwen2.5-Omni can be QLoRA-tuned on a 3090 to serialize A/V chunks, emit multiple scoped text spans, feed them back, and answer after stream end. It does not prove a novel or effective method. The current candidate preserves modality-private asynchronous memories and adds a bounded raw-evidence rendezvous for joint relation deltas. Its first job is not implementation; it is to survive F1–F4.</p></div>
+
+</main>
+</body>
+</html>
+

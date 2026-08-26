@@ -1,0 +1,209 @@
+policy:
+  checked_at: 2026-08-26
+  minimum_github_stars: 100
+  minimum_huggingface_downloads: 500
+  minimum_paper_citations: 100
+  minimum_adoption_signals: 2
+  require_official_source: true
+  require_peer_review: true
+  require_verified_license: true
+
+resources:
+  dinov2:
+    kind: model
+    role: image_video_full_embedding_teacher
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: verified
+    license: Apache-2.0
+    source_url: https://github.com/facebookresearch/dinov2
+    model_id: facebook/dinov2-base
+    revision: f9e44c814b77203eaa57a6bdbbd535f21ede1415
+    evidence:
+      github_stars: 13266
+      huggingface_downloads: 2638704
+      paper_citations: 1068
+    evidence_urls:
+      github: https://api.github.com/repos/facebookresearch/dinov2
+      huggingface: https://huggingface.co/api/models/facebook/dinov2-base
+      citations: https://api.openalex.org/works/W4366208220
+
+  clap:
+    kind: model
+    role: audio_full_embedding_teacher_and_text_alignment
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: verified
+    license: CC0-1.0
+    source_url: https://github.com/LAION-AI/CLAP
+    model_id: laion/clap-htsat-unfused
+    revision: 8fa0f1c6d0433df6e97c127f64b2a1d6c0dcda8a
+    evidence:
+      github_stars: 2255
+      huggingface_downloads: 821281
+      paper_citations: 419
+    evidence_urls:
+      github: https://api.github.com/repos/LAION-AI/CLAP
+      huggingface: https://huggingface.co/api/models/laion/clap-htsat-unfused
+      citations: https://api.openalex.org/works/W4372266552
+
+  qwen2_5_0_5b_instruct:
+    kind: model
+    role: initial_frozen_caption_decoder
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: verified
+    license: Apache-2.0
+    source_url: https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct
+    model_id: Qwen/Qwen2.5-0.5B-Instruct
+    revision: 7ae557604adf67be50417f59c2c2f167def9a775
+    evidence:
+      github_stars: null
+      huggingface_downloads: 6849090
+      paper_citations: 101
+    evidence_urls:
+      huggingface: https://huggingface.co/api/models/Qwen/Qwen2.5-0.5B-Instruct
+      citations: https://api.openalex.org/works/W4405655184
+
+  audioset_strong_annotations:
+    kind: dataset
+    role: audio_delta_timing_and_event_labels
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: verified
+    license: CC-BY-4.0-labels
+    source_url: https://research.google.com/audioset/download_strong.html
+    evidence:
+      github_stars: null
+      huggingface_downloads: null
+      paper_citations: 3053
+    evidence_urls:
+      citations: https://api.openalex.org/works/W2593116425
+    restriction: Raw YouTube media needs a separate availability and rights audit.
+
+  something_something_v2:
+    kind: dataset
+    role: video_delta_representation_and_action_caption
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: verified
+    license: Qualcomm-Research-Use-Agreement
+    source_url: https://www.qualcomm.com/developer/software/something-something-v-2-dataset
+    evidence:
+      github_stars: null
+      huggingface_downloads: null
+      paper_citations: 1183
+    evidence_urls:
+      citations: https://api.crossref.org/works/10.1109/ICCV.2017.622
+    restriction: Official account and acceptance of the research-use agreement are required.
+
+  nextqa_annotations:
+    kind: dataset
+    role: independent_human_video_qa
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: verified
+    license: MIT-annotations
+    source_url: https://github.com/doc-doc/NExT-QA
+    evidence:
+      github_stars: 189
+      huggingface_downloads: null
+      paper_citations: 303
+    evidence_urls:
+      github: https://api.github.com/repos/doc-doc/NExT-QA
+      citations: https://api.crossref.org/works/10.1109/CVPR46437.2021.00965
+    restriction: VidOR-derived media terms and availability require a separate audit.
+
+  activitynet_captions:
+    kind: dataset
+    role: timestamped_video_section_caption_candidate
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: conditional
+    license: academic-fair-use-source-terms
+    source_url: https://activity-net.org/challenges/2022/tasks/anet_captioning.html
+    evidence:
+      github_stars: null
+      huggingface_downloads: null
+      paper_citations: 1012
+    evidence_urls:
+      citations: https://api.crossref.org/works/10.1109/ICCV.2017.83
+    restriction: Exact annotation and upstream video terms must be approved before use.
+
+  desed:
+    kind: dataset
+    role: audio_synthetic_timing_fixture_candidate
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: conditional
+    license: subset-dependent
+    source_url: https://github.com/turpaultn/DESED
+    evidence:
+      github_stars: 155
+      huggingface_downloads: null
+      paper_citations: 231
+    evidence_urls:
+      github: https://api.github.com/repos/turpaultn/DESED
+      citations: https://api.openalex.org/works/W2959539607
+    restriction: Approve individual synthetic and recorded subsets only after license audit.
+
+  youcook2_annotations:
+    kind: dataset
+    role: video_section_caption_candidate
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: conditional
+    license: annotations-only-official-terms
+    source_url: https://youcook2.eecs.umich.edu/download
+    evidence:
+      github_stars: null
+      huggingface_downloads: null
+      paper_citations: 509
+    evidence_urls:
+      citations: https://api.openalex.org/works/W2952132648
+    restriction: Videos are not distributed; upstream media rights and availability require audit.
+
+  kinetics_geb_plus:
+    kind: dataset
+    role: video_boundary_caption_watchlist
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: false
+    license_status: unknown
+    license: unknown
+    source_url: https://github.com/Yuxuan-W/GEB-plus
+    evidence:
+      github_stars: 49
+      huggingface_downloads: null
+      paper_citations: 30
+    evidence_urls:
+      github: https://api.github.com/repos/Yuxuan-W/GEB-plus
+      citations: https://www.semanticscholar.org/paper/efbc6f6d983a189831106aaa8f3f4bd3b4ad8b15
+    restriction: Excluded from core evidence under the adoption policy.
+
+  clevr_change:
+    kind: dataset
+    role: image_delta_development_only
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: false
+    license_status: unknown
+    license: unknown
+    source_url: https://github.com/Seth-Park/RobustChangeCaptioning
+    evidence:
+      github_stars: 52
+      huggingface_downloads: null
+      paper_citations: 19
+    evidence_urls:
+      github: https://api.github.com/repos/Seth-Park/RobustChangeCaptioning
+      citations: https://api.openalex.org/works/W2938232066
+    restriction: May be used only as a development fixture, never as core evidence.
