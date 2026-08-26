@@ -52,6 +52,10 @@ Matched evaluation arms:
 The claim requires arm 3 to preserve full-input accuracy and beat arms 2 and 4 on the untouched test
 split. Caption concatenation, answer-string overlap, or QA built from caption text is invalid.
 
+Current gate: blocked. NExT-QA media and embedding caches are ready, and medium SSV2 reconstruction
+transfers with a small positive signal, but the delta-caption projector does not yet beat zero and
+shuffled delta. Running final QA now would not isolate useful caption feedback.
+
 ## R4 — Video commit timing
 
 SSV2 does not contain internal caption boundaries. This phase remains blocked until an established,

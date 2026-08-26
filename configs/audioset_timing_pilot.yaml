@@ -1,0 +1,32 @@
+seed: 42
+device: cuda:0
+cpu_threads: 4
+sample_rate: 48000
+chunk_seconds: 1.0
+chunks_per_clip: 10
+train_clips: 32
+validation_clips: 16
+embedding_batch_size: 16
+train_annotations: /mnt/nfs_shared_data/dataset/deltaomni/audioset_strong/annotations/audioset_train_strong.tsv
+validation_annotations: /mnt/nfs_shared_data/dataset/deltaomni/audioset_strong/annotations/audioset_eval_strong.tsv
+train_audio_roots:
+  - /mnt/nfs_shared_data/dataset/omniembed/audioset/balanced_train_segments/audio
+  - /mnt/nfs_shared_data/dataset/omniembed/audioset/unbalanced_train_segments/audio
+  - /mnt/nfs_shared_data/dataset/omniembed/audioset_unbalanced_more/audio
+validation_audio_roots:
+  - /mnt/nfs_shared_data/dataset/omniembed/audioset/eval_segments/audio
+cache_root: intermediates/cache/audioset_timing_pilot
+output_root: outputs/real_pilots/audioset_timing
+model:
+  embedding_dim: 512
+  embedding_tokens: 1
+  delta_tokens: 1
+  hidden_dim: 128
+  num_heads: 8
+training:
+  batch_size: 8
+  learning_rate: 0.001
+  max_steps: 100
+  checkpoint_interval_steps: 25
+  max_grad_norm: 1.0
+

@@ -10,8 +10,8 @@ classes:
   - Moving [something] up
   - Pushing [something] from left to right
   - Pushing [something] from right to left
-train_per_class: 8
-validation_per_class: 4
+train_per_class: 32
+validation_per_class: 8
 frames_per_clip: 4
 embedding_batch_size: 16
 cache_root: intermediates/cache/ssv2_pilot
@@ -23,15 +23,15 @@ model:
   hidden_dim: 256
   num_heads: 8
 training:
-  batch_size: 4
+  batch_size: 8
   learning_rate: 0.001
-  max_steps: 100
-  checkpoint_interval_steps: 25
+  max_steps: 300
+  checkpoint_interval_steps: 75
   max_grad_norm: 1.0
 probe:
-  steps: 200
+  steps: 300
   learning_rate: 0.01
-  hidden_dim: 64
+  hidden_dim: 128
 caption:
   prompt: "Classify the visual change. Answer with exactly one action label: "
   targets:
@@ -40,9 +40,9 @@ caption:
     - "pushing left to right"
     - "pushing right to left"
   learning_rate: 0.005
-  max_steps: 120
-  checkpoint_interval_steps: 40
+  max_steps: 160
+  checkpoint_interval_steps: 80
   ranking_weight: 1.0
-  train_delta_encoder: false
-  delta_learning_rate: 0.0
-  reconstruction_weight: 0.0
+  train_delta_encoder: true
+  delta_learning_rate: 0.00001
+  reconstruction_weight: 1.0

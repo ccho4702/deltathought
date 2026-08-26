@@ -50,6 +50,9 @@ class CaptionPilotConfig:
     max_steps: int
     checkpoint_interval_steps: int
     ranking_weight: float
+    train_delta_encoder: bool
+    delta_learning_rate: float
+    reconstruction_weight: float
 
 
 @dataclass(frozen=True)
@@ -129,6 +132,9 @@ def load_pilot_config(path: Path) -> PilotConfig:
             max_steps=int(caption["max_steps"]),
             checkpoint_interval_steps=int(caption["checkpoint_interval_steps"]),
             ranking_weight=float(caption["ranking_weight"]),
+            train_delta_encoder=bool(caption["train_delta_encoder"]),
+            delta_learning_rate=float(caption["delta_learning_rate"]),
+            reconstruction_weight=float(caption["reconstruction_weight"]),
         ),
     )
 

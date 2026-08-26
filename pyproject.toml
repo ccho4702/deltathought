@@ -36,10 +36,8 @@ deltaomni-backbone-smoke = "deltaomni.backbone_smoke:main"
 deltaomni-language-smoke = "deltaomni.language_smoke:main"
 deltaomni-ssv2-pilot = "deltaomni.ssv2_pilot:main"
 deltaomni-ssv2-caption-pilot = "deltaomni.ssv2_caption_pilot:main"
-
-
-
-
+deltaomni-audioset-timing-pilot = "deltaomni.audioset_timing_pilot:main"
+deltaomni-nextqa-reconstruction-pilot = "deltaomni.nextqa_reconstruction_pilot:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/deltaomni"]
 

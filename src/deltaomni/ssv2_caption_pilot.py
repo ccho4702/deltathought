@@ -62,6 +62,32 @@ def _conditioning(codec: ModalityDeltaCodec, full: Tensor) -> tuple[Tensor, Tens
     return anchor, slots, last_delta
 
 
+def _conditioning_train(
+    codec: ModalityDeltaCodec,
+    full: Tensor,
+) -> tuple[Tensor, Tensor, Tensor, Tensor]:
+    anchor = full[:, 0]
+    previous = anchor
+    slots = torch.zeros(
+        full.shape[0],
+        codec.delta_encoder.queries.shape[0],
+        full.shape[-1],
+        device=full.device,
+    )
+    losses = []
+    last_delta = None
+    for time_index in range(1, full.shape[1]):
+        current = full[:, time_index]
+        last_delta = codec.delta_encoder(previous, current)
+        slots = codec.accumulator(slots, last_delta)
+        reconstructed = codec.reconstructor(anchor, slots)
+        losses.append(F.smooth_l1_loss(reconstructed, current))
+        previous = current
+    if last_delta is None:
+        raise ValueError("Caption pilot requires at least two frames")
+    return anchor, slots, last_delta, torch.stack(losses).mean()
+
+
 @torch.no_grad()
 def _evaluate_condition(
     backend: FrozenCausalCaptionBackend,
@@ -112,8 +138,9 @@ def run(
     codec.load_state_dict(payload["model"])
     train_anchor, train_delta, train_last = _conditioning(codec, train_full)
     validation_anchor, validation_delta, validation_last = _conditioning(codec, validation_full)
-    del codec, train_full, validation_full
-    torch.cuda.empty_cache()
+    if not config.caption.train_delta_encoder:
+        del codec, train_full, validation_full
+        torch.cuda.empty_cache()
 
     backend = FrozenCausalCaptionBackend(
         backbone_config.language,
@@ -123,10 +150,22 @@ def run(
     )
     _set_seed(config.seed)
     projector = DeltaLanguageProjector(config.model.embedding_dim, backend.hidden_size).to(device)
-    optimizer = torch.optim.AdamW(
-        projector.parameters(),
-        lr=config.caption.learning_rate,
-    )
+    projector_parameters = list(projector.parameters())
+    trainable_parameters = list(projector_parameters)
+    parameter_groups: list[dict[str, Any]] = [
+        {"params": projector_parameters, "lr": config.caption.learning_rate}
+    ]
+    if config.caption.train_delta_encoder:
+        codec_parameters = [
+            *codec.delta_encoder.parameters(),
+            *codec.accumulator.parameters(),
+            *codec.reconstructor.parameters(),
+        ]
+        trainable_parameters.extend(codec_parameters)
+        parameter_groups.append(
+            {"params": codec_parameters, "lr": config.caption.delta_learning_rate}
+        )
+    optimizer = torch.optim.AdamW(parameter_groups)
     initial = _evaluate_condition(
         backend,
         projector,
@@ -142,8 +181,18 @@ def run(
     for step in range(1, config.caption.max_steps + 1):
         index = (config.seed * 97 + step * 17) % train_anchor.shape[0]
         projector.train()
+        reconstruction_loss = torch.zeros((), device=device)
+        if config.caption.train_delta_encoder:
+            codec.train()
+            anchor, delta_state, _, reconstruction_loss = _conditioning_train(
+                codec,
+                train_full[index : index + 1],
+            )
+        else:
+            anchor = train_anchor[index : index + 1]
+            delta_state = train_delta[index : index + 1]
         optimizer.zero_grad(set_to_none=True)
-        prefix = projector(train_anchor[index : index + 1], train_delta[index : index + 1], 1)
+        prefix = projector(anchor, delta_state, 1)
         candidate_losses = torch.stack(
             [
                 backend.caption_loss(prefix, config.caption.prompt, target)
@@ -153,9 +202,13 @@ def run(
         label = train_labels[index].view(1)
         caption_loss = candidate_losses[label].squeeze(0)
         ranking_loss = F.cross_entropy((-candidate_losses).unsqueeze(0), label)
-        loss = caption_loss + config.caption.ranking_weight * ranking_loss
+        loss = (
+            caption_loss
+            + config.caption.ranking_weight * ranking_loss
+            + config.caption.reconstruction_weight * reconstruction_loss
+        )
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(projector.parameters(), 1.0)
+        torch.nn.utils.clip_grad_norm_(trainable_parameters, 1.0)
         optimizer.step()
         if step % 10 == 0 or step == config.caption.max_steps:
             elapsed = time.perf_counter() - started
@@ -163,6 +216,7 @@ def run(
             print(
                 f"caption_step={step}/{config.caption.max_steps} loss={float(loss):.5f} "
                 f"rank={float(ranking_loss):.5f} "
+                f"recon={float(reconstruction_loss):.5f} "
                 f"elapsed={elapsed:.1f}s eta={eta:.1f}s",
                 flush=True,
             )
@@ -172,10 +226,18 @@ def run(
                 {
                     "step": step,
                     "projector": projector.state_dict(),
+                    "codec": codec.state_dict() if config.caption.train_delta_encoder else None,
                     "optimizer": optimizer.state_dict(),
                     "delta_checkpoint": str(delta_checkpoint),
                 },
             )
+
+    if config.caption.train_delta_encoder:
+        train_anchor, train_delta, train_last = _conditioning(codec, train_full)
+        validation_anchor, validation_delta, validation_last = _conditioning(
+            codec,
+            validation_full,
+        )
 
     normal = _evaluate_condition(
         backend,
@@ -241,6 +303,7 @@ def run(
     report = {
         "run_id": run_id,
         "delta_run_id": delta_summary["run_id"],
+        "train_delta_encoder": config.caption.train_delta_encoder,
         "status": "signal" if passed else "inconclusive",
         "metrics": metrics,
         "checks": checks,

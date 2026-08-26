@@ -67,6 +67,41 @@ real clips or joint delta/projector alignment is required later; hyperparameter 
 
 ## Immediate next pilot
 
-Add clip-end commit prediction on cached SSV2 embeddings, then prepare a small NExT-QA media subset
-for independent downstream evaluation. AudioSet media needs an indexed ID audit before use; avoid
-scanning its very large shared directories directly.
+AudioSet Strong timing pilot is now complete. The direct official ID mapping is
+`<youtube-id>_<start-ms>` → `<youtube-id>_<start-ms>_<start+10000-ms>.flac`; shared raw directories
+are accessed by exact filename without scanning.
+
+- Calibrated learned exact P/R/F1: `0.493 / 0.600 / 0.541`
+- Raw CLAP change-threshold exact F1: `0.507`
+- Fixed-final exact F1: `0.423`
+- Learned / raw / fixed ±1-second F1: `0.803 / 0.788 / 0.524`
+
+Interpretation: a small real timing signal exists; the learned policy narrowly beats both baselines
+at exact and ±1-second tolerance. No tuning beyond train-split threshold calibration was performed.
+
+## Medium SSV2 scaling and NExT-QA transfer
+
+Scaling from 32 to 128 train clips and from 100 to 300 reconstruction updates improved held-out SSV2
+MSE from `2.8247` to `2.5756`, with retrieval R@1 rising from `0.375` to `0.396`. The raw-pooled
+baseline remained stronger at `2.0680`.
+
+The small codec failed zero-shot NExT-QA reconstruction, but the medium codec changed this result:
+
+- Medium learned / anchor / last / shuffled MSE: `3.3988 / 3.4567 / 3.4507 / 3.5932`
+- Learned / anchor retrieval R@1: `0.1875 / 0.1429`
+- Raw-pooled MSE: `2.7399`
+
+This is evidence that modestly more real training improves cross-domain preservation, although the
+simple raw-pooled delta remains substantially stronger.
+
+## Caption alignment decision
+
+Projector-only accuracy improved with more clips but zero/shuffled causality failed. Jointly training
+the delta encoder with caption ranking initially destroyed reconstruction; a 500× lower codec LR and
+full reconstruction guard prevented collapse, but held-out caption accuracy stayed at chance and
+shuffled delta remained competitive. Current delta-to-frozen-Qwen semantic alignment is therefore a
+confirmed blocker, not a passed stage.
+
+Immediate next architecture work: replace the single pooled linear projector with a change-aware
+resampler trained first against text embeddings, then caption CE. Final NExT-QA evaluation remains
+deferred until normal generated captions beat zero and shuffled delta on held-out media.

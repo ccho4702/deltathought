@@ -1,0 +1,12 @@
+seed: 42
+device: cuda:0
+validation_clips: 16
+frames_per_clip: 8
+embedding_batch_size: 16
+annotations: /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/val.csv
+video_mapping: /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/map_vid_vidorID.json
+media_root: /mnt/nfs_shared_data/dataset/NExT-QA/processed_for_gcg/NExTVideo
+ssv2_config: configs/ssv2_pilot.yaml
+cache_root: intermediates/cache/nextqa_reconstruction_pilot
+output_root: outputs/real_pilots/nextqa_reconstruction
+

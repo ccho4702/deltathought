@@ -29,3 +29,13 @@ def test_ssv2_selection_is_balanced_and_deterministic() -> None:
     assert first == second
     assert [record["class_index"] for record in first] == [0, 0, 1, 1]
     assert len({record["id"] for record in first}) == 4
+
+
+def test_medium_pilot_scales_data_before_hyperparameter_tuning() -> None:
+    small = load_pilot_config(Path("configs/ssv2_pilot.yaml"))
+    medium = load_pilot_config(Path("configs/ssv2_pilot_medium.yaml"))
+
+    assert medium.train_per_class == 4 * small.train_per_class
+    assert medium.validation_per_class == 2 * small.validation_per_class
+    assert medium.training.max_steps == 3 * small.training.max_steps
+    assert medium.model == small.model
