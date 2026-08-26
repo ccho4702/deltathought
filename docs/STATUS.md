@@ -15,6 +15,18 @@ execution shape was bitwise exact for both modalities; changed real-media blocks
 Thinker-only peak reserved memory was 17.03 GiB on one RTX A6000. These token counts are measured at
 the configured video resolution and are not universal fixed budgets.
 
+Canonical episode schema v2 is now fixed in Python and JSON Schema. It always exposes nullable
+image/video/audio assets, modality/joint captions, transcript/subtitle/OCR, timed events, QA,
+dialogue history, and provenance. Null means the source does not provide the field; an empty array
+means the field is defined but has no episode items. Dataset revisions are immutable and written as
+atomic split JSONL files with a checksummed manifest.
+
+The first full conversion, NExT-QA `official-2021-ann-1955d89e-schema-v2`, completed in 132.5s:
+5,440 episodes and 47,692 QA items, with official train/validation/test counts and no cross-split
+source-group overlap. All 5,440 video files were present; 5,406 contain audio streams and 34 record
+audio as null. Manifest SHA-256 is
+`86b448318d98e01bd61f315af917a176e3b32b96658b2babec5331dcbad9c7a6`.
+
 Last updated: 2026-08-26
 
 ## Completed
