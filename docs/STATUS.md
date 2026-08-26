@@ -198,3 +198,27 @@ delta training (about 50 sampled epochs) and actual Qwen caption generation.
 Every zero/last/worst-cross-label-shuffle accuracy gate passed. The performance-oriented A6000
 preset is now 65 tokens; the 17-token preset remains the lower-memory balanced option. Retained
 aggregate: `outputs/reports/layout_causal_caption_results.json`.
+
+## Fifteen-update long-horizon causal captions
+
+The 65-token fidelity layout was extended from eight to sixteen uniformly sampled frames. Every
+transition emits 65 delta tokens, so each clip processes 15×65 = 975 delta-token updates while the
+accumulator remains fixed at 65 tokens. Captioning receives only one discrete semantic token; it
+never sees the full DINO anchor or a concatenated delta history.
+
+Three independent 800-step BF16/DDP runs used 2,048 train clips, 256 validation clips, and 256
+untouched-test clips. Twelve originally selected clips had fewer than 16 decoded frames. The
+deterministic same-class reselection changed 5 train, 2 validation, and 7 test IDs; the two extra
+held-out changes arise because validation/test are sliced from one ordered held-out pool. Hard delta
+validation accuracy was
+`0.730 / 0.762 / 0.719`; untouched test was `0.727 / 0.797 / 0.770` (mean `0.764`). Test zero was
+`0.250`, last-only was `0.266 / 0.266 / 0.258`, and worst cross-label shuffle was at most `0.105`.
+
+The frozen-Qwen adapter was then trained for 800 steps per seed. Untouched-test candidate accuracy
+was `0.727 / 0.789 / 0.773`; unrestricted greedy exact match was
+`0.727 / 0.785 / 0.773` (mean `0.762`). Five of 768 generations were outside the four target strings.
+This is direct generation evidence that the end-to-end path survives 15 accumulated updates, but it
+remains a bounded four-class classification-as-caption experiment. The 8- and 16-frame clip sets are
+not perfectly identical because of the short-clip replacements, so their small mean difference is
+not evidence of improvement or degradation. Retained aggregate:
+`outputs/reports/layout65_16frame_causal_caption_results.json`.

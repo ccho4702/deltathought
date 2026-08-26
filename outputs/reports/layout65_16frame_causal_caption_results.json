@@ -1,0 +1,83 @@
+{
+  "caption": {
+    "candidate_test_accuracy": {
+      "2718": 0.7734375,
+      "314": 0.7890625,
+      "42": 0.7265625,
+      "mean": 0.7630208333333334
+    },
+    "greedy_test": {
+      "accuracy": {
+        "2718": 0.7734375,
+        "314": 0.78515625,
+        "42": 0.7265625,
+        "mean": 0.76171875
+      },
+      "count_per_seed": 256,
+      "out_of_target_set": {
+        "2718": 0,
+        "314": 4,
+        "42": 1,
+        "total": 5
+      },
+      "summary_sha256": {
+        "2718": "75833a5c03400ce1e02554b19852b7c7d9554817e537a11066919035294e821a",
+        "314": "740009f94c8c4eff2db5cf8ad209f687fa90cf68442fe07417aed365018c22d3",
+        "42": "bfb05c3381cad5d7631a8f522c00723abe712916a2457d6371973448f13c654d"
+      }
+    },
+    "model": "Qwen/Qwen2.5-7B",
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "semantic_tokens_to_qwen": 1,
+    "training_steps_per_seed": 800
+  },
+  "code_revision": "847e8d179740575a2f0aa2933dcdaa5be96f13d5",
+  "data": {
+    "classes": 4,
+    "changed_ids_vs_8frame_split": {
+      "test": 7,
+      "train": 5,
+      "validation": 2
+    },
+    "frames_per_clip": 16,
+    "ineligible_original_clips": 12,
+    "manifest_sha256": "54699940ff708bab1d6879c73e2a58f50065e2ae56f58ecfe557bbbd9214698a",
+    "minimum_decoded_frames": 16,
+    "test_clips": 256,
+    "train_clips": 2048,
+    "validation_clips": 256
+  },
+  "delta": {
+    "delta_tokens_per_transition": 65,
+    "fixed_accumulated_state_tokens": 65,
+    "hard_accuracy": {
+      "test": {
+        "2718": 0.76953125,
+        "314": 0.796875,
+        "42": 0.7265625,
+        "mean": 0.7643229166666666
+      },
+      "validation": {
+        "2718": 0.71875,
+        "314": 0.76171875,
+        "42": 0.73046875,
+        "mean": 0.7369791666666666
+      }
+    },
+    "pairwise_transitions_per_clip": 15,
+    "processed_delta_token_updates_per_clip": 975,
+    "training_steps_per_seed": 800
+  },
+  "hardware": {
+    "global_delta_batch_size": 128,
+    "gpus": 4,
+    "name": "NVIDIA RTX A6000",
+    "precision": "bfloat16"
+  },
+  "limitations": [
+    "The targets are four fixed SSV2 action labels, not open-vocabulary descriptive captions.",
+    "The 16-frame split replaces 12 short clips and is not perfectly paired with the 8-frame split.",
+    "This experiment does not test learned caption timing, unbounded memory, or downstream QA."
+  ],
+  "schema": "deltaomni.layout65_16frame_causal_caption.v1"
+}

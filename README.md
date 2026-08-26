@@ -48,7 +48,8 @@ Audio and video may commit at the same timestamp or at different timestamps.
 - pinned DINOv2, CLAP, and frozen Qwen delta-prefix integration on CPU.
 - explicit accumulated-delta versus last-delta-only reconstruction/caption/QA ablations.
 - layout-aware video deltas that preserve the DINO CLS token and pool the 16×16 patch grid in 2D.
-- four- and eight-frame real-video accumulation with multi-seed zero/last/shuffle controls.
+- four-, eight-, and sixteen-frame real-video accumulation with multi-seed zero/last/shuffle
+  controls.
 
 Synthetic checks and bounded real-pilot metrics are reported separately in
 `docs/REAL_PILOT_RESULTS.md`.
@@ -57,6 +58,12 @@ The selected one-token semantic bottleneck passed all preregistered delta gates 
 test seeds. Hard-token accuracy was `0.762 / 0.707 / 0.785`; learned reconstruction MSE was
 `1.9894 / 1.9902 / 1.9905`, compared with raw-pooled `2.0053`. A semantic-token-only frozen
 Qwen2.5-7B bridge generated exact captions at `0.758 / 0.715 / 0.789`; full anchors were hidden.
+
+The performance-oriented 65-token layout was also trained for 800 steps on 16-frame clips. Each
+clip applies 15 consecutive 65-token deltas to a fixed 65-token state (975 delta-token updates; no
+sequence concatenation), then compresses that state to one semantic token for frozen Qwen2.5-7B.
+Untouched-test delta accuracy was `0.727 / 0.797 / 0.770`, and unrestricted greedy caption exact
+match was `0.727 / 0.785 / 0.773` across three seeds.
 
 ## Commands
 
@@ -76,6 +83,13 @@ uv run torchrun --standalone --nproc-per-node=4 -m deltaomni.ssv2_semantic_token
   --config configs/ssv2_semantic_token_layout65_a6000.yaml
 uv run torchrun --standalone --nproc-per-node=4 -m deltaomni.ssv2_semantic_caption_pilot \
   --config configs/ssv2_semantic_caption_layout65_a6000.yaml
+uv run torchrun --standalone --nproc-per-node=4 -m deltaomni.ssv2_semantic_token_pilot \
+  --config configs/ssv2_semantic_token_layout65_16frames_a6000.yaml
+uv run torchrun --standalone --nproc-per-node=4 -m deltaomni.ssv2_semantic_caption_pilot \
+  --config configs/ssv2_semantic_caption_layout65_16frames_a6000.yaml
+uv run python -m deltaomni.ssv2_generated_caption_eval \
+  --config configs/ssv2_semantic_caption_layout65_16frames_test_a6000.yaml \
+  --checkpoint-run-id layout65-16f-caption-seed42-validation
 uv run deltaomni-report
 ```
 

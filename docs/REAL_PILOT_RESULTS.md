@@ -160,3 +160,27 @@ The 65-token fidelity layout improves both reconstruction and mean real caption 
 modest throughput/memory cost, so it is the performance-oriented A6000 preset. The 17-token layout
 remains the balanced compression preset. All claims remain limited to the four selected SSV2 action
 classes and seven accumulated frame-to-frame deltas.
+
+## Sixteen-frame full training and generated captions
+
+The fidelity experiment was extended to 16 frames and 15 causal updates without increasing the
+persistent state: each pairwise update has 65 tokens, 975 update tokens are processed per clip, and
+the final accumulated state still has 65 tokens. Each of three seeds trained for 800 steps with
+global batch 128, corresponding to 102,400 sampled clips (about 50 sampled epochs over 2,048 unique
+training clips). Peak reserved memory was about 7.33 GiB per A6000 rank and throughput was about
+346–348 clips/s after embedding preparation.
+
+Hard semantic accuracy was `0.730 / 0.762 / 0.719` on validation and
+`0.727 / 0.797 / 0.770` on untouched test. Every zero, last-only, cross-label-shuffle, codebook, and
+matched reconstruction gate passed. A one-semantic-token adapter into frozen Qwen2.5-7B then reached
+test candidate accuracy `0.727 / 0.789 / 0.773`. Full greedy decoding over every test clip, without
+providing candidate strings, reached exact match `0.727 / 0.785 / 0.773`; only 5/768 outputs fell
+outside the four target strings.
+
+This supports a scoped empirical claim: the fixed-size delta state remains usable after 15 updates
+and can drive the tested action-label captions. It does not establish open-vocabulary descriptive
+captioning, longer unbounded memory, learned caption timing, or downstream QA benefit. Twelve
+original clips failed the 16-frame eligibility constraint; deterministic reselection changed 5
+train, 2 validation, and 7 test IDs because validation/test share an ordered held-out pool.
+Comparison with the eight-frame run is therefore not a perfectly paired ablation. Retained aggregate:
+`outputs/reports/layout65_16frame_causal_caption_results.json`.
