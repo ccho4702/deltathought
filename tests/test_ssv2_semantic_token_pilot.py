@@ -47,3 +47,15 @@ def test_semantic_token_model_freezes_inactive_caption_and_policy_modules() -> N
     assert not any(
         parameter.requires_grad for parameter in model.codec.caption_decoder.parameters()
     )
+
+
+def test_layout_configs_preserve_fixed_state_sizes() -> None:
+    balanced = load_config(Path("configs/ssv2_semantic_token_layout17_a6000.yaml"))
+    fidelity = load_config(Path("configs/ssv2_semantic_token_layout65_a6000.yaml"))
+    balanced_source = load_pilot_config(balanced.ssv2_config)
+    fidelity_source = load_pilot_config(fidelity.ssv2_config)
+
+    assert balanced.initialization == fidelity.initialization == "random"
+    assert balanced_source.model.delta_tokens == 17
+    assert fidelity_source.model.delta_tokens == 65
+    assert balanced_source.frames_per_clip == fidelity_source.frames_per_clip == 8

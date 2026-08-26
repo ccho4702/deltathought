@@ -22,7 +22,12 @@ from torch.nn.parallel import DistributedDataParallel
 
 from deltaomni.distributed import DistributedContext, distributed_context, reduce_sums, unwrap
 from deltaomni.evaluation import cross_label_permutations
-from deltaomni.model import ModalityDeltaCodec
+from deltaomni.model import (
+    ModalityDeltaCodec,
+    PairDeltaEncoder,
+    expand_embedding_delta,
+    pool_embedding_delta,
+)
 from deltaomni.semantic_tokens import SemanticTokenBottleneck, assignment_statistics
 from deltaomni.ssv2_pilot import load_pilot_config, prepare_embeddings
 from deltaomni.ssv2_semantic_pilot import load_config as load_semantic_config
@@ -243,18 +248,14 @@ class SemanticTokenModel(nn.Module):
             slots = self.codec.accumulator(slots, delta)
             learned = self.codec.reconstructor(anchor, slots)
             last = self.codec.reconstructor(anchor, delta)
-            raw_difference = current - anchor
-            pooled = F.adaptive_avg_pool1d(
-                raw_difference.transpose(1, 2),
+            pooled = pool_embedding_delta(
+                current - anchor,
                 self.codec.delta_encoder.queries.shape[0],
             )
-            expanded = F.interpolate(
+            raw_pooled = anchor + expand_embedding_delta(
                 pooled,
-                size=current.shape[1],
-                mode="linear",
-                align_corners=False,
+                current.shape[1],
             )
-            raw_pooled = anchor + expanded.transpose(1, 2)
             sums["learned"] += (learned - current).double().square().sum()
             sums["anchor"] += (anchor - current).double().square().sum()
             sums["last"] += (last - current).double().square().sum()
@@ -531,7 +532,10 @@ def run(
         if config.initialization == "semantic_checkpoint":
             source_run_id, source_checkpoint = _latest_semantic_checkpoint(config)
             source = torch.load(source_checkpoint, map_location="cpu", weights_only=False)
-            codec.load_state_dict(source["codec"])
+            incompatible = codec.load_state_dict(source["codec"], strict=False)
+            allowed_missing = {"reconstructor.direct_projection.weight"}
+            if set(incompatible.missing_keys) - allowed_missing or incompatible.unexpected_keys:
+                raise ValueError(f"Incompatible semantic checkpoint: {incompatible}")
         bottleneck = SemanticTokenBottleneck(
             input_dim=ssv2.model.embedding_dim,
             hidden_dim=config.token.hidden_dim,
@@ -682,6 +686,7 @@ def run(
                                 "config_signature": signature,
                                 "rng_states": rng_states,
                                 "world_size": context.world_size,
+                                "delta_algorithm": PairDeltaEncoder.ALGORITHM_VERSION,
                             },
                         )
             training_seconds = time.perf_counter() - started
