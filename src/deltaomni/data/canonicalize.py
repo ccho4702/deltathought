@@ -92,6 +92,7 @@ def write_canonical_dataset(
     preprocessing_config_sha256: str,
     code_revision: str,
     source_files: Sequence[Mapping[str, Any]],
+    exclusions: Mapping[str, Any] | None = None,
 ) -> Path:
     _validate_dataset(dataset, revision, episodes_by_split)
     target = output_root / dataset / revision
@@ -122,6 +123,8 @@ def write_canonical_dataset(
             "source_files": [dict(value) for value in source_files],
             "splits": split_manifest,
         }
+        if exclusions is not None:
+            manifest["exclusions"] = dict(exclusions)
         manifest_path = temporary / "manifest.json"
         manifest_path.write_text(
             json.dumps(manifest, indent=2, sort_keys=True, default=str),

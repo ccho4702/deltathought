@@ -1,0 +1,21 @@
+dataset: audioset_strong
+dataset_revision: official-strong-2021-ann-29e4646c-schema-v2
+resource_name: audioset_strong_annotations
+chunk_seconds: 2.0
+nominal_duration_seconds: 10.0
+cpu_workers: 8
+annotations:
+  train: /mnt/nfs_shared_data/dataset/deltaomni/audioset_strong/annotations/audioset_train_strong.tsv
+  validation: /mnt/nfs_shared_data/dataset/deltaomni/audioset_strong/annotations/audioset_eval_strong.tsv
+labels: /mnt/nfs_shared_data/dataset/deltaomni/audioset_strong/annotations/mid_to_display_name.tsv
+media_roots:
+  train:
+    - /mnt/nfs_shared_data/dataset/omniembed/audioset/balanced_train_segments/audio
+    - /mnt/nfs_shared_data/dataset/omniembed/audioset/unbalanced_train_segments/audio
+    - /mnt/nfs_shared_data/dataset/omniembed/audioset_unbalanced_more/audio
+  validation:
+    - /mnt/nfs_shared_data/dataset/omniembed/audioset/eval_segments/audio
+license_record: null
+cache_root: intermediates/cache/canonical_audioset_strong/official-strong-2021-ann-29e4646c-schema-v2
+output_root: intermediates/canonical
+report_path: outputs/reports/canonical_audioset_strong_v2.json

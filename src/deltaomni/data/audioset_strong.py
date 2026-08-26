@@ -91,11 +91,14 @@ def build_episode(
     dataset_revision: str,
     chunk_seconds: float,
     provenance_report: dict[str, object],
+    timeline_duration_seconds: float | None = None,
 ) -> CanonicalEpisode:
     require_approved(provenance_report, ["audioset_strong_annotations"])
     if media.duration_seconds is None:
         raise ValueError("AudioSet audio requires duration")
-    duration = media.duration_seconds
+    duration = timeline_duration_seconds or media.duration_seconds
+    if duration < media.duration_seconds:
+        raise ValueError("AudioSet timeline cannot be shorter than media")
     captions = tuple(
         CaptionAnnotation(
             caption_id=f"{clip_id}:{index}",
@@ -129,7 +132,7 @@ def build_episode(
         dataset_revision=dataset_revision,
         split=split,
         source_id=clip_id,
-        source_group_id=f"youtube:{clip_id.split('_')[0]}",
+        source_group_id=f"youtube:{clip_id.rsplit('_', 1)[0]}",
         media=MediaBundle(image=None, video=None, audio=media),
         duration_seconds=duration,
         temporal_blocks=temporal_grid(duration, chunk_seconds),

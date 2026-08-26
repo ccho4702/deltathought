@@ -24,6 +24,7 @@
     "preprocessing_config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "code_revision": {"type": "string", "minLength": 1},
     "source_files": {"type": "array", "items": {"type": "object"}},
+    "exclusions": {"type": "object"},
     "splits": {
       "type": "object",
       "additionalProperties": false,
