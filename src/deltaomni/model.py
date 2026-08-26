@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 import torch
@@ -10,8 +11,61 @@ from deltaomni.config import LossConfig, ModelConfig
 from deltaomni.types import Modality
 
 
+def _square_side(token_count: int) -> int | None:
+    if token_count <= 0:
+        return None
+    side = math.isqrt(token_count)
+    return side if side * side == token_count else None
+
+
+def pool_embedding_delta(difference: Tensor, output_tokens: int) -> Tensor:
+    """Pool CLS-plus-grid embeddings in 2D, with a sequence fallback."""
+    input_side = _square_side(difference.shape[1] - 1)
+    output_side = _square_side(output_tokens - 1)
+    if input_side is not None and output_side is not None:
+        class_delta = difference[:, :1]
+        patches = (
+            difference[:, 1:]
+            .transpose(1, 2)
+            .reshape(difference.shape[0], difference.shape[2], input_side, input_side)
+        )
+        pooled = F.adaptive_avg_pool2d(patches, (output_side, output_side))
+        patch_delta = pooled.flatten(2).transpose(1, 2)
+        return torch.cat((class_delta, patch_delta), dim=1)
+    return F.adaptive_avg_pool1d(difference.transpose(1, 2), output_tokens).transpose(1, 2)
+
+
+def expand_embedding_delta(delta: Tensor, output_tokens: int) -> Tensor:
+    """Expand CLS-plus-grid delta slots in 2D, with a sequence fallback."""
+    input_side = _square_side(delta.shape[1] - 1)
+    output_side = _square_side(output_tokens - 1)
+    if input_side is not None and output_side is not None:
+        class_delta = delta[:, :1]
+        patches = (
+            delta[:, 1:]
+            .transpose(1, 2)
+            .reshape(delta.shape[0], delta.shape[2], input_side, input_side)
+        )
+        expanded = F.interpolate(
+            patches,
+            size=(output_side, output_side),
+            mode="bilinear",
+            align_corners=False,
+        )
+        patch_delta = expanded.flatten(2).transpose(1, 2)
+        return torch.cat((class_delta, patch_delta), dim=1)
+    return F.interpolate(
+        delta.transpose(1, 2),
+        size=output_tokens,
+        mode="linear",
+        align_corners=False,
+    ).transpose(1, 2)
+
+
 class PairDeltaEncoder(nn.Module):
     """Compress an anchor/current embedding pair into ordered delta slots."""
+
+    ALGORITHM_VERSION = "pair-delta-layout-aware-direct-reconstruction-v4"
 
     def __init__(self, config: ModelConfig) -> None:
         super().__init__()
@@ -48,7 +102,8 @@ class PairDeltaEncoder(nn.Module):
         queries = self.queries.unsqueeze(0).expand(anchor.shape[0], -1, -1)
         attended, _ = self.attention(queries, pair_tokens, pair_tokens, need_weights=False)
         magnitude = (current - anchor).square().mean(dim=(1, 2), keepdim=True).sqrt()
-        direct = self.direct_projection((current - anchor).mean(dim=1)).unsqueeze(1)
+        pooled_difference = pool_embedding_delta(current - anchor, self.queries.shape[0])
+        direct = self.direct_projection(pooled_difference)
         learned_residual = self.output_norm(queries + attended) * magnitude
         return direct + 0.1 * learned_residual
 
@@ -87,6 +142,12 @@ class FullEmbeddingReconstructor(nn.Module):
         self.token_positions = nn.Parameter(
             torch.randn(config.embedding_tokens, config.embedding_dim) * 0.02
         )
+        self.direct_projection = nn.Linear(
+            config.embedding_dim,
+            config.embedding_dim,
+            bias=False,
+        )
+        nn.init.eye_(self.direct_projection.weight)
         self.update = nn.Sequential(
             nn.Linear(config.embedding_dim, config.hidden_dim),
             nn.GELU(),
@@ -102,7 +163,8 @@ class FullEmbeddingReconstructor(nn.Module):
         )
         global_delta = accumulated_delta.mean(dim=1, keepdim=True)
         update_input = attended + global_delta + self.token_positions.unsqueeze(0)
-        return anchor + self.update(update_input)
+        direct_update = expand_embedding_delta(accumulated_delta, anchor.shape[1])
+        return anchor + self.direct_projection(direct_update) + 0.1 * self.update(update_input)
 
 
 class CommitAndLengthHead(nn.Module):

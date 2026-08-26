@@ -5,7 +5,7 @@ models:
     resource_name: dinov2
     model_id: facebook/dinov2-base
     revision: f9e44c814b77203eaa57a6bdbbd535f21ede1415
-    delta_tokens: 8
+    delta_tokens: 17
   audio:
     resource_name: clap
     model_id: laion/clap-htsat-unfused

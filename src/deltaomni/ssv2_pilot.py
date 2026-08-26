@@ -21,7 +21,12 @@ from torch.nn import functional as F
 
 from deltaomni.backbones import DinoV2EmbeddingBackend, load_backbone_config
 from deltaomni.config import ModelConfig
-from deltaomni.model import ModalityDeltaCodec
+from deltaomni.model import (
+    ModalityDeltaCodec,
+    PairDeltaEncoder,
+    expand_embedding_delta,
+    pool_embedding_delta,
+)
 from deltaomni.provenance import audit as audit_provenance
 from deltaomni.train_sanity import _atomic_json, _set_seed
 
@@ -174,9 +179,7 @@ def select_records(
             record for record in candidates if (Path(str(record["id"])).name == str(record["id"]))
         ]
         candidates.sort(
-            key=lambda record: hashlib.sha256(
-                f"{seed}:{record['id']}".encode()
-            ).hexdigest()
+            key=lambda record: hashlib.sha256(f"{seed}:{record['id']}".encode()).hexdigest()
         )
         if len(candidates) < count_per_class:
             raise ValueError(f"Only {len(candidates)} records found for {template}")
@@ -397,12 +400,11 @@ def _evaluate_reconstruction(codec: ModalityDeltaCodec, full: Tensor) -> dict[st
         last_reconstructed = codec.reconstructor(anchor, delta)
         shuffled = codec.reconstructor(anchor, slots.roll(1, dims=0))
         raw_difference = current - anchor
-        pooled = F.adaptive_avg_pool1d(
-            raw_difference.transpose(1, 2),
+        pooled = pool_embedding_delta(
+            raw_difference,
             codec.delta_encoder.queries.shape[0],
         )
-        expanded = F.interpolate(pooled, size=current.shape[1], mode="linear", align_corners=False)
-        raw_reconstructed = anchor + expanded.transpose(1, 2)
+        raw_reconstructed = anchor + expand_embedding_delta(pooled, current.shape[1])
         learned_errors.append((reconstructed - current).square().mean())
         anchor_errors.append((anchor - current).square().mean())
         last_errors.append((last_reconstructed - current).square().mean())
@@ -419,6 +421,13 @@ def _evaluate_reconstruction(codec: ModalityDeltaCodec, full: Tensor) -> dict[st
         "last_delta_mse": float(torch.stack(last_errors).mean()),
         "shuffled_delta_mse": float(torch.stack(shuffled_errors).mean()),
         "raw_pooled_delta_mse": float(torch.stack(raw_pooled_errors).mean()),
+        "per_step": {
+            "learned_mse": [float(error) for error in learned_errors],
+            "anchor_mse": [float(error) for error in anchor_errors],
+            "last_delta_mse": [float(error) for error in last_errors],
+            "shuffled_delta_mse": [float(error) for error in shuffled_errors],
+            "raw_pooled_delta_mse": [float(error) for error in raw_pooled_errors],
+        },
     }
 
 
@@ -520,6 +529,7 @@ def train_and_evaluate(config: PilotConfig, manifest: dict[str, Any]) -> dict[st
                 run_dir / "checkpoints" / f"step-{step:06d}.pt",
                 {
                     "step": step,
+                    "delta_algorithm": PairDeltaEncoder.ALGORITHM_VERSION,
                     "model": codec.state_dict(),
                     "optimizer": optimizer.state_dict(),
                     "torch_rng_state": torch.random.get_rng_state(),
@@ -564,6 +574,7 @@ def train_and_evaluate(config: PilotConfig, manifest: dict[str, Any]) -> dict[st
         "anchor_action_accuracy": anchor_accuracy,
         "delta_state_action_accuracy": delta_accuracy,
         "chance_accuracy": 1 / len(config.classes),
+        "per_step": validation["per_step"],
     }
     checks = {
         "reconstruction_loss_decreased": (

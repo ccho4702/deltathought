@@ -11,7 +11,7 @@ def test_backbone_specs_are_pinned_and_provenance_approved() -> None:
     assert len(config.video.revision) == 40
     assert len(config.audio.revision) == 40
     assert config.audio.sample_rate == 48_000
-    assert config.video.delta_tokens == 8
+    assert config.video.delta_tokens == 17
     assert config.audio.delta_tokens == 1
     assert config.language.model_id == "Qwen/Qwen2.5-0.5B-Instruct"
     assert config.language_smoke_anchor_tokens == 16

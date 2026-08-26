@@ -40,6 +40,7 @@ deltaomni-audioset-timing-pilot = "deltaomni.audioset_timing_pilot:main"
 deltaomni-nextqa-reconstruction-pilot = "deltaomni.nextqa_reconstruction_pilot:main"
 deltaomni-ssv2-resampler-pilot = "deltaomni.ssv2_resampler_pilot:main"
 deltaomni-ssv2-semantic-pilot = "deltaomni.ssv2_semantic_pilot:main"
+deltaomni-delta-setting-sweep = "deltaomni.delta_setting_sweep:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/deltaomni"]
 

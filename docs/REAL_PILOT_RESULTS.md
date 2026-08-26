@@ -85,6 +85,29 @@ Candidate-caption accuracy remained near chance and did not beat zero/shuffled c
 Decision: semantic delta learning works at this scale; the current frozen-Qwen prefix bridge does
 not. Switch to an explicit soft/discrete semantic-token interface before more free-form caption work.
 
+## Layout-aware delta compression
+
+The original direct path pooled the ordered DINO token sequence in one dimension. A layout-aware
+path now preserves the CLS token and pools the 16×16 patch grid in two dimensions. All comparisons
+used the same 128/32 SSV2 split, 100 reconstruction warmup steps, 150 joint semantic steps, semantic
+weight `2.0`, and seeds 42/43/44.
+
+The balanced 17-token grid reached four-frame MSE `1.6273±0.0020`, beating both its raw pooled
+baseline `1.6877` and the flat 32-token learned result `1.6698`. Normal semantic accuracy was `50.0%`
+versus shuffled `43.8%`. The fidelity 65-token grid reached `1.1372±0.0017` versus raw `1.1898`,
+last-only `2.0400`, and shuffled `4.0566`.
+
+On eight uniformly sampled frames, the codecs accumulated seven consecutive deltas from the first
+full anchor. The 17-token grid reached `1.5236±0.0032`; the 65-token grid reached
+`1.0728±0.0012`. Both beat raw pooled, last-only, and shuffled controls in every seed. For the
+65-token codec, normal semantic accuracy was `46.9%`, shuffled was `40.6%`, and zero was chance at
+`25.0%`. Its zero-shot NExT-QA reconstruction MSE was `1.5755`, slightly better than raw pooled
+`1.5996`.
+
+Decision: use 17 tokens (`CLS + 4×4`) as the balanced video default and 65 tokens (`CLS + 8×8`)
+as the fidelity preset. The result verifies ordered accumulated-delta preservation; it is not yet a
+free-form caption or QA result.
+
 ## Retained runs
 
 - Reconstruction: `ssv2-pilot-20260826T001020Z-ede4e09b`
@@ -97,5 +120,7 @@ not. Switch to an explicit soft/discrete semantic-token interface before more fr
 - Change-aware resampler: `ssv2-resampler-20260826T004910Z-8859fd13`
 - Semantic delta: `ssv2-semantic-20260826T005359Z-bfc8fcc5`
 - Semantic resampler retry: `ssv2-resampler-20260826T005656Z-e04f0df0`
+- Layout multi-seed: `delta-setting-sweep-20260826T133356Z-57d2ddaf`
+- Layout eight-frame multi-seed: `delta-setting-sweep-20260826T133608Z-e6a14402`
 
 Generated caches, checkpoints, and raw metrics remain project-local and are excluded from Git.

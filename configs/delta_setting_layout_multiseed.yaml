@@ -1,0 +1,14 @@
+seeds: [42, 43, 44]
+device: cuda:0
+ssv2_config: configs/ssv2_pilot_medium.yaml
+nextqa_config: configs/nextqa_reconstruction_pilot.yaml
+delta_tokens: [17, 65]
+semantic_weights: [2.0]
+batch_size: 8
+reconstruction_steps: 100
+joint_steps: 150
+reconstruction_learning_rate: 0.001
+joint_learning_rate: 0.0001
+reconstruction_weight: 1.0
+selection_mse_tolerance: 0.10
+output_root: outputs/real_pilots/delta_setting_layout_multiseed

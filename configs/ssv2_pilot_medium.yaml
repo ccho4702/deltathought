@@ -19,7 +19,7 @@ output_root: outputs/real_pilots/ssv2
 model:
   embedding_dim: 768
   embedding_tokens: 257
-  delta_tokens: 8
+  delta_tokens: 17
   hidden_dim: 256
   num_heads: 8
 training:

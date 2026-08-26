@@ -133,3 +133,29 @@ zero `0.313`. The current Qwen bridge still fails.
 Decision: preserve reconstruction, timing, cross-domain, and semantic-head positive signals. Stop
 open-ended caption/QA work with the current bridge. Next test should use a soft or discrete semantic
 token interface before attempting free-form caption generation.
+
+## Layout-aware delta setting
+
+The video direct path now preserves DINO's CLS token and pools its 16×16 patch tokens as a 2D grid.
+The previous flat 32-token path remains a measured baseline, but is no longer the default. Three-seed
+joint reconstruction/semantic sweeps selected two explicit presets at semantic weight `2.0`:
+
+- Balanced: 17 tokens (`CLS + 4×4`), about 15× fewer tokens than the 257-token full embedding.
+- Fidelity: 65 tokens (`CLS + 8×8`), about 4× fewer tokens.
+
+Four-frame SSV2 validation:
+
+- Balanced learned/raw/last/shuffled MSE: `1.6273 / 1.6877 / 2.2311 / 3.5734`.
+- Fidelity learned/raw/last/shuffled MSE: `1.1372 / 1.1898 / 2.0400 / 4.0566`.
+- Balanced semantic normal/shuffled: `0.500 / 0.438`; fidelity: `0.438 / 0.375`.
+
+Eight-frame SSV2 validation, which accumulates seven consecutive deltas from the first full anchor:
+
+- Balanced learned/raw/last/shuffled MSE: `1.5236 / 1.5802 / 2.2588 / 3.2516`.
+- Fidelity learned/raw/last/shuffled MSE: `1.0728 / 1.1236 / 2.1650 / 3.6990`.
+- Fidelity semantic normal/shuffled: `0.469 / 0.406` with zero at chance `0.250`.
+- Fidelity NExT-QA diagnostic MSE: learned `1.5755` versus raw pooled `1.5996`.
+
+Every candidate above passed all three seeds. The default video setting is the balanced 17-token
+grid; use 65 tokens when reconstruction fidelity has priority. This establishes delta preservation
+and ordered accumulation, but does not resolve the frozen-Qwen caption bridge.

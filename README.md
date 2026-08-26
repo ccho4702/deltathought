@@ -5,9 +5,10 @@ separate from `omnithought`.
 
 ## Current verified scope
 
-The implementation currently operates on deterministic embedding fixtures. They exist only to test
-code paths; they are not a new research dataset and are never used as real-method evidence. No
-external media or model has been downloaded.
+Deterministic embedding fixtures cover functional and resume behavior. Bounded real-media pilots
+use existing shared Something-Something V2, AudioSet, and NExT-QA data with pinned DINOv2-base and
+CLAP revisions. The fixtures are not a new research dataset and are never used as real-method
+evidence.
 
 For each modality `m`:
 
@@ -42,8 +43,11 @@ Audio and video may commit at the same timestamp or at different timestamps.
 - a provenance gate that blocks unverified datasets and models.
 - pinned DINOv2, CLAP, and frozen Qwen delta-prefix integration on CPU.
 - explicit accumulated-delta versus last-delta-only reconstruction/caption/QA ablations.
+- layout-aware video deltas that preserve the DINO CLS token and pool the 16×16 patch grid in 2D.
+- four- and eight-frame real-video accumulation with multi-seed zero/last/shuffle controls.
 
-These are synthetic functional checks, not real audio/video performance claims.
+Synthetic checks and bounded real-pilot metrics are reported separately in
+`docs/REAL_PILOT_RESULTS.md`.
 
 The typed delta-to-Qwen projector is implemented and trainable. It has passed a real frozen-Qwen
 gradient/loss smoke, but it is not yet semantically aligned on real scoped caption data.
@@ -61,13 +65,15 @@ uv run deltaomni-data-audit --allow-not-ready
 uv run deltaomni-annotation-audit
 uv run deltaomni-backbone-smoke
 uv run deltaomni-language-smoke
+uv run deltaomni-delta-setting-sweep --config configs/delta_setting_sweep.yaml
 uv run deltaomni-report
 ```
 
 Configuration is centralized in `configs/`. Retained runs are stored under unique IDs in
 `outputs/sanity/` and `logs/experiments/`.
 
-Official raw datasets and annotations live only under `/mnt/nfs_shared_data/dataset/deltaomni`.
+Official raw datasets and annotations live under `/mnt/nfs_shared_data/dataset`; DeltaOmni-owned
+annotation copies are under `/mnt/nfs_shared_data/dataset/deltaomni`.
 Canonical manifests, extracted/derived media, embedding caches, checkpoints, logs, and reports stay
 under this project in `intermediates/`, `outputs/`, and `logs/`.
 
