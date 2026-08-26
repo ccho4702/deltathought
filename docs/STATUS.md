@@ -159,3 +159,26 @@ Eight-frame SSV2 validation, which accumulates seven consecutive deltas from the
 Every candidate above passed all three seeds. The default video setting is the balanced 17-token
 grid; use 65 tokens when reconstruction fidelity has priority. This establishes delta preservation
 and ordered accumulation, but does not resolve the frozen-Qwen caption bridge.
+
+## A6000 causal semantic-token and caption result
+
+The earlier one-position shuffle on class-grouped manifests was not a valid counterfactual; it
+retained the same class for most examples. The corrected path uses repeated balanced cross-label
+permutations, three seeds, separate search-validation and untouched-test splits, and explicit
+zero/last/raw-pooled controls.
+
+The selected 16-code, one-token setting uses usage-entropy weight `0.05`. On untouched test, hard
+semantic accuracy was `0.762 / 0.707 / 0.785`; zero was `0.250`, last-only was
+`0.293 / 0.254 / 0.289`, and worst shuffle was `0.102 / 0.125 / 0.078`. Effective code counts were
+`6.04 / 4.25 / 4.46`. Learned MSE was `1.9894 / 1.9902 / 1.9905`, beating its matched raw-pooled
+baseline `2.0053` in every seed.
+
+Only the semantic token—not the full anchor—was projected into frozen pinned Qwen2.5-7B. Target-CE/
+ranking weights `5/2` produced untouched-test candidate and greedy exact caption accuracy
+`0.758 / 0.715 / 0.789`. Zero stayed `0.250`, last-only was `0.293 / 0.242 / 0.281`, and worst
+shuffle was `0.109 / 0.125 / 0.074`. This passes the bounded four-class caption gate; broader
+open-vocabulary captions, independent QA benefit, and learned internal video timing remain open.
+
+Runtime was 4× RTX A6000, BF16, and global delta batch `128`. This host requires NCCL P2P, shared
+memory, and IB transports disabled with loopback socket transport. The representative profile was
+about `498` samples/s on four GPUs versus `110` on one GPU.

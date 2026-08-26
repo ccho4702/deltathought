@@ -19,3 +19,7 @@ models:
     smoke_anchor_tokens: 16
     smoke_steps: 8
     smoke_learning_rate: 0.01
+  language_large:
+    resource_name: qwen2_5_7b_instruct
+    model_id: Qwen/Qwen2.5-7B-Instruct
+    revision: a09a35458c702b33eeacc393d103063234e8bc28

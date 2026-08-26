@@ -68,6 +68,25 @@ resources:
       huggingface: https://huggingface.co/api/models/Qwen/Qwen2.5-0.5B-Instruct
       citations: https://api.openalex.org/works/W4405655184
 
+  qwen2_5_7b_instruct:
+    kind: model
+    role: scaled_frozen_semantic_token_caption_decoder
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: verified
+    license: Apache-2.0
+    source_url: https://huggingface.co/Qwen/Qwen2.5-7B-Instruct
+    model_id: Qwen/Qwen2.5-7B-Instruct
+    revision: a09a35458c702b33eeacc393d103063234e8bc28
+    evidence:
+      github_stars: null
+      huggingface_downloads: 11266813
+      paper_citations: 101
+    evidence_urls:
+      huggingface: https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct
+      citations: https://api.openalex.org/works/W4405655184
+
   audioset_strong_annotations:
     kind: dataset
     role: audio_delta_timing_and_event_labels

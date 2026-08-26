@@ -10,6 +10,10 @@ use existing shared Something-Something V2, AudioSet, and NExT-QA data with pinn
 CLAP revisions. The fixtures are not a new research dataset and are never used as real-method
 evidence.
 
+A scaled four-class SSV2 study uses 512 training, 64 search-validation, and 64 untouched-test clips
+per class with eight frames per clip. Its scope is these direction-sensitive actions, not general
+video understanding.
+
 For each modality `m`:
 
 ```text
@@ -49,8 +53,10 @@ Audio and video may commit at the same timestamp or at different timestamps.
 Synthetic checks and bounded real-pilot metrics are reported separately in
 `docs/REAL_PILOT_RESULTS.md`.
 
-The typed delta-to-Qwen projector is implemented and trainable. It has passed a real frozen-Qwen
-gradient/loss smoke, but it is not yet semantically aligned on real scoped caption data.
+The selected one-token semantic bottleneck passed all preregistered delta gates on three untouched
+test seeds. Hard-token accuracy was `0.762 / 0.707 / 0.785`; learned reconstruction MSE was
+`1.9894 / 1.9902 / 1.9905`, compared with raw-pooled `2.0053`. A semantic-token-only frozen
+Qwen2.5-7B bridge generated exact captions at `0.758 / 0.715 / 0.789`; full anchors were hidden.
 
 ## Commands
 
@@ -66,6 +72,10 @@ uv run deltaomni-annotation-audit
 uv run deltaomni-backbone-smoke
 uv run deltaomni-language-smoke
 uv run deltaomni-delta-setting-sweep --config configs/delta_setting_sweep.yaml
+uv run torchrun --standalone --nproc-per-node=4 -m deltaomni.ssv2_semantic_token_pilot \
+  --config configs/ssv2_semantic_token_selected_a6000.yaml
+uv run torchrun --standalone --nproc-per-node=4 -m deltaomni.ssv2_semantic_caption_pilot \
+  --config configs/ssv2_semantic_caption_a6000.yaml
 uv run deltaomni-report
 ```
 

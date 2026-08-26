@@ -39,3 +39,10 @@ def test_medium_pilot_scales_data_before_hyperparameter_tuning() -> None:
     assert medium.validation_per_class == 2 * small.validation_per_class
     assert medium.training.max_steps == 3 * small.training.max_steps
     assert medium.model == small.model
+
+
+def test_scaled_semantic_split_reserves_an_untouched_test_set() -> None:
+    config = load_pilot_config(Path("configs/ssv2_semantic_scaled.yaml"))
+
+    assert config.validation_per_class >= 64
+    assert config.test_per_class >= 64

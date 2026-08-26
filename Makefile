@@ -1,4 +1,4 @@
-.PHONY: setup lint test sanity verify provenance data-audit annotation-audit backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot report verify-all
+.PHONY: setup lint test sanity verify provenance data-audit annotation-audit backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot report verify-all
 
 setup:
 	uv sync --group dev
@@ -38,6 +38,23 @@ ssv2-caption-pilot:
 
 ssv2-semantic-pilot:
 	uv run deltaomni-ssv2-semantic-pilot --config configs/ssv2_semantic_pilot.yaml
+
+ssv2-semantic-token-pilot:
+	uv run deltaomni-ssv2-semantic-token-pilot \
+		--config configs/ssv2_semantic_token_selected_a6000.yaml
+
+ssv2-semantic-token-4gpu:
+	uv run torchrun --standalone --nproc-per-node=4 \
+		-m deltaomni.ssv2_semantic_token_pilot \
+		--config configs/ssv2_semantic_token_selected_a6000.yaml
+
+ssv2-delta-search:
+	uv run deltaomni-ssv2-delta-search --config configs/ssv2_delta_search_a6000.yaml
+
+ssv2-semantic-caption:
+	uv run torchrun --standalone --nproc-per-node=4 \
+		-m deltaomni.ssv2_semantic_caption_pilot \
+		--config configs/ssv2_semantic_caption_a6000.yaml
 
 ssv2-resampler-pilot:
 	uv run deltaomni-ssv2-resampler-pilot --config configs/ssv2_resampler_pilot.yaml

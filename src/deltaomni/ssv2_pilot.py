@@ -51,6 +51,7 @@ class ProbeConfig:
 class CaptionPilotConfig:
     prompt: str
     targets: tuple[str, ...]
+    batch_size: int
     learning_rate: float
     max_steps: int
     checkpoint_interval_steps: int
@@ -72,6 +73,7 @@ class PilotConfig:
     classes: tuple[str, ...]
     train_per_class: int
     validation_per_class: int
+    test_per_class: int
     frames_per_clip: int
     embedding_batch_size: int
     cache_root: Path
@@ -105,6 +107,7 @@ def load_pilot_config(path: Path) -> PilotConfig:
         classes=tuple(str(value) for value in raw["classes"]),
         train_per_class=int(raw["train_per_class"]),
         validation_per_class=int(raw["validation_per_class"]),
+        test_per_class=int(raw.get("test_per_class", 0)),
         frames_per_clip=int(raw["frames_per_clip"]),
         embedding_batch_size=int(raw["embedding_batch_size"]),
         cache_root=resolve(raw["cache_root"]),
@@ -133,6 +136,7 @@ def load_pilot_config(path: Path) -> PilotConfig:
         caption=CaptionPilotConfig(
             prompt=str(caption["prompt"]),
             targets=tuple(str(value) for value in caption["targets"]),
+            batch_size=int(caption.get("batch_size", 8)),
             learning_rate=float(caption["learning_rate"]),
             max_steps=int(caption["max_steps"]),
             checkpoint_interval_steps=int(caption["checkpoint_interval_steps"]),
@@ -225,22 +229,35 @@ def prepare_embeddings(
             config.classes,
             config.train_per_class,
             config.seed,
-        ),
-        "validation": select_records(
-            _records(config.validation_annotations),
-            config.classes,
-            config.validation_per_class,
-            config.seed + 1,
-        ),
+        )
     }
+    held_out = select_records(
+        _records(config.validation_annotations),
+        config.classes,
+        config.validation_per_class + config.test_per_class,
+        config.seed + 1,
+    )
+    selected_by_split["validation"] = []
+    if config.test_per_class:
+        selected_by_split["test"] = []
+    for class_index in range(len(config.classes)):
+        class_records = [
+            record for record in held_out if int(record["class_index"]) == class_index
+        ]
+        selected_by_split["validation"].extend(class_records[: config.validation_per_class])
+        if config.test_per_class:
+            selected_by_split["test"].extend(class_records[config.validation_per_class :])
     source_ids = {
         split: {str(record["id"]) for record in records}
         for split, records in selected_by_split.items()
     }
-    if source_ids["train"] & source_ids["validation"]:
-        raise ValueError("SSV2 pilot train/validation IDs overlap")
+    split_names = tuple(source_ids)
+    for left_index, left in enumerate(split_names):
+        for right in split_names[left_index + 1 :]:
+            if source_ids[left] & source_ids[right]:
+                raise ValueError(f"SSV2 pilot {left}/{right} IDs overlap")
 
-    pending: list[tuple[str, dict[str, Any], Path, list[Image.Image], dict[str, Any]]] = []
+    pending: list[tuple[str, dict[str, Any], Path]] = []
     started = time.perf_counter()
     total = sum(len(records) for records in selected_by_split.values())
     completed = 0
@@ -254,12 +271,15 @@ def prepare_embeddings(
             media_path = config.media_dir / f"{source_id}.webm"
             if not media_path.is_file():
                 raise FileNotFoundError(media_path)
-            images, media_info = _decode_uniform_frames(media_path, config.frames_per_clip)
-            pending.append((split, record, media_path, images, media_info))
+            pending.append((split, record, media_path))
             completed += 1
-            elapsed = time.perf_counter() - started
-            eta = elapsed / completed * (total - completed)
-            print(f"decode={completed}/{total} elapsed={elapsed:.1f}s eta={eta:.1f}s", flush=True)
+            if completed % 100 == 0 or completed == total:
+                elapsed = time.perf_counter() - started
+                eta = elapsed / completed * (total - completed)
+                print(
+                    f"discover={completed}/{total} elapsed={elapsed:.1f}s eta={eta:.1f}s",
+                    flush=True,
+                )
 
     if pending:
         backbone_config = load_backbone_config(backbone_config_path)
@@ -271,42 +291,54 @@ def prepare_embeddings(
             torch.device(config.device),
             audit_provenance(provenance_path),
         )
-        flat_images = [image for _, _, _, images, _ in pending for image in images]
-        encoded_batches = []
-        for start in range(0, len(flat_images), config.embedding_batch_size):
-            batch = flat_images[start : start + config.embedding_batch_size]
-            encoded_batches.append(backend.encode(batch).cpu())
-            done = min(start + len(batch), len(flat_images))
-            print(f"encode_frames={done}/{len(flat_images)}", flush=True)
-        encoded = torch.cat(encoded_batches)
-        offset = 0
-        for split, record, media_path, images, media_info in pending:
-            count = len(images)
-            clip_embeddings = encoded[offset : offset + count]
-            offset += count
-            if clip_embeddings.shape[1:] != (
-                config.model.embedding_tokens,
-                config.model.embedding_dim,
-            ):
-                raise ValueError(f"Unexpected DINO embedding shape: {clip_embeddings.shape}")
-            cache_path = config.cache_root / split / f"{record['id']}.pt"
-            _atomic_torch_save(
-                cache_path,
-                {
-                    "schema": "deltaomni.ssv2_embedding.v1",
-                    "source_id": str(record["id"]),
-                    "split": split,
-                    "class_index": int(record["class_index"]),
-                    "template": record["template"],
-                    "label": record["label"],
-                    "media_path": str(media_path),
-                    "media_sha256": _sha256(media_path),
-                    "media": media_info,
-                    "model_id": backbone_config.video.model_id,
-                    "model_revision": backbone_config.video.revision,
-                    "embeddings": clip_embeddings.to(torch.float16),
-                },
-            )
+        clips_per_batch = max(1, config.embedding_batch_size // config.frames_per_clip)
+        encoded_clips = 0
+        for start in range(0, len(pending), clips_per_batch):
+            clip_batch = pending[start : start + clips_per_batch]
+            decoded = [
+                (*item, *_decode_uniform_frames(item[2], config.frames_per_clip))
+                for item in clip_batch
+            ]
+            flat_images = [image for *_, images, _ in decoded for image in images]
+            encoded = backend.encode(flat_images).cpu()
+            offset = 0
+            for split, record, media_path, images, media_info in decoded:
+                count = len(images)
+                clip_embeddings = encoded[offset : offset + count]
+                offset += count
+                if clip_embeddings.shape[1:] != (
+                    config.model.embedding_tokens,
+                    config.model.embedding_dim,
+                ):
+                    raise ValueError(f"Unexpected DINO embedding shape: {clip_embeddings.shape}")
+                cache_path = config.cache_root / split / f"{record['id']}.pt"
+                _atomic_torch_save(
+                    cache_path,
+                    {
+                        "schema": "deltaomni.ssv2_embedding.v1",
+                        "source_id": str(record["id"]),
+                        "split": split,
+                        "class_index": int(record["class_index"]),
+                        "template": record["template"],
+                        "label": record["label"],
+                        "media_path": str(media_path),
+                        "media_sha256": _sha256(media_path),
+                        "media": media_info,
+                        "model_id": backbone_config.video.model_id,
+                        "model_revision": backbone_config.video.revision,
+                        "embeddings": clip_embeddings.to(torch.float16),
+                    },
+                )
+                encoded_clips += 1
+            progress_interval = clips_per_batch * 8
+            if encoded_clips % progress_interval == 0 or encoded_clips == len(pending):
+                elapsed = time.perf_counter() - started
+                eta = elapsed / encoded_clips * (len(pending) - encoded_clips)
+                print(
+                    f"encode_clips={encoded_clips}/{len(pending)} "
+                    f"elapsed={elapsed:.1f}s eta={eta:.1f}s",
+                    flush=True,
+                )
 
     manifest = {
         "schema": "deltaomni.ssv2_pilot_manifest.v1",

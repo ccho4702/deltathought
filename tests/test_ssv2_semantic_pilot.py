@@ -9,4 +9,4 @@ def test_semantic_pilot_keeps_reconstruction_guard() -> None:
     assert config.semantic_weight > 0
     assert config.reconstruction_weight > 0
     assert config.max_steps <= 200
-
+    assert config.shuffle_repeats >= 8

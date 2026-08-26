@@ -30,6 +30,7 @@ class BackboneConfig:
     video: BackboneSpec
     audio: BackboneSpec
     language: BackboneSpec
+    language_large: BackboneSpec
     language_smoke_anchor_tokens: int
     language_smoke_steps: int
     language_smoke_learning_rate: float
@@ -56,6 +57,7 @@ def load_backbone_config(path: Path) -> BackboneConfig:
         video=spec("video"),
         audio=spec("audio"),
         language=spec("language"),
+        language_large=spec("language_large"),
         language_smoke_anchor_tokens=int(raw["models"]["language"]["smoke_anchor_tokens"]),
         language_smoke_steps=int(raw["models"]["language"]["smoke_steps"]),
         language_smoke_learning_rate=float(

@@ -41,6 +41,9 @@ deltaomni-nextqa-reconstruction-pilot = "deltaomni.nextqa_reconstruction_pilot:m
 deltaomni-ssv2-resampler-pilot = "deltaomni.ssv2_resampler_pilot:main"
 deltaomni-ssv2-semantic-pilot = "deltaomni.ssv2_semantic_pilot:main"
 deltaomni-delta-setting-sweep = "deltaomni.delta_setting_sweep:main"
+deltaomni-ssv2-semantic-token-pilot = "deltaomni.ssv2_semantic_token_pilot:main"
+deltaomni-ssv2-delta-search = "deltaomni.ssv2_delta_search:main"
+deltaomni-ssv2-semantic-caption = "deltaomni.ssv2_semantic_caption_pilot:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/deltaomni"]
 

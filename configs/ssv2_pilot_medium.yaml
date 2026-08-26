@@ -34,6 +34,7 @@ probe:
   hidden_dim: 128
 caption:
   prompt: "Classify the visual change. Answer with exactly one action label: "
+  batch_size: 16
   targets:
     - "moving down"
     - "moving up"

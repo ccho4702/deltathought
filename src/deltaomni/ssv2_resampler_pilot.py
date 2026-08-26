@@ -16,6 +16,7 @@ from torch import Tensor
 from torch.nn import functional as F
 
 from deltaomni.backbones import load_backbone_config
+from deltaomni.evaluation import cross_label_permutations
 from deltaomni.language import ChangeAwareResampler, FrozenCausalCaptionBackend
 from deltaomni.model import ModalityDeltaCodec
 from deltaomni.provenance import audit as audit_provenance
@@ -34,12 +35,15 @@ class ResamplerPilotConfig:
     query_tokens: int
     num_heads: int
     temperature: float
+    alignment_batch_size: int
     alignment_steps: int
     alignment_learning_rate: float
     caption_steps: int
     caption_learning_rate: float
+    caption_batch_size: int
     caption_ranking_weight: float
     alignment_guard_weight: float
+    shuffle_repeats: int
     output_root: Path
 
 
@@ -59,12 +63,15 @@ def load_config(path: Path) -> ResamplerPilotConfig:
         query_tokens=int(raw["query_tokens"]),
         num_heads=int(raw["num_heads"]),
         temperature=float(raw["temperature"]),
+        alignment_batch_size=int(raw.get("alignment_batch_size", 32)),
         alignment_steps=int(raw["alignment_steps"]),
         alignment_learning_rate=float(raw["alignment_learning_rate"]),
         caption_steps=int(raw["caption_steps"]),
         caption_learning_rate=float(raw["caption_learning_rate"]),
+        caption_batch_size=int(raw.get("caption_batch_size", 8)),
         caption_ranking_weight=float(raw["caption_ranking_weight"]),
         alignment_guard_weight=float(raw["alignment_guard_weight"]),
+        shuffle_repeats=int(raw.get("shuffle_repeats", 4)),
         output_root=resolve(raw["output_root"]),
     )
 
@@ -110,18 +117,27 @@ def _caption_metrics(
     targets: tuple[str, ...],
 ) -> dict[str, float]:
     resampler.eval()
-    predictions = []
-    target_losses = []
-    for index in range(anchors.shape[0]):
-        prefix = resampler(anchors[index : index + 1], deltas[index : index + 1], 1)
-        losses = [float(backend.caption_loss(prefix, prompt, target)) for target in targets]
-        predictions.append(min(range(len(losses)), key=losses.__getitem__))
-        target_losses.append(losses[int(labels[index])])
-    predictions_tensor = torch.tensor(predictions, device=labels.device)
+    prefix = resampler(anchors, deltas, 1)
+    losses = backend.candidate_caption_losses(prefix, prompt, targets)
+    predictions = losses.argmin(dim=-1)
+    target_losses = losses.gather(1, labels[:, None]).squeeze(1)
     return {
-        "accuracy": float(predictions_tensor.eq(labels).float().mean()),
-        "target_nll": sum(target_losses) / len(target_losses),
+        "accuracy": float(predictions.eq(labels).float().mean()),
+        "target_nll": float(target_losses.mean()),
     }
+
+
+def _mean_condition_metrics(values: list[dict[str, float]]) -> dict[str, float]:
+    if not values:
+        raise ValueError("condition metrics cannot be empty")
+    result = {
+        key: sum(value[key] for value in values) / len(values)
+        for key in values[0]
+    }
+    accuracies = [value["accuracy"] for value in values]
+    result["accuracy_min"] = min(accuracies)
+    result["accuracy_max"] = max(accuracies)
+    return result
 
 
 def run(
@@ -185,7 +201,12 @@ def run(
     started = time.perf_counter()
     for step in range(1, config.alignment_steps + 1):
         generator = torch.Generator().manual_seed(config.seed * 1_000_003 + step)
-        indices = torch.randint(0, train_anchor.shape[0], (8,), generator=generator).to(device)
+        indices = torch.randint(
+            0,
+            train_anchor.shape[0],
+            (config.alignment_batch_size,),
+            generator=generator,
+        ).to(device)
         resampler.train()
         optimizer.zero_grad(set_to_none=True)
         prefix = resampler(train_anchor[indices], train_delta[indices], 1)
@@ -227,30 +248,45 @@ def run(
         text_embeddings,
         config.temperature,
     )
-    aligned_shuffled = _alignment_metrics(
-        resampler,
-        validation_anchor,
-        validation_delta.roll(1, dims=0),
+    shuffle_indices = cross_label_permutations(
         validation_labels,
-        text_embeddings,
-        config.temperature,
+        repeats=config.shuffle_repeats,
+        seed=config.seed + 20_000,
+    )
+    aligned_shuffled = _mean_condition_metrics(
+        [
+            _alignment_metrics(
+                resampler,
+                validation_anchor,
+                validation_delta[indices],
+                validation_labels,
+                text_embeddings,
+                config.temperature,
+            )
+            for indices in shuffle_indices
+        ]
     )
 
     optimizer = torch.optim.AdamW(resampler.parameters(), lr=config.caption_learning_rate)
     for step in range(1, config.caption_steps + 1):
-        index = (config.seed * 97 + step * 17) % train_anchor.shape[0]
-        label = train_labels[index].view(1)
+        generator = torch.Generator().manual_seed(config.seed * 2_000_003 + step)
+        indices = torch.randint(
+            0,
+            train_anchor.shape[0],
+            (config.caption_batch_size,),
+            generator=generator,
+        ).to(device)
+        label = train_labels[indices]
         resampler.train()
         optimizer.zero_grad(set_to_none=True)
-        prefix = resampler(train_anchor[index : index + 1], train_delta[index : index + 1], 1)
-        candidate_losses = torch.stack(
-            [
-                backend.caption_loss(prefix, ssv2.caption.prompt, target)
-                for target in ssv2.caption.targets
-            ]
+        prefix = resampler(train_anchor[indices], train_delta[indices], 1)
+        candidate_losses = backend.candidate_caption_losses(
+            prefix,
+            ssv2.caption.prompt,
+            ssv2.caption.targets,
         )
-        caption_loss = candidate_losses[label].squeeze(0)
-        ranking_loss = F.cross_entropy((-candidate_losses).unsqueeze(0), label)
+        caption_loss = candidate_losses.gather(1, label[:, None]).mean()
+        ranking_loss = F.cross_entropy(-candidate_losses, label)
         alignment_loss = F.cross_entropy(
             _alignment_logits(prefix, text_embeddings, config.temperature),
             label,
@@ -296,14 +332,19 @@ def run(
         ssv2.caption.prompt,
         ssv2.caption.targets,
     )
-    caption_shuffled = _caption_metrics(
-        backend,
-        resampler,
-        validation_anchor,
-        validation_delta.roll(1, dims=0),
-        validation_labels,
-        ssv2.caption.prompt,
-        ssv2.caption.targets,
+    caption_shuffled = _mean_condition_metrics(
+        [
+            _caption_metrics(
+                backend,
+                resampler,
+                validation_anchor,
+                validation_delta[indices],
+                validation_labels,
+                ssv2.caption.prompt,
+                ssv2.caption.targets,
+            )
+            for indices in shuffle_indices
+        ]
     )
     metrics = {
         "initial_alignment": initial_alignment,

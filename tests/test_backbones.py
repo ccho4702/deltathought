@@ -15,5 +15,14 @@ def test_backbone_specs_are_pinned_and_provenance_approved() -> None:
     assert config.audio.delta_tokens == 1
     assert config.language.model_id == "Qwen/Qwen2.5-0.5B-Instruct"
     assert config.language_smoke_anchor_tokens == 16
+    assert config.language_large.model_id == "Qwen/Qwen2.5-7B-Instruct"
+    assert len(config.language_large.revision) == 40
     assert config.language_smoke_steps == 8
-    require_approved(provenance, [config.video.resource_name, config.audio.resource_name])
+    require_approved(
+        provenance,
+        [
+            config.video.resource_name,
+            config.audio.resource_name,
+            config.language_large.resource_name,
+        ],
+    )

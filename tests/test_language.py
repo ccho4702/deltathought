@@ -1,6 +1,10 @@
 import torch
 
-from deltaomni.language import ChangeAwareResampler, DeltaLanguageProjector
+from deltaomni.language import (
+    ChangeAwareResampler,
+    DeltaLanguageProjector,
+    SemanticTokenLanguageAdapter,
+)
 
 
 def test_delta_language_prefix_preserves_full_then_delta_order() -> None:
@@ -31,3 +35,14 @@ def test_change_aware_resampler_compresses_full_and_delta_evidence() -> None:
     assert prefix.shape == (3, 2, 8)
     prefix.square().mean().backward()
     assert resampler.queries.grad is not None
+
+
+def test_semantic_token_adapter_does_not_reintroduce_full_anchor_tokens() -> None:
+    adapter = SemanticTokenLanguageAdapter(input_dim=8, language_dim=16)
+    tokens = torch.randn(4, 1, 8)
+
+    prefix = adapter(tokens, modality_index=1)
+
+    assert prefix.shape == (4, 1, 16)
+    prefix.sum().backward()
+    assert adapter.projection[1].weight.grad is not None

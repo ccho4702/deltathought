@@ -15,6 +15,7 @@ import yaml
 from torch import Tensor, nn
 from torch.nn import functional as F
 
+from deltaomni.evaluation import cross_label_permutations
 from deltaomni.model import ModalityDeltaCodec
 from deltaomni.ssv2_caption_pilot import _latest_delta_checkpoint
 from deltaomni.ssv2_pilot import _evaluate_reconstruction, _load_embeddings, load_pilot_config
@@ -32,6 +33,7 @@ class SemanticPilotConfig:
     checkpoint_interval_steps: int
     reconstruction_weight: float
     semantic_weight: float
+    shuffle_repeats: int
     output_root: Path
 
 
@@ -53,6 +55,7 @@ def load_config(path: Path) -> SemanticPilotConfig:
         checkpoint_interval_steps=int(raw["checkpoint_interval_steps"]),
         reconstruction_weight=float(raw["reconstruction_weight"]),
         semantic_weight=float(raw["semantic_weight"]),
+        shuffle_repeats=int(raw.get("shuffle_repeats", 8)),
         output_root=resolve(raw["output_root"]),
     )
 
@@ -104,6 +107,9 @@ def _semantic_metrics(
     head: SemanticHead,
     full: Tensor,
     labels: Tensor,
+    *,
+    shuffle_repeats: int,
+    seed: int,
 ) -> dict[str, float]:
     codec.eval()
     head.eval()
@@ -111,8 +117,21 @@ def _semantic_metrics(
     normal = float(logits.argmax(dim=-1).eq(labels).float().mean())
     zero = float(head(torch.zeros_like(slots)).argmax(dim=-1).eq(labels).float().mean())
     last = float(head(last_delta).argmax(dim=-1).eq(labels).float().mean())
-    shuffled = float(head(slots.roll(1, dims=0)).argmax(dim=-1).eq(labels).float().mean())
-    return {"normal": normal, "zero": zero, "last": last, "shuffled": shuffled}
+    shuffled_accuracies = []
+    for indices in cross_label_permutations(labels, repeats=shuffle_repeats, seed=seed):
+        shuffled_accuracies.append(
+            head(slots[indices]).argmax(dim=-1).eq(labels).float().mean()
+        )
+    shuffled = torch.stack(shuffled_accuracies)
+    return {
+        "normal": normal,
+        "zero": zero,
+        "last": last,
+        "shuffled": float(shuffled.mean()),
+        "shuffled_std": float(shuffled.std(unbiased=False)),
+        "shuffled_min": float(shuffled.min()),
+        "shuffled_max": float(shuffled.max()),
+    }
 
 
 def _atomic_torch_save(path: Path, value: dict[str, Any]) -> None:
@@ -145,7 +164,14 @@ def run(config_path: Path) -> dict[str, Any]:
     ]
     optimizer = torch.optim.AdamW(parameters, lr=config.learning_rate)
     initial_reconstruction = _evaluate_reconstruction(codec, validation_full)
-    initial_semantic = _semantic_metrics(codec, head, validation_full, validation_labels)
+    initial_semantic = _semantic_metrics(
+        codec,
+        head,
+        validation_full,
+        validation_labels,
+        shuffle_repeats=config.shuffle_repeats,
+        seed=config.seed + 10_000,
+    )
     timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     run_id = f"ssv2-semantic-{timestamp}-{uuid.uuid4().hex[:8]}"
     run_dir = config.output_root / run_id
@@ -183,7 +209,14 @@ def run(config_path: Path) -> dict[str, Any]:
             )
 
     reconstruction = _evaluate_reconstruction(codec, validation_full)
-    semantic = _semantic_metrics(codec, head, validation_full, validation_labels)
+    semantic = _semantic_metrics(
+        codec,
+        head,
+        validation_full,
+        validation_labels,
+        shuffle_repeats=config.shuffle_repeats,
+        seed=config.seed + 20_000,
+    )
     metrics = {
         "initial_reconstruction_mse": initial_reconstruction["mse"],
         "reconstruction_mse": reconstruction["mse"],
@@ -225,4 +258,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

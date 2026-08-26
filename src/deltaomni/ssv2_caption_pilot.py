@@ -14,6 +14,7 @@ from torch import Tensor
 from torch.nn import functional as F
 
 from deltaomni.backbones import load_backbone_config
+from deltaomni.evaluation import cross_label_permutations
 from deltaomni.language import DeltaLanguageProjector, FrozenCausalCaptionBackend
 from deltaomni.model import ModalityDeltaCodec
 from deltaomni.provenance import audit as audit_provenance
@@ -98,21 +99,30 @@ def _evaluate_condition(
     config: PilotConfig,
 ) -> dict[str, float]:
     projector.eval()
-    predictions = []
-    target_losses = []
-    for index in range(anchors.shape[0]):
-        prefix = projector(anchors[index : index + 1], delta_states[index : index + 1], 1)
-        candidate_losses = [
-            float(backend.caption_loss(prefix, config.caption.prompt, target))
-            for target in config.caption.targets
-        ]
-        predictions.append(min(range(len(candidate_losses)), key=candidate_losses.__getitem__))
-        target_losses.append(candidate_losses[int(labels[index])])
-    predicted = torch.tensor(predictions, device=labels.device)
+    prefix = projector(anchors, delta_states, 1)
+    candidate_losses = backend.candidate_caption_losses(
+        prefix,
+        config.caption.prompt,
+        config.caption.targets,
+    )
+    predicted = candidate_losses.argmin(dim=-1)
+    target_losses = candidate_losses.gather(1, labels[:, None]).squeeze(1)
     return {
         "accuracy": float(predicted.eq(labels).float().mean()),
-        "target_nll": sum(target_losses) / len(target_losses),
+        "target_nll": float(target_losses.mean()),
     }
+
+
+def _mean_condition_metrics(values: list[dict[str, float]]) -> dict[str, float]:
+    if not values:
+        raise ValueError("condition metrics cannot be empty")
+    result = {
+        key: sum(value[key] for value in values) / len(values)
+        for key in values[0]
+    }
+    result["accuracy_min"] = min(value["accuracy"] for value in values)
+    result["accuracy_max"] = max(value["accuracy"] for value in values)
+    return result
 
 
 def run(
@@ -179,29 +189,34 @@ def run(
     run_dir.mkdir(parents=True, exist_ok=False)
     started = time.perf_counter()
     for step in range(1, config.caption.max_steps + 1):
-        index = (config.seed * 97 + step * 17) % train_anchor.shape[0]
+        generator = torch.Generator().manual_seed(config.seed * 1_000_003 + step)
+        indices = torch.randint(
+            0,
+            train_anchor.shape[0],
+            (config.caption.batch_size,),
+            generator=generator,
+        ).to(device)
         projector.train()
         reconstruction_loss = torch.zeros((), device=device)
         if config.caption.train_delta_encoder:
             codec.train()
             anchor, delta_state, _, reconstruction_loss = _conditioning_train(
                 codec,
-                train_full[index : index + 1],
+                train_full[indices],
             )
         else:
-            anchor = train_anchor[index : index + 1]
-            delta_state = train_delta[index : index + 1]
+            anchor = train_anchor[indices]
+            delta_state = train_delta[indices]
         optimizer.zero_grad(set_to_none=True)
         prefix = projector(anchor, delta_state, 1)
-        candidate_losses = torch.stack(
-            [
-                backend.caption_loss(prefix, config.caption.prompt, target)
-                for target in config.caption.targets
-            ]
+        candidate_losses = backend.candidate_caption_losses(
+            prefix,
+            config.caption.prompt,
+            config.caption.targets,
         )
-        label = train_labels[index].view(1)
-        caption_loss = candidate_losses[label].squeeze(0)
-        ranking_loss = F.cross_entropy((-candidate_losses).unsqueeze(0), label)
+        label = train_labels[indices]
+        caption_loss = candidate_losses.gather(1, label[:, None]).mean()
+        ranking_loss = F.cross_entropy(-candidate_losses, label)
         loss = (
             caption_loss
             + config.caption.ranking_weight * ranking_loss
@@ -263,13 +278,23 @@ def run(
         validation_labels,
         config,
     )
-    shuffled = _evaluate_condition(
-        backend,
-        projector,
-        validation_anchor,
-        validation_delta.roll(1, dims=0),
+    shuffle_indices = cross_label_permutations(
         validation_labels,
-        config,
+        repeats=4,
+        seed=config.seed + 20_000,
+    )
+    shuffled = _mean_condition_metrics(
+        [
+            _evaluate_condition(
+                backend,
+                projector,
+                validation_anchor,
+                validation_delta[indices],
+                validation_labels,
+                config,
+            )
+            for indices in shuffle_indices
+        ]
     )
     metrics = {
         "initial_validation_accuracy": initial["accuracy"],

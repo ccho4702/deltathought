@@ -124,3 +124,23 @@ free-form caption or QA result.
 - Layout eight-frame multi-seed: `delta-setting-sweep-20260826T133608Z-e6a14402`
 
 Generated caches, checkpoints, and raw metrics remain project-local and are excluded from Git.
+
+## A6000 semantic-token delta search and captions
+
+The corrected experiment used 512 train, 64 search-validation, and 64 untouched-test clips per
+class, eight frames per clip, three seeds, repeated cross-label shuffles, and a matched raw-pooled
+baseline. Only the `usage_entropy_high` setting passed every validation seed. Balanced, semantic/
+reconstruction reweighting, LR changes, compact codebook, longer training, and random initialization
+each failed at least one preregistered seed gate; these negative runs are retained.
+
+On untouched test, hard semantic accuracy was `0.762 / 0.707 / 0.785`, while zero was `0.250`,
+last-only was `0.293 / 0.254 / 0.289`, and worst shuffle was `0.102 / 0.125 / 0.078`. Learned MSE
+was `1.9894 / 1.9902 / 1.9905` versus raw-pooled `2.0053`.
+
+A one-token-only adapter into frozen Qwen2.5-7B, trained with target CE/ranking weights `5/2`,
+reached candidate and greedy exact test accuracy `0.758 / 0.715 / 0.789`. Zero remained `0.250`,
+last-only was `0.293 / 0.242 / 0.281`, and worst shuffle was `0.109 / 0.125 / 0.074`. All greedy
+outputs were valid action labels. This is a bounded four-class causal caption result, not yet an
+open-vocabulary caption, NExT-QA improvement, or learned timing result.
+
+Retained aggregate: `outputs/reports/a6000_delta_caption_results.json`.

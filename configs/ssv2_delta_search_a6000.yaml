@@ -1,0 +1,38 @@
+base_config: configs/ssv2_semantic_token_a6000.yaml
+seeds: [42, 314, 2718]
+gpu_count: 4
+required_pass_fraction: 1.0
+output_root: outputs/real_pilots/ssv2_delta_search
+temp_root: temp/outputs/ssv2_delta_search
+trials:
+  - name: balanced
+    overrides: {}
+  - name: semantic_2x
+    overrides:
+      token.semantic_weight: 2.0
+  - name: reconstruction_2x
+    overrides:
+      token.reconstruction_weight: 2.0
+  - name: reconstruction_5x
+    overrides:
+      token.reconstruction_weight: 5.0
+  - name: learning_rate_low
+    overrides:
+      learning_rate: 0.00003
+  - name: learning_rate_high
+    overrides:
+      learning_rate: 0.0003
+  - name: compact_codebook
+    overrides:
+      token.codebook_size: 8
+      token.usage_entropy_weight: 0.005
+  - name: usage_entropy_high
+    overrides:
+      token.usage_entropy_weight: 0.05
+  - name: long_balanced
+    overrides:
+      max_steps: 800
+  - name: random_initialization
+    overrides:
+      initialization: random
+      max_steps: 800

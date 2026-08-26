@@ -65,6 +65,22 @@ resamplers still fail shuffled controls. The next authorized design is a typed s
 token bottleneck derived from the supervised delta state. Free-form captions and NExT-QA remain
 blocked until that interface passes normal/zero/last/shuffle ablations.
 
+Correction: the historical `roll(1)` shuffle was class-preserving for most class-grouped examples.
+The active gate replaces it with repeated balanced cross-label permutations and treats the earlier
+shuffle comparison as invalid. Setting search uses three seeds on a dedicated validation split;
+exactly one preregistered setting may proceed to the untouched test split. Eligibility additionally
+requires learned reconstruction to beat anchor, last-delta-only, and raw-pooled delta baselines.
+
+The scaled workload uses 512 training clips, 64 search-validation clips, and 64 untouched-test clips
+per action class with eight frames per clip. It supports one or four GPUs through the same config,
+BF16 DDP, exact resume, and retained per-trial logs. The final delta gate and the subsequent typed
+semantic-token-only frozen Qwen2.5-7B four-class caption gate passed on all three test seeds.
+
+R3 remains blocked despite this caption result. The current semantic codes are trained on four SSV2
+action classes and cannot be assumed to express the broader evidence required by NExT-QA. The next
+valid step is to define an independently supervised, broader semantic vocabulary or open-vocabulary
+caption target and then repeat the normal/zero/last/cross-label-shuffle gate before downstream QA.
+
 ## R4 — Video commit timing
 
 SSV2 does not contain internal caption boundaries. This phase remains blocked until an established,
