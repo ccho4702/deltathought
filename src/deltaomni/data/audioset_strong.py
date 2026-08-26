@@ -6,9 +6,14 @@ from pathlib import Path
 
 from deltaomni.data.schema import (
     CanonicalEpisode,
-    CaptionSection,
+    CaptionAnnotation,
+    CaptionBundle,
+    EventAnnotation,
     MediaAsset,
-    observation_grid,
+    MediaBundle,
+    ProvenanceRecord,
+    TextBundle,
+    temporal_grid,
 )
 from deltaomni.provenance import require_approved
 from deltaomni.types import Modality
@@ -88,15 +93,33 @@ def build_episode(
     provenance_report: dict[str, object],
 ) -> CanonicalEpisode:
     require_approved(provenance_report, ["audioset_strong_annotations"])
-    sections = tuple(
-        CaptionSection(
-            section_id=f"{clip_id}:{index}",
+    if media.duration_seconds is None:
+        raise ValueError("AudioSet audio requires duration")
+    duration = media.duration_seconds
+    captions = tuple(
+        CaptionAnnotation(
+            caption_id=f"{clip_id}:{index}",
+            scope="audio",
+            text=f"Sound event: {labels[event.class_id]}.",
             start_seconds=event.start_seconds,
             end_seconds=event.end_seconds,
             commit_seconds=event.end_seconds,
-            caption=f"Sound event: {labels[event.class_id]}.",
-            caption_origin="deterministic_label_verbalization",
+            language="en",
+            annotation_origin="deterministic_label_verbalization",
             timing_origin="human_strong",
+            independent_from_qa=None,
+        )
+        for index, event in enumerate(events)
+    )
+    event_annotations = tuple(
+        EventAnnotation(
+            event_id=f"{clip_id}:{index}",
+            modality=Modality.AUDIO,
+            start_seconds=event.start_seconds,
+            end_seconds=event.end_seconds,
+            label=labels[event.class_id],
+            label_id=event.class_id,
+            annotation_origin="human_strong",
         )
         for index, event in enumerate(events)
     )
@@ -106,11 +129,15 @@ def build_episode(
         dataset_revision=dataset_revision,
         split=split,
         source_id=clip_id,
-        modality=Modality.AUDIO,
-        media=media,
-        observations=observation_grid(media.duration_seconds, chunk_seconds),
-        sections=sections,
-        final_qa=(),
+        source_group_id=f"youtube:{clip_id.split('_')[0]}",
+        media=MediaBundle(image=None, video=None, audio=media),
+        duration_seconds=duration,
+        temporal_blocks=temporal_grid(duration, chunk_seconds),
+        captions=CaptionBundle(image=None, video=None, audio=captions, joint=None),
+        text=TextBundle(transcript=None, subtitle=None, ocr=None),
+        events=event_annotations,
+        qa=None,
+        provenance=ProvenanceRecord(resource_name="audioset_strong_annotations"),
     )
     episode.validate()
     return episode

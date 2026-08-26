@@ -1,0 +1,318 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ccho4702/deltathought/schemas/deltaomni.episode.v2.schema.json",
+  "title": "DeltaOmni Canonical Episode v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "episode_id",
+    "dataset",
+    "dataset_revision",
+    "split",
+    "source_id",
+    "source_group_id",
+    "media",
+    "duration_seconds",
+    "temporal_blocks",
+    "captions",
+    "text",
+    "events",
+    "qa",
+    "provenance",
+    "metadata"
+  ],
+  "properties": {
+    "schema": {"const": "deltaomni.episode.v2"},
+    "episode_id": {"type": "string", "minLength": 1},
+    "dataset": {"type": "string", "minLength": 1},
+    "dataset_revision": {"type": "string", "minLength": 1},
+    "split": {"enum": ["train", "validation", "test"]},
+    "source_id": {"type": "string", "minLength": 1},
+    "source_group_id": {"type": "string", "minLength": 1},
+    "media": {"$ref": "#/$defs/media_bundle"},
+    "duration_seconds": {"type": ["number", "null"], "exclusiveMinimum": 0},
+    "temporal_blocks": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/temporal_block"}}
+      ]
+    },
+    "captions": {"$ref": "#/$defs/caption_bundle"},
+    "text": {"$ref": "#/$defs/text_bundle"},
+    "events": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "items": {"$ref": "#/$defs/event"}}
+      ]
+    },
+    "qa": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "items": {"$ref": "#/$defs/qa"}}
+      ]
+    },
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "metadata": {"type": "object"}
+  },
+  "$defs": {
+    "nullable_string": {"type": ["string", "null"]},
+    "nullable_number": {"type": ["number", "null"]},
+    "nullable_integer": {"type": ["integer", "null"]},
+    "media_asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "duration_seconds",
+        "mime_type",
+        "width",
+        "height",
+        "fps",
+        "sample_rate",
+        "channels"
+      ],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "duration_seconds": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "mime_type": {"$ref": "#/$defs/nullable_string"},
+        "width": {"type": ["integer", "null"], "minimum": 1},
+        "height": {"type": ["integer", "null"], "minimum": 1},
+        "fps": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "sample_rate": {"type": ["integer", "null"], "minimum": 1},
+        "channels": {"type": ["integer", "null"], "minimum": 1}
+      }
+    },
+    "media_bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image", "video", "audio"],
+      "properties": {
+        "image": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/media_asset"}]},
+        "video": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/media_asset"}]},
+        "audio": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/media_asset"}]}
+      }
+    },
+    "temporal_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["block_index", "start_seconds", "end_seconds"],
+      "properties": {
+        "block_index": {"type": "integer", "minimum": 0},
+        "start_seconds": {"type": "number", "minimum": 0},
+        "end_seconds": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "caption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caption_id",
+        "scope",
+        "text",
+        "start_seconds",
+        "end_seconds",
+        "commit_seconds",
+        "language",
+        "annotation_origin",
+        "timing_origin",
+        "independent_from_qa"
+      ],
+      "properties": {
+        "caption_id": {"type": "string", "minLength": 1},
+        "scope": {"enum": ["image", "video", "audio", "joint"]},
+        "text": {"type": "string", "minLength": 1},
+        "start_seconds": {"$ref": "#/$defs/nullable_number"},
+        "end_seconds": {"$ref": "#/$defs/nullable_number"},
+        "commit_seconds": {"$ref": "#/$defs/nullable_number"},
+        "language": {"$ref": "#/$defs/nullable_string"},
+        "annotation_origin": {"type": "string", "minLength": 1},
+        "timing_origin": {"$ref": "#/$defs/nullable_string"},
+        "independent_from_qa": {"type": ["boolean", "null"]}
+      }
+    },
+    "nullable_caption_list": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "items": {"$ref": "#/$defs/caption"}}
+      ]
+    },
+    "caption_bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image", "video", "audio", "joint"],
+      "properties": {
+        "image": {"$ref": "#/$defs/nullable_caption_list"},
+        "video": {"$ref": "#/$defs/nullable_caption_list"},
+        "audio": {"$ref": "#/$defs/nullable_caption_list"},
+        "joint": {"$ref": "#/$defs/nullable_caption_list"}
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "modality",
+        "start_seconds",
+        "end_seconds",
+        "label",
+        "label_id",
+        "annotation_origin"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "modality": {"enum": ["image", "video", "audio"]},
+        "start_seconds": {"type": "number", "minimum": 0},
+        "end_seconds": {"type": "number", "exclusiveMinimum": 0},
+        "label": {"type": "string", "minLength": 1},
+        "label_id": {"$ref": "#/$defs/nullable_string"},
+        "annotation_origin": {"type": "string", "minLength": 1}
+      }
+    },
+    "timed_text": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text_id",
+        "kind",
+        "text",
+        "start_seconds",
+        "end_seconds",
+        "language",
+        "annotation_origin"
+      ],
+      "properties": {
+        "text_id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["transcript", "subtitle", "ocr"]},
+        "text": {"type": "string", "minLength": 1},
+        "start_seconds": {"$ref": "#/$defs/nullable_number"},
+        "end_seconds": {"$ref": "#/$defs/nullable_number"},
+        "language": {"$ref": "#/$defs/nullable_string"},
+        "annotation_origin": {"type": "string", "minLength": 1}
+      }
+    },
+    "nullable_text_list": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "items": {"$ref": "#/$defs/timed_text"}}
+      ]
+    },
+    "text_bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transcript", "subtitle", "ocr"],
+      "properties": {
+        "transcript": {"$ref": "#/$defs/nullable_text_list"},
+        "subtitle": {"$ref": "#/$defs/nullable_text_list"},
+        "ocr": {"$ref": "#/$defs/nullable_text_list"}
+      }
+    },
+    "dialogue_turn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "text"],
+      "properties": {
+        "role": {"enum": ["system", "user", "assistant"]},
+        "text": {"type": "string", "minLength": 1}
+      }
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question_id",
+        "question",
+        "answer",
+        "choices",
+        "answer_index",
+        "question_type",
+        "required_modalities",
+        "evidence_spans",
+        "annotation_origin",
+        "independent_from_captions",
+        "acceptable_answers",
+        "dialogue_history",
+        "turn_index"
+      ],
+      "properties": {
+        "question_id": {"type": "string", "minLength": 1},
+        "question": {"type": "string", "minLength": 1},
+        "answer": {"type": "string", "minLength": 1},
+        "choices": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+          ]
+        },
+        "answer_index": {"$ref": "#/$defs/nullable_integer"},
+        "question_type": {"$ref": "#/$defs/nullable_string"},
+        "required_modalities": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "array", "items": {"enum": ["image", "video", "audio"]}, "uniqueItems": true}
+          ]
+        },
+        "evidence_spans": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "prefixItems": [{"type": "number"}, {"type": "number"}],
+                "minItems": 2,
+                "maxItems": 2
+              }
+            }
+          ]
+        },
+        "annotation_origin": {"type": "string", "minLength": 1},
+        "independent_from_captions": {"type": ["boolean", "null"]},
+        "acceptable_answers": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+          ]
+        },
+        "dialogue_history": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "array", "items": {"$ref": "#/$defs/dialogue_turn"}}
+          ]
+        },
+        "turn_index": {"$ref": "#/$defs/nullable_integer"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_name",
+        "source_url",
+        "license_record",
+        "annotation_path",
+        "annotation_sha256",
+        "preprocessing_config_sha256",
+        "code_revision",
+        "processed_at_utc"
+      ],
+      "properties": {
+        "resource_name": {"type": "string", "minLength": 1},
+        "source_url": {"$ref": "#/$defs/nullable_string"},
+        "license_record": {"$ref": "#/$defs/nullable_string"},
+        "annotation_path": {"$ref": "#/$defs/nullable_string"},
+        "annotation_sha256": {
+          "oneOf": [{"type": "null"}, {"type": "string", "pattern": "^[0-9a-f]{64}$"}]
+        },
+        "preprocessing_config_sha256": {
+          "oneOf": [{"type": "null"}, {"type": "string", "pattern": "^[0-9a-f]{64}$"}]
+        },
+        "code_revision": {"$ref": "#/$defs/nullable_string"},
+        "processed_at_utc": {"$ref": "#/$defs/nullable_string"}
+      }
+    }
+  }
+}

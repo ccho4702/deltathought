@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ccho4702/deltathought/schemas/deltaomni.dataset_manifest.v2.schema.json",
+  "title": "DeltaOmni Canonical Dataset Manifest v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "episode_schema",
+    "dataset",
+    "dataset_revision",
+    "created_at_utc",
+    "preprocessing_config_sha256",
+    "code_revision",
+    "source_files",
+    "splits"
+  ],
+  "properties": {
+    "schema": {"const": "deltaomni.dataset_manifest.v2"},
+    "episode_schema": {"const": "deltaomni.episode.v2"},
+    "dataset": {"type": "string", "minLength": 1},
+    "dataset_revision": {"type": "string", "minLength": 1},
+    "created_at_utc": {"type": "string", "minLength": 1},
+    "preprocessing_config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "code_revision": {"type": "string", "minLength": 1},
+    "source_files": {"type": "array", "items": {"type": "object"}},
+    "splits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["train", "validation", "test"],
+      "properties": {
+        "train": {"$ref": "#/$defs/split"},
+        "validation": {"$ref": "#/$defs/split"},
+        "test": {"$ref": "#/$defs/split"}
+      }
+    }
+  },
+  "$defs": {
+    "count_map": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "episodes",
+        "media",
+        "caption_annotation_available",
+        "caption_items",
+        "text_annotation_available",
+        "text_items",
+        "event_annotation_available",
+        "event_items",
+        "qa_annotation_available",
+        "qa_items"
+      ],
+      "properties": {
+        "episodes": {"type": "integer", "minimum": 0},
+        "media": {"$ref": "#/$defs/count_map"},
+        "caption_annotation_available": {"$ref": "#/$defs/count_map"},
+        "caption_items": {"$ref": "#/$defs/count_map"},
+        "text_annotation_available": {"$ref": "#/$defs/count_map"},
+        "text_items": {"$ref": "#/$defs/count_map"},
+        "event_annotation_available": {"type": "integer", "minimum": 0},
+        "event_items": {"type": "integer", "minimum": 0},
+        "qa_annotation_available": {"type": "integer", "minimum": 0},
+        "qa_items": {"type": "integer", "minimum": 0}
+      }
+    },
+    "split": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "bytes", "sha256", "coverage"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "coverage": {"$ref": "#/$defs/coverage"}
+      }
+    }
+  }
+}

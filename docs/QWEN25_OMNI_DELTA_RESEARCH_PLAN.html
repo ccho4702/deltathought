@@ -389,51 +389,33 @@
   <section>
     <h2>6. 공통 episode format</h2>
     <pre>{
-  "schema": "deltaomni.episode.v1",
+  "schema": "deltaomni.episode.v2",
   "episode_id": "dataset:split:source-id",
-  "source": {
-    "dataset": "perception_test",
-    "split": "train",
-    "license_record": "inputs/licenses/...",
-    "media_sha256": "..."
-  },
+  "dataset": "dataset-name",
+  "dataset_revision": "pinned-revision",
+  "split": "train",
+  "source_id": "source-id",
+  "source_group_id": "upstream:stable-id",
   "media": {
-    "video_path": "read-only input path",
-    "audio_path": "read-only input path",
-    "duration_seconds": 23.4,
-    "fps": 30.0,
-    "sample_rate": 16000
+    "image": null,
+    "video": {"path": "...", "sha256": "...", "duration_seconds": 23.4},
+    "audio": null
   },
-  "blocks": [
-    {
-      "block_index": 0,
-      "start": 0.0,
-      "end": 2.0,
-      "video_event": null,
-      "audio_event": null,
-      "video_caption": null,
-      "audio_caption": null,
-      "video_commit": "unknown",
-      "audio_commit": "unknown"
-    }
-  ],
-  "qa": [
-    {
-      "question": "...",
-      "answers": ["..."],
-      "required_modalities": ["audio", "video"],
-      "evidence_spans": [[4.0, 8.0]],
-      "answer_in_caption": false
-    }
-  ],
-  "supervision": {
-    "video_caption": false,
-    "audio_caption": false,
-    "video_boundary": true,
-    "audio_boundary": true,
-    "qa": true
-  }
+  "duration_seconds": 23.4,
+  "temporal_blocks": [{"block_index": 0, "start_seconds": 0.0, "end_seconds": 2.0}],
+  "captions": {"image": null, "video": null, "audio": null, "joint": null},
+  "text": {"transcript": null, "subtitle": null, "ocr": null},
+  "events": null,
+  "qa": null,
+  "provenance": {"resource_name": "...", "license_record": null},
+  "metadata": {}
 }</pre>
+    <p>
+      위 코드는 요약 예시다. 전체 필드와 nested field는 machine-readable JSON Schema에서 강제한다.
+      <code>null</code>은 dataset이
+      해당 annotation 종류를 제공하지 않는다는 뜻이고, 빈 배열은 annotation 종류는 제공하지만 해당 episode에
+      item이 없다는 뜻이다. 상세 규약은 <a href="CANONICAL_DATA_FORMAT.md">Canonical data format v2</a>에 있다.
+    </p>
     <ul class="checklist">
       <li>모든 dataset adapter는 이 schema만 출력하고 모델 코드는 dataset 이름을 알지 않는다.</li>
       <li>동일 YouTube/source가 여러 dataset에 나타나면 source-group 단위로 split하여 leakage를 막는다.</li>
