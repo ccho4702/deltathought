@@ -65,7 +65,20 @@ appears in a caption. A separate downstream QA probe must compose ordered eviden
 Real evaluation must use separately authored, source-disjoint human QA. Caption concatenation or QA
 constructed by copying caption text is explicitly invalid as method-level evidence.
 
-## Pinned real-model interface
+## Target Qwen2.5-Omni interface
+
+The method-level target uses `Qwen/Qwen2.5-Omni-7B` revision
+`ae9e1690543ffd5c0221dc27f79834d0294cba00`. The Thinker's native `visual` and `audio_tower`
+produce variable-length 3584-dimensional sequences. Inputs are split into causal two-second blocks;
+each block is encoded independently so a current embedding cannot attend to future media. The
+student Thinker receives the first full block followed by typed, time-positioned delta blocks.
+
+The required evaluation compares raw full Omni input, first plus all ordered deltas, first only,
+last delta only, zero delta, temporal reversal, within-class temporal shuffle, and wrong-source
+delta. Actual held-out caption and QA performance—not reconstruction or alignment loss—determines
+whether the Thinker understands the delta representation.
+
+## Substitute-backbone baseline
 
 - DINOv2-base emits 257 full visual tokens of width 768; the initial video delta budget is 8 tokens.
 - CLAP HTSAT-unfused emits one 512-dimensional global token per audio chunk; the initial audio delta
@@ -73,11 +86,12 @@ constructed by copying caption text is explicitly invalid as method-level eviden
 - A trainable typed projector maps `[FULL][DELTA]` prefixes to the 896-dimensional hidden space of a
   frozen Qwen2.5-0.5B-Instruct decoder.
 
-The CPU smoke verifies deterministic frozen embeddings, nonzero changed-input deltas, exact
+The DINOv2/CLAP CPU smoke verifies deterministic frozen embeddings, nonzero changed-input deltas, exact
 same-input zero deltas, finite prefix gradients, frozen LLM parameters, and decreasing real-Qwen
-caption CE. This verifies interfaces only; it does not establish real-media semantic quality.
+caption CE. This baseline does not establish any property of the target Qwen2.5-Omni encoders or
+Thinker.
 
-## Language-alignment status
+## Legacy language-alignment status
 
 Raw DINOv2/CLAP delta states are not assumed to be directly interpretable by an LLM. The implemented
 `DeltaLanguageProjector` maps each modality width to Qwen hidden width and adds independent modality

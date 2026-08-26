@@ -20,6 +20,7 @@ class ProvenancePolicy:
     require_official_source: bool
     require_peer_review: bool
     require_verified_license: bool
+    peer_review_exceptions: tuple[str, ...]
 
 
 def _load(path: Path) -> tuple[dict[str, Any], ProvenancePolicy]:
@@ -35,6 +36,9 @@ def _load(path: Path) -> tuple[dict[str, Any], ProvenancePolicy]:
         require_official_source=bool(policy["require_official_source"]),
         require_peer_review=bool(policy["require_peer_review"]),
         require_verified_license=bool(policy["require_verified_license"]),
+        peer_review_exceptions=tuple(
+            str(name) for name in policy.get("peer_review_exceptions", [])
+        ),
     )
 
 
@@ -56,11 +60,19 @@ def audit_resource(name: str, resource: dict[str, Any], policy: ProvenancePolicy
             policy.minimum_paper_citations,
         ),
     }
+    peer_review_exception = (
+        name in policy.peer_review_exceptions
+        and resource.get("required_by_research_question") is True
+    )
     prerequisites = {
         "official_source": (
             not policy.require_official_source or resource.get("official_source") is True
         ),
-        "peer_reviewed": not policy.require_peer_review or resource.get("peer_reviewed") is True,
+        "peer_reviewed": (
+            not policy.require_peer_review
+            or resource.get("peer_reviewed") is True
+            or peer_review_exception
+        ),
         "license_verified": (
             not policy.require_verified_license or resource.get("license_status") == "verified"
         ),
@@ -76,6 +88,7 @@ def audit_resource(name: str, resource: dict[str, Any], policy: ProvenancePolicy
         "adoption_signals": signals,
         "passed_adoption_signals": passed_signals,
         "required_adoption_signals": policy.minimum_adoption_signals,
+        "peer_review_exception": peer_review_exception,
         "restriction": resource.get("restriction"),
     }
 

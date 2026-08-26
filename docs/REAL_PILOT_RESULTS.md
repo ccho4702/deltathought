@@ -1,5 +1,9 @@
 # First real-data pilot results
 
+> Scope correction: every result in this document predating the Qwen2.5-Omni migration used
+> DINOv2 and/or CLAP with a separate Qwen text decoder. These are substitute-backbone baselines, not
+> evidence about the target Qwen2.5-Omni first-plus-delta interface.
+
 Date: 2026-08-26
 
 ## Scope

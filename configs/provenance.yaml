@@ -1,5 +1,5 @@
 policy:
-  checked_at: 2026-08-26
+  checked_at: 2026-08-27
   minimum_github_stars: 100
   minimum_huggingface_downloads: 500
   minimum_paper_citations: 100
@@ -7,6 +7,7 @@ policy:
   require_official_source: true
   require_peer_review: true
   require_verified_license: true
+  peer_review_exceptions: [qwen2_5_omni_7b]
 
 resources:
   dinov2:
@@ -86,6 +87,30 @@ resources:
     evidence_urls:
       huggingface: https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct
       citations: https://api.openalex.org/works/W4405655184
+
+  qwen2_5_omni_7b:
+    kind: model
+    role: required_audio_video_encoders_and_thinker
+    official_source: true
+    peer_reviewed: false
+    required_by_research_question: true
+    recognized_standard: true
+    license_status: verified
+    license: Apache-2.0
+    source_url: https://github.com/QwenLM/Qwen2.5-Omni
+    model_id: Qwen/Qwen2.5-Omni-7B
+    revision: ae9e1690543ffd5c0221dc27f79834d0294cba00
+    evidence:
+      github_stars: 4074
+      huggingface_downloads: 321896
+      paper_citations: null
+    evidence_urls:
+      github: https://api.github.com/repos/QwenLM/Qwen2.5-Omni
+      huggingface: https://huggingface.co/api/models/Qwen/Qwen2.5-Omni-7B
+      paper: https://arxiv.org/abs/2503.20215
+    restriction: >-
+      The model is the user-mandated research target and has no architecture-equivalent substitute,
+      but its technical report is not peer reviewed. Claims require independent held-out evaluation.
 
   audioset_strong_annotations:
     kind: dataset

@@ -1,5 +1,20 @@
 # DeltaOmni status
 
+## Target-architecture correction
+
+The intended method uses the native vision encoder, audio encoder, and Thinker from pinned
+Qwen2.5-Omni-7B. All DINOv2/CLAP/separate-Qwen results below are substitute-backbone baselines and
+must not be cited as evidence that Qwen2.5-Omni understands first-plus-delta inputs. No target-stack
+result had been completed when this correction was recorded. Migration to the official Thinker is
+the active experiment line.
+
+The first native-encoder smoke now passes at pinned revision
+`ae9e1690543ffd5c0221dc27f79834d0294cba00`. Independently encoded two-second blocks produced 100
+video tokens and 50 audio tokens, both width 3584. Repeating the same block with the same batch-one
+execution shape was bitwise exact for both modalities; changed real-media blocks were non-identical.
+Thinker-only peak reserved memory was 17.03 GiB on one RTX A6000. These token counts are measured at
+the configured video resolution and are not universal fixed budgets.
+
 Last updated: 2026-08-26
 
 ## Completed

@@ -1,0 +1,14 @@
+resource_name: qwen2_5_omni_7b
+model_id: Qwen/Qwen2.5-Omni-7B
+revision: ae9e1690543ffd5c0221dc27f79834d0294cba00
+cache_dir: inputs/models/huggingface
+component: thinker
+precision: bfloat16
+attention_implementation: sdpa
+sample_rate: 16000
+seconds_per_chunk: 2
+position_id_per_seconds: 25
+video:
+  fps: 2.0
+  min_pixels: 50176
+  max_pixels: 50176

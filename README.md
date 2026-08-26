@@ -5,10 +5,14 @@ separate from `omnithought`.
 
 ## Current verified scope
 
+The target architecture is the pinned `Qwen/Qwen2.5-Omni-7B` Thinker: its native vision encoder,
+native audio encoder, and text model must jointly consume the first full multimodal block plus
+ordered delta blocks. The earlier DINOv2/CLAP/separate-Qwen experiments are retained only as
+substitute-backbone baselines. They do not validate the target Qwen2.5-Omni architecture.
+
 Deterministic embedding fixtures cover functional and resume behavior. Bounded real-media pilots
-use existing shared Something-Something V2, AudioSet, and NExT-QA data with pinned DINOv2-base and
-CLAP revisions. The fixtures are not a new research dataset and are never used as real-method
-evidence.
+use existing shared Something-Something V2, AudioSet, and NExT-QA data. The fixtures are not a new
+research dataset and are never used as real-method evidence.
 
 A scaled four-class SSV2 study uses 512 training, 64 search-validation, and 64 untouched-test clips
 per class with eight frames per clip. Its scope is these direction-sensitive actions, not general
@@ -35,7 +39,7 @@ and resets only its delta state.
 
 Audio and video may commit at the same timestamp or at different timestamps.
 
-## Verified functionality
+## Verified substitute-backbone functionality
 
 - one-step and full-anchor-plus-accumulated-delta reconstruction;
 - exact zero delta for identical consecutive embeddings;
@@ -54,7 +58,7 @@ Audio and video may commit at the same timestamp or at different timestamps.
 Synthetic checks and bounded real-pilot metrics are reported separately in
 `docs/REAL_PILOT_RESULTS.md`.
 
-The selected one-token semantic bottleneck passed all preregistered delta gates on three untouched
+The selected DINOv2 one-token semantic bottleneck passed all preregistered delta gates on three untouched
 test seeds. Hard-token accuracy was `0.762 / 0.707 / 0.785`; learned reconstruction MSE was
 `1.9894 / 1.9902 / 1.9905`, compared with raw-pooled `2.0053`. A semantic-token-only frozen
 Qwen2.5-7B bridge generated exact captions at `0.758 / 0.715 / 0.789`; full anchors were hidden.
@@ -63,7 +67,8 @@ The performance-oriented 65-token layout was also trained for 800 steps on 16-fr
 clip applies 15 consecutive 65-token deltas to a fixed 65-token state (975 delta-token updates; no
 sequence concatenation), then compresses that state to one semantic token for frozen Qwen2.5-7B.
 Untouched-test delta accuracy was `0.727 / 0.797 / 0.770`, and unrestricted greedy caption exact
-match was `0.727 / 0.785 / 0.773` across three seeds.
+match was `0.727 / 0.785 / 0.773` across three seeds. These measurements establish an engineering
+baseline for the delta mechanism, not Qwen2.5-Omni understanding of first-plus-delta inputs.
 
 ## Commands
 
@@ -77,6 +82,7 @@ uv run deltaomni-provenance --config configs/provenance.yaml
 uv run deltaomni-data-audit --allow-not-ready
 uv run deltaomni-annotation-audit
 uv run deltaomni-backbone-smoke
+uv run deltaomni-omni-backbone-smoke
 uv run deltaomni-language-smoke
 uv run deltaomni-delta-setting-sweep --config configs/delta_setting_sweep.yaml
 uv run torchrun --standalone --nproc-per-node=4 -m deltaomni.ssv2_semantic_token_pilot \

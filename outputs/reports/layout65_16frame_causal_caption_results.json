@@ -1,4 +1,5 @@
 {
+  "architecture_scope": "substitute DINOv2 encoder plus separate Qwen text decoder; not Qwen2.5-Omni",
   "caption": {
     "candidate_test_accuracy": {
       "2718": 0.7734375,

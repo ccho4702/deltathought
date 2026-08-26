@@ -1,0 +1,66 @@
+{
+  "audio": {
+    "change_mean_absolute": 1.0193015336990356,
+    "chunks": [
+      {
+        "samples": 32000,
+        "seconds": 2.0,
+        "tokens": 50,
+        "width": 3584
+      },
+      {
+        "samples": 32000,
+        "seconds": 2.0,
+        "tokens": 50,
+        "width": 3584
+      }
+    ],
+    "repeat_error_max_absolute": 0.0,
+    "repeat_error_mean_absolute": 0.0,
+    "source": "/mnt/nfs_shared_data/dataset/omniembed/audioset/eval_segments/audio/--4gqARaEJE_0_10000.flac"
+  },
+  "checks": {
+    "audio_change_nonzero": true,
+    "audio_repeat_deterministic": true,
+    "audio_width_matches_thinker": true,
+    "video_change_nonzero": true,
+    "video_repeat_deterministic": true,
+    "video_width_matches_thinker": true
+  },
+  "completed_at_utc": "2026-08-26T22:43:49.880274+00:00",
+  "component": "thinker",
+  "elapsed_seconds": 13.788579877465963,
+  "load_seconds": 10.829105701297522,
+  "model_id": "Qwen/Qwen2.5-Omni-7B",
+  "output_dim": 3584,
+  "passed": true,
+  "peak_reserved_gib": 17.033203125,
+  "revision": "ae9e1690543ffd5c0221dc27f79834d0294cba00",
+  "schema": "deltaomni.qwen2_5_omni_backbone_smoke.v1",
+  "video": {
+    "change_mean_absolute": 0.5674694180488586,
+    "chunks": [
+      {
+        "grid_thw": [
+          2,
+          10,
+          20
+        ],
+        "tokens": 100,
+        "width": 3584
+      },
+      {
+        "grid_thw": [
+          2,
+          10,
+          20
+        ],
+        "tokens": 100,
+        "width": 3584
+      }
+    ],
+    "repeat_error_max_absolute": 0.0,
+    "repeat_error_mean_absolute": 0.0,
+    "source": "/mnt/nfs_shared_data/dataset/ssv2/20bn-something-something-v2/57188.webm"
+  }
+}

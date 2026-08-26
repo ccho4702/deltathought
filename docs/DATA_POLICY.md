@@ -39,9 +39,12 @@ must still be recorded before download or use.
 
 Approved for future integration:
 
+- Qwen2.5-Omni-7B as the user-mandated target vision/audio encoders and Thinker. Its official
+  technical report is not peer reviewed, so it has a documented research-foundation exception and
+  requires independent held-out evaluation;
 - DINOv2 as image/video full-embedding teacher;
 - CLAP as audio teacher and audio-text alignment model;
-- Qwen2.5-0.5B-Instruct as the initial frozen caption decoder;
+- Qwen2.5-0.5B-Instruct as a legacy substitute-backbone caption decoder;
 - AudioSet Strong annotations for audio timing and event labels.
 - Something-Something V2 for human-verified motion clips and action text;
 - NExT-QA annotations for independently authored human final QA.
