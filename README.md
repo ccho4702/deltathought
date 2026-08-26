@@ -78,4 +78,5 @@ under this project in `intermediates/`, `outputs/`, and `logs/`.
 - [Real-data gated execution plan](docs/REAL_DATA_PLAN.md)
 - [Current status and retained metrics](docs/STATUS.md)
 - [First real-data pilot results](docs/REAL_PILOT_RESULTS.md)
+- [Server migration handoff](docs/MIGRATION.md)
 - `index.html` is retained as historical research context.
