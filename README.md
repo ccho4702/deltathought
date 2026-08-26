@@ -73,9 +73,9 @@ uv run deltaomni-backbone-smoke
 uv run deltaomni-language-smoke
 uv run deltaomni-delta-setting-sweep --config configs/delta_setting_sweep.yaml
 uv run torchrun --standalone --nproc-per-node=4 -m deltaomni.ssv2_semantic_token_pilot \
-  --config configs/ssv2_semantic_token_selected_a6000.yaml
+  --config configs/ssv2_semantic_token_layout65_a6000.yaml
 uv run torchrun --standalone --nproc-per-node=4 -m deltaomni.ssv2_semantic_caption_pilot \
-  --config configs/ssv2_semantic_caption_a6000.yaml
+  --config configs/ssv2_semantic_caption_layout65_a6000.yaml
 uv run deltaomni-report
 ```
 

@@ -182,3 +182,19 @@ open-vocabulary captions, independent QA benefit, and learned internal video tim
 Runtime was 4× RTX A6000, BF16, and global delta batch `128`. This host requires NCCL P2P, shared
 memory, and IB transports disabled with loopback socket transport. The representative profile was
 about `498` samples/s on four GPUs versus `110` on one GPU.
+
+## Layout-aware causal integration on the scaled split
+
+The strict three-seed protocol was rerun with the current CLS-plus-2D-grid codec using 800-step
+delta training (about 50 sampled epochs) and actual Qwen caption generation.
+
+- 17-token test semantic accuracy: `0.746 / 0.754 / 0.723`.
+- 17-token learned/raw MSE: about `1.567 / 1.668`.
+- 17-token greedy caption exact: `0.766 / 0.754 / 0.711`.
+- 65-token test semantic accuracy: `0.809 / 0.781 / 0.734`.
+- 65-token learned/raw MSE: about `1.110 / 1.196`.
+- 65-token greedy caption exact: `0.809 / 0.773 / 0.719`.
+
+Every zero/last/worst-cross-label-shuffle accuracy gate passed. The performance-oriented A6000
+preset is now 65 tokens; the 17-token preset remains the lower-memory balanced option. Retained
+aggregate: `outputs/reports/layout_causal_caption_results.json`.

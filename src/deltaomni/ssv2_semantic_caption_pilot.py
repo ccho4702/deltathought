@@ -381,6 +381,8 @@ def run(config_path: Path, run_id_override: str | None = None) -> dict[str, Any]
                 normal["accuracy"] - metrics["shuffled"]["accuracy_max"]
                 >= config.minimum_accuracy_gap
             ),
+        }
+        nll_diagnostics = {
             "nll_beats_zero": normal["target_nll"] < metrics["zero"]["target_nll"],
             "nll_beats_last": normal["target_nll"] < metrics["last"]["target_nll"],
             "nll_beats_shuffle": (
@@ -396,6 +398,7 @@ def run(config_path: Path, run_id_override: str | None = None) -> dict[str, Any]
             "training_seconds": time.perf_counter() - started,
             "metrics": metrics,
             "checks": checks,
+            "nll_diagnostics": nll_diagnostics,
             "passed": passed,
             "status": "signal" if passed else "inconclusive",
             "completed_at_utc": datetime.now(UTC).isoformat(),

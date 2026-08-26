@@ -41,12 +41,12 @@ ssv2-semantic-pilot:
 
 ssv2-semantic-token-pilot:
 	uv run deltaomni-ssv2-semantic-token-pilot \
-		--config configs/ssv2_semantic_token_selected_a6000.yaml
+		--config configs/ssv2_semantic_token_layout65_a6000.yaml
 
 ssv2-semantic-token-4gpu:
 	uv run torchrun --standalone --nproc-per-node=4 \
 		-m deltaomni.ssv2_semantic_token_pilot \
-		--config configs/ssv2_semantic_token_selected_a6000.yaml
+		--config configs/ssv2_semantic_token_layout65_a6000.yaml
 
 ssv2-delta-search:
 	uv run deltaomni-ssv2-delta-search --config configs/ssv2_delta_search_a6000.yaml
@@ -54,7 +54,7 @@ ssv2-delta-search:
 ssv2-semantic-caption:
 	uv run torchrun --standalone --nproc-per-node=4 \
 		-m deltaomni.ssv2_semantic_caption_pilot \
-		--config configs/ssv2_semantic_caption_a6000.yaml
+		--config configs/ssv2_semantic_caption_layout65_a6000.yaml
 
 ssv2-resampler-pilot:
 	uv run deltaomni-ssv2-resampler-pilot --config configs/ssv2_resampler_pilot.yaml

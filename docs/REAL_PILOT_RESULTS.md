@@ -144,3 +144,19 @@ outputs were valid action labels. This is a bounded four-class causal caption re
 open-vocabulary caption, NExT-QA improvement, or learned timing result.
 
 Retained aggregate: `outputs/reports/a6000_delta_caption_results.json`.
+
+## Scaled layout-aware full training
+
+The corrected causal protocol was integrated with CLS-preserving 2D pooling. Both layouts used the
+same 2,048 real training clips, 256 search-validation clips, 256 untouched-test clips, eight frames,
+800 delta steps (about 50 sampled epochs), and three seeds.
+
+For 17 tokens, untouched-test semantic accuracy was `0.746 / 0.754 / 0.723`, learned MSE was about
+`1.567` versus raw-pooled `1.668`, and actual greedy caption exact was
+`0.766 / 0.754 / 0.711`. For 65 tokens, semantic accuracy was `0.809 / 0.781 / 0.734`, learned MSE
+was about `1.110` versus raw `1.196`, and greedy exact was `0.809 / 0.773 / 0.719`.
+
+The 65-token fidelity layout improves both reconstruction and mean real caption generation at a
+modest throughput/memory cost, so it is the performance-oriented A6000 preset. The 17-token layout
+remains the balanced compression preset. All claims remain limited to the four selected SSV2 action
+classes and seven accumulated frame-to-frame deltas.

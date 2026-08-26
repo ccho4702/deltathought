@@ -12,3 +12,19 @@ def test_semantic_caption_pilot_uses_only_selected_tokens_and_large_qwen() -> No
     assert config.shuffle_repeats >= 4
     assert config.ranking_loss_weight > config.target_loss_weight
     assert "usage_entropy_high" in config.delta_run_id
+
+
+def test_layout_caption_uses_balanced_grid_delta() -> None:
+    config = load_config(Path("configs/ssv2_semantic_caption_layout17_a6000.yaml"))
+
+    assert "layout17" in config.ssv2_config.name
+    assert "layout17" in config.semantic_token_config.name
+
+
+def test_fidelity_caption_uses_65_grid_tokens() -> None:
+    config = load_config(Path("configs/ssv2_semantic_caption_layout65_a6000.yaml"))
+
+    assert "layout65" in config.ssv2_config.name
+    assert "layout65" in config.semantic_token_config.name
+    assert config.learning_rate == 0.0003
+    assert config.max_steps == 800

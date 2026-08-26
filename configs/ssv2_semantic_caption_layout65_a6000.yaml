@@ -1,0 +1,26 @@
+seed: 42
+ssv2_config: configs/ssv2_semantic_scaled_layout65.yaml
+semantic_token_config: configs/ssv2_semantic_token_layout65_a6000.yaml
+delta_run_id: layout65-causal-seed42-validation
+runtime:
+  device: cuda
+  backend: nccl
+  precision: bfloat16
+  per_device_batch_size: 2
+  num_workers: 2
+  cpu_threads: 4
+  tf32: true
+  nccl_compatibility_mode: true
+learning_rate: 0.0003
+weight_decay: 0.01
+target_loss_weight: 1.0
+ranking_loss_weight: 5.0
+max_steps: 800
+checkpoint_interval_steps: 100
+evaluation_batch_size: 2
+evaluation_split: validation
+shuffle_repeats: 4
+minimum_accuracy_gap: 0.05
+hard_tokens: true
+output_root: outputs/real_pilots/ssv2_semantic_caption_layout65
+log_root: logs/experiments
