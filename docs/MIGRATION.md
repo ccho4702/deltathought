@@ -11,6 +11,7 @@ Prepared: 2026-08-27
 - Native-Omni video S1 result: `71f5116`
 - Native-Omni audio S1 result: `73f9969`
 - Native-Omni AudioCaps Caption LoRA result: `ec8cf1d`
+- One-second native-Omni audio/video S1 result: `2cb7048`
 - Migration handoff tag: `migration-20260826-v2`
 
 Clone and recreate the locked environment:
@@ -152,6 +153,20 @@ Verify with:
 
 ```bash
 cd /mnt/nfs_shared_data/project_backups/deltathought/ec8cf1d && sha256sum -c SHA256SUMS
+```
+
+The final one-second DeltaTok checkpoints are retained together at
+`/mnt/nfs_shared_data/project_backups/deltathought/2cb7048/`:
+
+- Audio `checkpoints/audio-step-001000.pt`
+  - SHA-256 `f0706270d06b66821b18e2ed40513917caea1e6852de757ae0f66330985d7b38`
+- Video `checkpoints/video-step-002000.pt`
+  - SHA-256 `2d46816bc45b4dda9b4ef27c4372b5b956cff4b34a0b7a999d94bd295918a4e5`
+
+Verify with:
+
+```bash
+cd /mnt/nfs_shared_data/project_backups/deltathought/2cb7048 && sha256sum -c SHA256SUMS
 ```
 
 Synthetic checkpoints now record `PairDeltaEncoder.ALGORITHM_VERSION`. Automatic verification and
