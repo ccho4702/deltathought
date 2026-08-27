@@ -25,6 +25,28 @@ def test_scale_config_uses_one_delta_token_and_distributed_effective_batch() -> 
     assert effective_batch == 128
 
 
+def test_audio_scale_config_matches_video_training_exposure() -> None:
+    video = load_config(Path("configs/deltatok_vggsound_video.yaml"))
+    audio = load_config(Path("configs/deltatok_vggsound_audio.yaml"))
+    video_examples = (
+        video.training.max_steps
+        * video.runtime.per_device_batch_size
+        * 4
+        * video.runtime.gradient_accumulation_steps
+    )
+    audio_examples = (
+        audio.training.max_steps
+        * audio.runtime.per_device_batch_size
+        * 4
+        * audio.runtime.gradient_accumulation_steps
+    )
+
+    assert audio.modality == "audio"
+    assert audio.model.tokens_per_frame == 50
+    assert audio.model.delta_tokens == 1
+    assert audio_examples == video_examples == 256_000
+
+
 def test_pair_dataset_exposes_every_consecutive_pair_and_reuses_cache(tmp_path: Path) -> None:
     path = tmp_path / "blocks.pt"
     embeddings = torch.arange(4 * 3 * 2, dtype=torch.float16).reshape(4, 3, 2)
