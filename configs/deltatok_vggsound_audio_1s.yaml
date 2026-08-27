@@ -1,0 +1,35 @@
+seed: 42
+modality: audio
+cache_manifest: intermediates/cache/omni_vggsound_s1_1s_224/audio_manifest.json
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  precision: bfloat16
+  cpu_threads: 4
+  per_device_batch_size: 32
+  gradient_accumulation_steps: 4
+  cache_entries: 512
+model:
+  input_dim: 3584
+  model_dim: 768
+  tokens_per_frame: 25
+  delta_tokens: 1
+  depth: 12
+  num_heads: 12
+training:
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  warmup_steps: 100
+  max_steps: 1000
+  checkpoint_interval_steps: 100
+  keep_last_checkpoints: 2
+  gradient_clip_norm: 0.01
+  resume: auto
+evaluation:
+  batch_size: 32
+  retrieval_limit: 1024
+  minimum_mse_relative_improvement: 0.01
+  minimum_retrieval_absolute_improvement: 0.01
+output_root: outputs/real_pilots/deltatok_vggsound_audio_1s
+log_root: logs/experiments
