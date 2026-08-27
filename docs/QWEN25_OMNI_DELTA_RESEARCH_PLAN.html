@@ -3,595 +3,160 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Qwen2.5-Omni First + Delta 연구 계획</title>
+  <title>DeltaOmni 확정 학습 계획</title>
   <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #f5f7fb;
-      --surface: #ffffff;
-      --text: #172033;
-      --muted: #5c667a;
-      --line: #d9dfeb;
-      --accent: #3157d5;
-      --accent-soft: #e9eeff;
-      --good: #147d64;
-      --good-soft: #e6f6f1;
-      --warn: #9a5c00;
-      --warn-soft: #fff4dd;
-      --bad: #a33434;
-      --bad-soft: #fdecec;
-      --code: #eef1f7;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #101522;
-        --surface: #171e2e;
-        --text: #e7ebf4;
-        --muted: #aeb7c9;
-        --line: #323d52;
-        --accent: #89a2ff;
-        --accent-soft: #202c55;
-        --good: #68d3b5;
-        --good-soft: #17392f;
-        --warn: #ffc56b;
-        --warn-soft: #3f3119;
-        --bad: #ff9a9a;
-        --bad-soft: #442526;
-        --code: #111827;
-      }
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.65;
-    }
-    main { max-width: 1160px; margin: 0 auto; padding: 42px 24px 80px; }
-    h1 { font-size: clamp(2rem, 5vw, 3.3rem); line-height: 1.12; margin: 0 0 14px; }
-    h2 { margin-top: 52px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
-    h3 { margin-top: 28px; }
-    p, li { max-width: 95ch; }
-    a { color: var(--accent); }
-    code, pre { font-family: "SFMono-Regular", Consolas, monospace; }
-    code { background: var(--code); padding: 0.12rem 0.35rem; border-radius: 5px; }
-    pre {
-      overflow-x: auto;
-      background: var(--code);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 18px;
-      line-height: 1.45;
-    }
-    .eyebrow { color: var(--accent); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-    .subtitle { color: var(--muted); font-size: 1.15rem; max-width: 85ch; }
-    .meta { color: var(--muted); font-size: .92rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 20px;
-    }
-    .card h3 { margin-top: 0; }
-    .callout { border-left: 5px solid var(--accent); background: var(--accent-soft); padding: 16px 20px; border-radius: 8px; }
-    .good { border-left-color: var(--good); background: var(--good-soft); }
-    .warn { border-left-color: var(--warn); background: var(--warn-soft); }
-    .bad { border-left-color: var(--bad); background: var(--bad-soft); }
-    .flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; margin: 20px 0; }
-    .node {
-      flex: 1 1 180px;
-      min-width: 170px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 14px;
-    }
-    .arrow { align-self: center; color: var(--accent); font-size: 1.5rem; font-weight: 700; }
-    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
-    table { width: 100%; border-collapse: collapse; background: var(--surface); }
-    th, td { text-align: left; vertical-align: top; padding: 13px 14px; border-bottom: 1px solid var(--line); }
-    th { background: var(--accent-soft); white-space: nowrap; }
-    tr:last-child td { border-bottom: 0; }
-    .tag { display: inline-block; border-radius: 999px; padding: 2px 9px; margin: 2px; font-size: .82rem; font-weight: 650; }
-    .tag.good { border: 0; color: var(--good); }
-    .tag.warn { border: 0; color: var(--warn); }
-    .tag.bad { border: 0; color: var(--bad); }
-    .decision { counter-increment: decision; }
-    .decision h3::before { content: "D" counter(decision) ". "; color: var(--accent); }
-    .decisions { counter-reset: decision; }
-    .small { color: var(--muted); font-size: .9rem; }
-    .checklist li { margin-bottom: 8px; }
+    :root { --bg:#f5f7fb; --card:#fff; --text:#182033; --muted:#606a7d; --line:#dce2ed; --blue:#3157d5; --soft:#eaf0ff; --green:#147d64; --warn:#9a5c00; }
+    @media (prefers-color-scheme:dark) { :root { --bg:#101522; --card:#171e2e; --text:#e8ecf5; --muted:#adb7ca; --line:#354057; --blue:#91a8ff; --soft:#202d57; --green:#6bd5b7; --warn:#ffc56b; } }
+    * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--text); font:16px/1.65 Inter, Pretendard, system-ui, sans-serif; }
+    main { max-width:1100px; margin:auto; padding:42px 24px 80px; } h1 { font-size:clamp(2rem,5vw,3.2rem); line-height:1.12; margin:.2em 0; }
+    h2 { margin-top:48px; padding-bottom:9px; border-bottom:1px solid var(--line); } h3 { margin-top:26px; }
+    .muted { color:var(--muted); } .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:15px; } .callout { border-left:5px solid var(--blue); background:var(--soft); padding:16px 20px; border-radius:9px; }
+    .ok { border-left-color:var(--green); } .warn { border-left-color:var(--warn); } code,pre { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+    code { background:var(--soft); padding:.1rem .35rem; border-radius:5px; } pre { overflow:auto; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; }
+    table { width:100%; border-collapse:collapse; background:var(--card); } th,td { padding:12px 14px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+    th { background:var(--soft); } .table { overflow:auto; border:1px solid var(--line); border-radius:12px; } a { color:var(--blue); }
   </style>
 </head>
-<body>
-<main>
+<body><main>
   <header>
-    <div class="eyebrow">DeltaThought · Research design</div>
-    <h1>Qwen2.5-Omni가<br>First + Delta를 이해하게 만드는 계획</h1>
-    <p class="subtitle">
-      Native Qwen2.5-Omni vision/audio encoders로 causal block embedding을 만들고, 첫 full block과
-      이후의 압축 delta만으로 modality caption과 전체 QA를 수행하도록 동일 Thinker를 학습한다.
-    </p>
-    <p class="meta">작성일 2026-08-27 · 계획 문서 · 성능 결과 문서 아님</p>
+    <div class="muted">확정안 · 2026-08-27</div>
+    <h1>Qwen2.5-Omni<br>DeltaTok → Caption → QA</h1>
+    <p class="muted">S1은 <a href="https://arxiv.org/abs/2604.04913">A Frame is Worth One Token</a>의 DeltaTok을 기준으로 단순하게 재현하고, 이후에만 LoRA를 붙인다.</p>
   </header>
 
   <section>
-    <h2>1. 결론: 사용자 구상과의 일치 여부</h2>
-    <div class="callout good">
-      <strong>핵심 구상은 일치한다.</strong> Audio와 video는 독립적으로 delta를 축적하고, commit 시점에
-      scoped caption을 생성한 뒤 해당 modality만 새 full anchor로 갱신한다. 마지막에는 caption memory와
-      아직 commit되지 않은 state를 사용해 전체 질문에 답한다.
-    </div>
-    <p>다만 실제 학습 가능한 시스템으로 만들려면 아래 네 요소가 사용자 목록에 명시적으로 추가되어야 한다.</p>
-    <div class="grid">
-      <article class="card">
-        <h3>State accumulator</h3>
-        <p>pairwise delta를 단순 연결하지 않고 bounded state에 누적한다. 순서와 누적량을 보존해야 한다.</p>
-      </article>
-      <article class="card">
-        <h3>Commit policy</h3>
-        <p>언제 caption을 만들지 modality별 boundary/trigger head가 결정한다. Caption decoder와 별도 검증한다.</p>
-      </article>
-      <article class="card">
-        <h3>Reset semantics</h3>
-        <p>caption 이후 해당 modality의 anchor/state만 갱신하고 다른 modality의 시간 상태는 건드리지 않는다.</p>
-      </article>
-      <article class="card">
-        <h3>Temporal serializer</h3>
-        <p>Qwen2.5-Omni TMRoPE 시간축을 유지하며 full/delta/audio/video block을 Thinker 입력에 interleave한다.</p>
-      </article>
-    </div>
-  </section>
-
-  <section>
-    <h2>2. 목표 동작</h2>
-    <div class="flow" aria-label="inference flow">
-      <div class="node"><strong>Native encoders</strong><br>2초 causal A/V blocks</div>
-      <div class="arrow">→</div>
-      <div class="node"><strong>First full</strong><br>modality anchor 저장</div>
-      <div class="arrow">→</div>
-      <div class="node"><strong>Pair delta</strong><br>이전 block → 현재 block</div>
-      <div class="arrow">→</div>
-      <div class="node"><strong>Accumulator</strong><br>bounded modality state</div>
-      <div class="arrow">→</div>
-      <div class="node"><strong>Commit</strong><br>caption + modality reset</div>
-      <div class="arrow">→</div>
-      <div class="node"><strong>Final QA</strong><br>caption memory + active state</div>
-    </div>
-    <pre>&lt;FULL_V t=0&gt; V₀
-&lt;FULL_A t=0&gt; A₀
-&lt;DELTA_V t=1&gt; ΔV₁  &lt;DELTA_A t=1&gt; ΔA₁
-...
-&lt;CAPTION_V&gt; person places the cup down &lt;RESET_V&gt;
-&lt;FULL_V t=k&gt; Vₖ
-...
-&lt;QUESTION&gt; What happened after the impact sound?
-&lt;ANSWER&gt; The person picked the cup back up.</pre>
-    <div class="callout warn">
-      Qwen encoder가 전체 미래 clip을 한 번에 보게 하면 causal delta가 아니다. 모든 full embedding은 고정된
-      2초 block을 독립적으로 encode해야 하며, 이후 block 정보가 이전 embedding에 섞이지 않아야 한다.
-    </div>
-  </section>
-
-  <section>
-    <h2>3. 학습 대상 모듈</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>모듈</th><th>역할</th><th>초기 학습 상태</th><th>직접 검증</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>Qwen native visual / audio tower</td>
-            <td>2초 block을 variable-length 3584-D token으로 변환</td>
-            <td>Freeze</td>
-            <td>Raw Omni baseline, token rate, 미래 누출 없음</td>
-          </tr>
-          <tr>
-            <td>Video delta encoder</td>
-            <td>연속 video block embedding의 변화 압축</td>
-            <td>Train</td>
-            <td>복원, 순서, actual video caption/QA ablation</td>
-          </tr>
-          <tr>
-            <td>Audio delta encoder</td>
-            <td>연속 audio block embedding의 변화 압축</td>
-            <td>Train</td>
-            <td>복원, sound event/caption/QA ablation</td>
-          </tr>
-          <tr>
-            <td>Modality accumulators</td>
-            <td>delta를 고정 크기 state로 순서 있게 누적</td>
-            <td>Train, modality별 분리</td>
-            <td>prefix length, drop/reverse/shuffle</td>
-          </tr>
-          <tr>
-            <td>Delta → Thinker interface</td>
-            <td>delta state를 Thinker 3584-D 입력 분포와 시간 위치에 맞춤</td>
-            <td>Train</td>
-            <td>raw teacher와 hidden/logit alignment + actual task</td>
-          </tr>
-          <tr>
-            <td>Commit heads</td>
-            <td>modality별 caption/reset 시점 예측</td>
-            <td>Train</td>
-            <td>boundary F1, latency, over/under-segmentation</td>
-          </tr>
-          <tr>
-            <td>Thinker</td>
-            <td>delta 문법 이해, caption 및 final answer 생성</td>
-            <td>Freeze → LoRA</td>
-            <td>held-out greedy caption/QA 및 causal controls</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section>
-    <h2>4. Delta를 Thinker에 넣는 방법</h2>
-    <div class="grid">
-      <article class="card">
-        <h3>권고: continuous delta slots</h3>
-        <p>
-          Delta content는 <code>K × 3584</code> continuous embeddings로 만들고 Thinker의
-          <code>inputs_embeds</code>에 직접 삽입한다. Qwen의 native multimodal interface 자체가 continuous
-          encoder embedding을 사용하므로 가장 자연스럽다.
-        </p>
-        <span class="tag good">권고</span><span class="tag good">정보 손실 최소</span>
-      </article>
-      <article class="card">
-        <h3>대안: discrete VQ delta codes</h3>
-        <p>Delta를 codebook ID로 양자화하여 vocabulary처럼 입력한다. 저장·전송에는 좋지만 초기 연구에서는 quantization confound가 추가된다.</p>
-        <span class="tag warn">후속 ablation</span>
-      </article>
-    </div>
-    <p>
-      <code>&lt;FULL_V&gt;</code>, <code>&lt;DELTA_V&gt;</code>, <code>&lt;CAPTION_V&gt;</code>,
-      <code>&lt;RESET_V&gt;</code> 같은 <strong>control token</strong>은 discrete special token으로 추가한다.
-      즉 control은 token ID, 실제 delta 내용은 continuous slots로 분리하는 것이 1차 권고안이다.
-    </p>
-  </section>
-
-  <section>
-    <h2>5. 데이터 전략: 하나가 아니라 부분 supervision의 결합</h2>
-    <h3>채택 전 credibility gate</h3>
-    <div class="callout bad">
-      기능이 맞는다는 이유만으로 데이터셋을 채택하지 않는다. 아래 hard gate를 통과하지 못한 후보는
-      구현 편의와 무관하게 주 학습·평가에서 제외한다.
-    </div>
-    <ol class="checklist">
-      <li><strong>학술 검증:</strong> 2년 이상 된 데이터셋은 원칙적으로 Semantic Scholar/Crossref 기준
-        100회 이상 인용. 신생 데이터셋은 top-tier peer review와 다수의 독립 benchmark 채택이 모두 필요하다.</li>
-      <li><strong>실사용:</strong> 공식 download 통계, benchmark submission, 독립 downstream 논문,
-        Hugging Face/GitHub adoption 중 최소 두 신호를 확인한다. 다운로드 수만으로 품질을 판단하지 않는다.</li>
-      <li><strong>공식성:</strong> 저자·기관 공식 배포, 고정 version, annotation card, split 정의가 있어야 한다.</li>
-      <li><strong>라이선스:</strong> annotation과 media 각각의 이용 조건을 검증하고 동의 기록을 남긴다.</li>
-      <li><strong>가용성:</strong> YouTube 기반이면 실제 media attrition을 측정한다. 가용률이 낮거나 class별
-        결측이 편향되면 사용하지 않는다.</li>
-      <li><strong>누출 방지:</strong> 다른 dataset과 원본 source가 겹치면 source-group split을 적용한다.</li>
-    </ol>
-    <p class="small">
-      2026-08-27 보수적 citation snapshot: ActivityNet Captions 1,624, Ego4D 629,
-      AudioCaps 749, Clotho 620, MUSIC-AVQA 274, AVQA 182, AVSD 233. 집계 서비스별 차이가 있어
-      더 낮게 확인된 값을 우선 사용한다. Perception Test는 NeurIPS 2023 공식 benchmark지만 정량 adoption
-      snapshot을 한 번 더 고정하기 전에는 acquisition을 시작하지 않는다. PerceptionLM/PLM data는 2025년
-      신생이며 확인 인용이 1회 수준이라 현재 주 데이터셋에서 제외한다.
-    </p>
-    <div class="callout">
-      단일 sample에 모든 label이 있을 필요는 없다. 공통 episode schema에서 없는 label은 명시적으로
-      <code>unknown</code>으로 mask하고, dataset별로 관측 가능한 loss만 계산한다. 없는 caption이나 event를
-      “no change”로 변환하면 안 된다.
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>후보</th><th>제공 supervision</th><th>계획상 역할</th><th>판정</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><a href="https://github.com/google-deepmind/perception_test">Perception Test</a></td>
-            <td>동일 video+audio, action/sound segments, MC QA, temporal reasoning</td>
-            <td>통합 commit/AV-QA 및 최종 causal 평가의 중심</td>
-            <td><span class="tag warn">정량 adoption 재확인 후 Tier A</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://github.com/facebookresearch/perception_models">PLM human video data</a></td>
-            <td>human fine-grained video QA와 spatio-temporal captions</td>
-            <td>Video delta caption 및 temporal QA 확장</td>
-            <td><span class="tag bad">Watchlist · 주 실험 제외</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://openaccess.thecvf.com/content_ICCV_2017/papers/Krishna_Dense-Captioning_Events_in_ICCV_2017_paper.pdf">ActivityNet Captions</a></td>
-            <td>20K long videos, temporally localized event descriptions</td>
-            <td>Video commit/caption 대안</td>
-            <td><span class="tag warn">media/annotation terms audit</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://ego4d-data.org/docs/">Ego4D narrations</a></td>
-            <td>dense narrations, summaries, 일부 audio</td>
-            <td>장기 video event caption 및 boundary</td>
-            <td><span class="tag warn">별도 계약 필요</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://audiocaps.github.io/">AudioCaps</a></td>
-            <td>약 46K human audio captions, AudioSet 기반</td>
-            <td>Audio delta → 자연어 caption</td>
-            <td><span class="tag good">권고</span><span class="tag warn">raw media 요청/attrition</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://zenodo.org/records/4783391">Clotho 2.1</a></td>
-            <td>6,974 audio clips, clip당 human caption 5개</td>
-            <td>Audio caption generalization test</td>
-            <td><span class="tag good">권고</span><span class="tag warn">caption 비상업 조건</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://openaccess.thecvf.com/content/CVPR2022/html/Li_Learning_To_Answer_Questions_in_Dynamic_Audio-Visual_Scenarios_CVPR_2022_paper.html">MUSIC-AVQA</a></td>
-            <td>45K+ audio/visual/audio-visual QA, 음악 domain</td>
-            <td>모달리티 필요성 및 joint QA 보조 실험</td>
-            <td><span class="tag warn">domain 제한</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://mn.cs.tsinghua.edu.cn/avqa/">AVQA</a></td>
-            <td>real-life audio-visual QA</td>
-            <td>joint QA 외부 일반화</td>
-            <td><span class="tag warn">media/terms audit</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://www.microsoft.com/en-us/research/publication/overview-of-the-seventh-dialog-system-technology-challenge-dstc7/">AVSD</a></td>
-            <td>11K+ audio-visual scene-aware conversations</td>
-            <td>open-ended final response 및 dialogue</td>
-            <td><span class="tag good">2차 권고</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <h3>Caption 학습 source와 QA 학습·평가 source를 분리한다</h3>
-    <div class="grid">
-      <article class="card">
-        <h3>Caption 전용 source pool</h3>
-        <p>
-          ActivityNet Captions/Ego4D는 video caption, AudioCaps/Clotho는 audio caption에 사용한다.
-          Joint audiovisual caption dataset은 credibility gate를 별도로 통과한 경우에만 추가한다.
-        </p>
-        <span class="tag good">Stage 2 only</span>
-      </article>
-      <article class="card">
-        <h3>QA 전용 source pool</h3>
-        <p>
-          NExT-QA, MUSIC-AVQA, AVQA, AVSD, Perception Test 중 credibility/license gate를 통과한 dataset을
-          Stage 3 QA SFT와 held-out 평가에 사용한다. 이 media에는 caption ground truth를 학습하지 않는다.
-        </p>
-        <span class="tag good">Stage 3 only</span>
-      </article>
-      <article class="card">
-        <h3>Global source-overlap audit</h3>
-        <p>
-          Dataset 이름이 달라도 YouTube ID, 원본 URL, media hash가 같으면 동일 source다. Caption pool과
-          QA pool 사이의 모든 중복 source를 제거하고, 제거 전후 class/domain 분포를 보고한다.
-        </p>
-        <span class="tag good">hard invariant</span>
-      </article>
-    </div>
-    <div class="callout warn">
-      ActivityNet Captions를 caption 학습에 쓰면 ActivityNet-QA는 QA 결과에서 제외한다. AVSD를 QA에 쓰면
-      AVSD summary/caption은 caption 학습에 쓰지 않는다. “같은 영상의 caption을 학습하고 그 영상의 QA를
-      맞히는” 평가는 직접 answer leakage가 아니더라도 content memorization confound이므로 금지한다.
-    </div>
-    <h3>최소 credible 조합</h3>
-    <ol>
-      <li><strong>Caption SFT:</strong> ActivityNet Captions 또는 Ego4D + AudioCaps + Clotho.</li>
-      <li><strong>QA SFT:</strong> NExT-QA + MUSIC-AVQA/AVQA + AVSD train splits.</li>
-      <li><strong>Untouched QA:</strong> Perception Test 및 각 QA dataset의 source-disjoint official test.</li>
-      <li><strong>Dataset-family exclusivity:</strong> 같은 원본 family는 caption 또는 QA 중 한 역할만 맡는다.</li>
-    </ol>
-    <p class="small">SSV2·AudioSet은 engineering baseline에 유지한다. NExT-QA는 QA 전용으로만 사용한다.</p>
-  </section>
-
-  <section>
-    <h2>6. 공통 episode format</h2>
-    <pre>{
-  "schema": "deltaomni.episode.v2",
-  "episode_id": "dataset:split:source-id",
-  "dataset": "dataset-name",
-  "dataset_revision": "pinned-revision",
-  "split": "train",
-  "source_id": "source-id",
-  "source_group_id": "upstream:stable-id",
-  "media": {
-    "image": null,
-    "video": {"path": "...", "sha256": "...", "duration_seconds": 23.4},
-    "audio": null
-  },
-  "duration_seconds": 23.4,
-  "temporal_blocks": [{"block_index": 0, "start_seconds": 0.0, "end_seconds": 2.0}],
-  "captions": {"image": null, "video": null, "audio": null, "joint": null},
-  "text": {"transcript": null, "subtitle": null, "ocr": null},
-  "events": null,
-  "qa": null,
-  "provenance": {"resource_name": "...", "license_record": null},
-  "metadata": {}
-}</pre>
-    <p>
-      위 코드는 요약 예시다. 전체 필드와 nested field는 machine-readable JSON Schema에서 강제한다.
-      <code>null</code>은 dataset이
-      해당 annotation 종류를 제공하지 않는다는 뜻이고, 빈 배열은 annotation 종류는 제공하지만 해당 episode에
-      item이 없다는 뜻이다. 상세 규약은 <a href="CANONICAL_DATA_FORMAT.md">Canonical data format v2</a>에 있다.
-    </p>
-    <ul class="checklist">
-      <li>모든 dataset adapter는 이 schema만 출력하고 모델 코드는 dataset 이름을 알지 않는다.</li>
-      <li>동일 YouTube/source가 여러 dataset에 나타나면 source-group 단위로 split하여 leakage를 막는다.</li>
-      <li>모든 block은 원본 timestamp를 보존하고 2초 경계를 넘는 label은 overlap 비율과 함께 기록한다.</li>
-      <li>자동 생성 caption/QA는 human annotation과 별도 필드에 보존하며 최종 test 정답으로 사용하지 않는다.</li>
-      <li>질문의 정답 문자열이 caption에 직접 포함되는지 기록해 QA leakage 결과를 별도로 보고한다.</li>
+    <h2>0. 변경하지 않는 원칙</h2>
+    <ul>
+      <li>Native Qwen2.5-Omni vision/audio encoders와 base Thinker는 항상 freeze.</li>
+      <li>LLM 학습은 LoRA만 사용하고 full fine-tuning은 구현하지 않음.</li>
+      <li>S1에는 action label, caption, QA, class loss를 넣지 않음.</li>
+      <li>Audio와 video DeltaTok은 parameter를 공유하지 않음.</li>
+      <li>새 vocabulary token은 초기 버전에 추가하지 않음. Continuous type embedding과 외부 commit controller 사용.</li>
+      <li>세 단계 loss를 동시에 섞지 않고 단계별 gate를 통과해야 다음으로 이동.</li>
     </ul>
   </section>
 
   <section>
-    <h2>7. 학습 curriculum</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>단계</th><th>입력/학습 대상</th><th>Loss</th><th>다음 단계 진입 조건</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>P0 Raw Omni baseline</td>
-            <td>공식 full A/V input, 전부 freeze</td>
-            <td>없음 또는 dataset 표준 SFT</td>
-            <td>실제 caption/QA 기준 성능과 비용 측정</td>
-          </tr>
-          <tr>
-            <td>S1 Delta representation</td>
-            <td>Native encoders freeze, modality delta/accumulator train</td>
-            <td>step/section reconstruction, identity, temporal contrast, order</td>
-            <td>normal이 zero/last/reverse/shuffle보다 우수</td>
-          </tr>
-          <tr>
-            <td>S1 Delta interface</td>
-            <td>Teacher=raw Omni, student=first+delta, Thinker freeze</td>
-            <td>hidden alignment, output KL, temporal/semantic probes</td>
-            <td>first+delta representation이 causal controls를 통과</td>
-          </tr>
-          <tr>
-            <td>S2 Caption + commit</td>
-            <td>Commit heads, control embeddings, delta interface, caption LoRA</td>
-            <td>boundary BCE/focal, caption CE, teacher KL, latency regularizer</td>
-            <td>boundary F1 + actual modality-caption 품질</td>
-          </tr>
-          <tr>
-            <td>S3 Independent QA</td>
-            <td>Caption LoRA freeze + 별도 QA LoRA; caption과 source-disjoint QA media</td>
-            <td>answer CE, evidence/required-modality auxiliary losses</td>
-            <td>동일 QA SFT 후 caption-curriculum branch가 no-caption control보다 우수</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="callout good">
-      <strong>확정된 학습 제약:</strong> Qwen2.5-Omni Thinker는 항상 LoRA로만 학습한다. Native vision/audio
-      encoders와 base Thinker weights는 모든 단계에서 freeze하며 full fine-tuning 경로는 구현하지 않는다.
-      Frozen-interface run은 LoRA 효과를 분리하기 위한 baseline으로만 남긴다.
-    </div>
-    <h3>Stage별 LoRA 구성</h3>
-    <p>
-      S2에서 <code>LoRA_caption</code>을 학습한다. S3에서는 이를 freeze하고 새
-      <code>LoRA_QA</code>를 추가하여 base Thinker 출력에 두 low-rank update를 합성한다. Caption이 QA에
-      기여했는지 분리하기 위해 control branch는 <code>LoRA_caption=0</code>인 동일 S1 checkpoint에서 시작해,
-      같은 초기값·QA data·step 수의 <code>LoRA_QA</code>만 학습한다.
-    </p>
-    <h3>Stage 2 내부의 부분 supervision sampling</h3>
-    <p>
-      Video-caption batch, audio-caption batch, boundary batch, unlabeled teacher-student batch를 ratio로 섞고
-      sample의 supervision mask가 켜진 loss만 계산한다. QA batch는 이 stage에 절대 들어오지 않는다. S3는
-      QA dataset만 사용하며 S2의 caption/delta modules를 고정한다.
-    </p>
-    <h3>QA stage의 실제 입력</h3>
-    <p>
-      QA media에는 caption ground truth가 없다. Freeze된 S2 system이 first+delta stream에서 caption을 먼저
-      생성하고, S3는 그 generated caption memory와 아직 commit되지 않은 active delta state, question을 받아
-      answer를 학습한다. 따라서 train과 inference 조건이 일치한다.
-    </p>
+    <h2>1. S1 — Self-supervised DeltaTok</h2>
+    <div class="callout ok"><strong>질문:</strong> 이전 Omni feature와 하나의 continuous delta token만으로 현재 feature를 복원할 수 있는가?</div>
+    <h3>Frozen target features</h3>
+    <pre>video: xᵛ_t = FrozenOmniVision(causal_chunk_t)
+audio: xᵃ_t = FrozenOmniAudio(causal_chunk_t)</pre>
+    <p>모든 chunk는 독립적으로 encode해 미래 정보가 이전 feature에 섞이지 않게 한다. 기준 chunk는 2초다.</p>
+
+    <h3>Tokenizer architecture</h3>
+    <pre>x_(t-1), x_t: native 3584-D tokens
+        │ shared input projection 3584 → 768
+        │ previous/current type embeddings
+        ▼
+Transformer encoder + learned delta query
+        ▼
+z_t: K×768 continuous delta token
+
+Decoder(previous tokens, z_t)
+        ▼
+predicted residual Δx̂_t
+        ▼
+x̂_t = x_(t-1) + Δx̂_t</pre>
+    <p>첫 실험은 논문과 동일하게 <strong>K=1</strong>. K=2/4/8은 1-token 결과가 부족할 때만 ablation한다. Video/audio는 동일 설계의 별도 모델이다.</p>
+
+    <h3>Loss</h3>
+    <pre>z_t  = Encoder(x_(t-1), x_t)
+x̂_t = Decoder(x_(t-1), z_t)
+
+L_S1 = MSE(x̂_t, x_t)</pre>
+    <p>초기 방법에는 cosine, history, action CE, order classification, recurrent accumulator를 추가하지 않는다. Cosine과 retrieval은 평가 지표다.</p>
+
+    <h3>축적과 reset</h3>
+    <pre>&lt;FULL_V&gt; xᵛ_0
+&lt;DELTA_V&gt; zᵛ_1
+&lt;DELTA_V&gt; zᵛ_2
+...
+
+caption commit → 현재 embedding을 새 FULL로 저장 → 이전 delta sequence 제거</pre>
+    <p>Delta를 recurrent state로 다시 압축하지 않는다. Commit 전까지 시간순 sequence로 append하며 Thinker의 position/TMRoPE가 순서를 표현한다.</p>
+
+    <h3>학습 protocol</h3>
+    <ul>
+      <li>AdamW, BF16, exact resume.</li>
+      <li>논문 기준: 50K iterations, 5K warmup, peak LR 1e-3, weight decay 1e-4, gradient clip 1e-2.</li>
+      <li>Global batch 1,024를 목표로 4×A6000 micro-batch와 gradient accumulation 사용.</li>
+      <li>Previous/current에 동일 spatial augmentation 적용.</li>
+      <li>여러 temporal offset에서 causal pair sampling.</li>
+    </ul>
+
+    <h3>S1 gate</h3>
+    <div class="table"><table><thead><tr><th>지표</th><th>목적</th></tr></thead><tbody>
+      <tr><td>Feature MSE</td><td>논문의 직접 tokenizer 품질.</td></tr>
+      <tr><td>Cosine similarity</td><td>Omni semantic 방향 보존.</td></tr>
+      <tr><td>Retrieval R@1</td><td>복원 feature가 올바른 target을 식별하는지 확인.</td></tr>
+      <tr><td>Same-input delta norm</td><td>변화가 없을 때 delta가 작아지는지 확인.</td></tr>
+      <tr><td>Teacher-forced rollout</td><td>Ground-truth previous feature 조건.</td></tr>
+      <tr><td>Autoregressive rollout</td><td>첫 full + delta들만으로 누적 오차 측정.</td></tr>
+    </tbody></table></div>
+    <p>Autoregressive drift가 실제로 클 때만 논문 부록처럼 자기 reconstruction을 다음 reference로 사용하는 fine-tuning을 추가한다.</p>
   </section>
 
   <section>
-    <h2>8. 성공 판정: “Qwen이 delta를 이해한다”의 operational definition</h2>
-    <h3>QA 성능 비교 branch</h3>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Branch</th><th>학습 순서</th><th>목적</th></tr></thead>
-        <tbody>
-          <tr><td>Q0 Native</td><td>Qwen2.5-Omni, QA SFT 없음</td><td>원래 zero-shot QA 기준</td></tr>
-          <tr><td>Q1 No-caption control</td><td>S1 delta → S3 QA LoRA</td><td>동일 QA 학습에서 caption curriculum 제거</td></tr>
-          <tr><td>Q2 Proposed</td><td>S1 delta → S2 caption LoRA → S3 QA LoRA</td><td>Caption 학습의 독립 QA 기여</td></tr>
-          <tr><td>Q3 Raw-input reference</td><td>Q2와 같은 LoRA, raw full Omni input</td><td>Delta 압축으로 인한 성능 gap</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p>
-      Caption curriculum 효과는 Q2−Q1, first+delta 보존율은 Q2−Q3로 측정한다. Q1과 Q2는 동일한 QA
-      train split, optimizer, QA LoRA initialization, step 수를 사용한다. QA hyperparameter 선택에는 caption
-      dataset 결과만 사용할 수 없으므로 QA train 내부의 고정 validation을 쓰되, final QA test는 설정 동결 후
-      한 번만 평가한다.
-    </p>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>입력 조건</th><th>의미</th><th>기대</th></tr></thead>
-        <tbody>
-          <tr><td>Raw full Omni</td><td>정보 upper/reference</td><td>최고 또는 근접 최고</td></tr>
-          <tr><td>First + ordered all deltas</td><td>제안 방식</td><td>Raw 성능에 근접</td></tr>
-          <tr><td>First only</td><td>변화 정보 제거</td><td>유의하게 하락</td></tr>
-          <tr><td>First + last delta</td><td>누적 기억 제거</td><td>all deltas보다 하락</td></tr>
-          <tr><td>Zero deltas</td><td>prior/control</td><td>하락</td></tr>
-          <tr><td>Reversed deltas</td><td>시간 순서 검증</td><td>순서형 task에서 하락</td></tr>
-          <tr><td>Within-class temporal shuffle</td><td>class shortcut 제거</td><td>하락</td></tr>
-          <tr><td>Wrong-source deltas</td><td>sample-specific grounding</td><td>하락</td></tr>
-          <tr><td>Video-only / audio-only</td><td>modality 필요성</td><td>required-modality QA에서 하락</td></tr>
-          <tr><td>Shuffled captions, correct deltas</td><td>caption-memory 기여</td><td>final QA에서 하락</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p>
-      최종 판정은 greedy/open-ended caption, QA exact/F1, boundary F1, hallucination과 dataset 표준 지표로 한다.
-      Reconstruction, KL, NLL, code usage는 진단값일 뿐 성공 판정이 아니다. 최소 3 seeds와 confidence interval을
-      보고하고 validation으로 선택한 설정만 untouched test에서 한 번 평가한다.
-    </p>
+    <h2>2. S2 — Caption LoRA</h2>
+    <p>S1 DeltaTok encoder를 freeze하고 decoder는 사용하지 않는다.</p>
+    <pre>Thinker input = first native full tokens
+              + projected ordered video delta tokens
+              + projected ordered audio delta tokens
+              + modality/type embeddings
+              + timestamps</pre>
+    <h3>학습 대상과 loss</h3>
+    <ul>
+      <li>Train: Delta→3584 projector, modality/type embeddings, <code>LoRA_caption</code>.</li>
+      <li>Freeze: native encoders, DeltaTok, base Thinker.</li>
+      <li><code>L_S2 = autoregressive CE(human caption)</code>.</li>
+    </ul>
+    <p>첫 caption 실험은 human ground-truth boundary에서 수행한다. Greedy caption이 causal controls를 통과한 뒤 modality별 CommitHead를 BCE로 별도 학습한다.</p>
+    <h3>S2 gate</h3>
+    <p>실제 greedy generation을 correct/zero/reversed/shuffled/wrong-source delta와 비교한다. Caption NLL만으로 통과시키지 않는다.</p>
   </section>
 
   <section>
-    <h2>9. 구현 및 실험 순서</h2>
-    <ol class="checklist">
-      <li>공식 Omni Thinker의 raw video/audio token shape, token/sec, VRAM, throughput 측정.</li>
-      <li>Raw Omni baseline을 Perception Test 또는 우선 확보된 joint dataset에서 측정.</li>
-      <li>공통 episode schema와 source-group split verifier 구현.</li>
-      <li>두 modality의 2초 causal block cache 생성. Encoder revision과 processor config를 manifest에 기록.</li>
-      <li>Video/audio delta slot 수를 별도로 탐색. 동일 수로 고정하지 않음.</li>
-      <li>S1 codec/interface 학습 및 same-class temporal controls 통과.</li>
-      <li>Continuous delta serializer를 Thinker <code>inputs_embeds</code>와 TMRoPE에 연결.</li>
-      <li>S2 caption/commit LoRA 학습과 actual caption 평가.</li>
-      <li>Caption source와 전역 중복이 제거된 QA dataset에서 S3 QA LoRA 학습.</li>
-      <li>Q0/Q1/Q2/Q3 QA branch와 caption masked/shuffled ablation 비교.</li>
-      <li>긴 full training, multi-seed actual generation, efficiency 및 failure analysis.</li>
+    <h2>3. S3 — Source-disjoint QA LoRA</h2>
+    <pre>QA input = generated caption memory
+         + active first-full/delta sequence
+         + question</pre>
+    <ul>
+      <li><code>LoRA_caption</code> freeze.</li>
+      <li>새 <code>LoRA_QA</code>만 학습.</li>
+      <li><code>L_S3 = autoregressive CE(answer)</code>.</li>
+      <li>Caption 학습 media와 QA media는 source ID/URL/hash 기준 완전 분리.</li>
+    </ul>
+    <h3>Caption 기여 비교</h3>
+    <div class="table"><table><thead><tr><th>Branch</th><th>학습</th></tr></thead><tbody>
+      <tr><td>Native baseline</td><td>Raw Omni, QA LoRA 없음.</td></tr>
+      <tr><td>No-caption control</td><td>DeltaTok → QA LoRA.</td></tr>
+      <tr><td>Proposed</td><td>DeltaTok → Caption LoRA → QA LoRA.</td></tr>
+      <tr><td>Raw-input reference</td><td>같은 LoRA를 raw full Omni input에 적용.</td></tr>
+    </tbody></table></div>
+    <p>No-caption와 Proposed는 동일 QA split, initialization, optimizer, step 수를 사용한다. Caption masked/shuffled, caption-only, active-delta-only도 평가한다.</p>
+  </section>
+
+  <section>
+    <h2>4. 데이터 역할</h2>
+    <div class="table"><table><thead><tr><th>단계</th><th>검증된 후보</th><th>annotation 사용</th></tr></thead><tbody>
+      <tr><td>S1 video</td><td>Ego4D, Kinetics-700</td><td>사용 안 함.</td></tr>
+      <tr><td>S1 audio</td><td>AudioSet</td><td>사용 안 함.</td></tr>
+      <tr><td>S1 joint A/V</td><td>VGGSound</td><td>사용 안 함.</td></tr>
+      <tr><td>S2 caption</td><td>Ego4D/ActivityNet Captions, AudioCaps/Clotho</td><td>Human captions만.</td></tr>
+      <tr><td>S3 QA</td><td>NExT-QA, AVQA, MUSIC-AVQA, AVSD, Perception Test</td><td>Human QA만.</td></tr>
+    </tbody></table></div>
+    <div class="callout warn">현재 서버에는 Ego4D/Kinetics/VGGSound가 없다. 기존 SSV2 Omni cache는 regression test로만 유지하며 general video S1 주 결과에는 사용하지 않는다. Dataset 취득 전 공식 license와 실제 media availability를 먼저 기록한다.</div>
+  </section>
+
+  <section>
+    <h2>5. 단계 이동 규칙</h2>
+    <ol>
+      <li>S1 1-token reconstruction과 rollout이 통과하기 전에는 caption 학습 금지.</li>
+      <li>S2 greedy caption이 causal controls를 통과하기 전에는 commit policy와 QA 학습 금지.</li>
+      <li>S3는 caption source와 완전히 분리된 QA source에서만 학습·평가.</li>
+      <li>모든 단계는 small integration → long/full training → multi-seed untouched test 순서.</li>
     </ol>
-    <div class="callout warn">
-      공식 checkpoint와 project-local <code>torchvision</code> 의존성을 고정했고 native encoder smoke가
-      통과했다. 현재 설정의 독립 2초 block은 video 100 tokens, audio 50 tokens, width 3584이며 batch-one
-      반복은 bitwise exact였다. 4GPU profile에서도 batch one/rank가 87.2 blocks/s로 가장 빨랐고 peak
-      memory는 17.06 GiB/rank였다. 다음 단계는 variable native-token mask를 보존한 cache와 S1 delta 학습이다.
-    </div>
   </section>
-
-  <section class="decisions">
-    <h2>10. 확정된 설계 선택</h2>
-    <article class="card decision">
-      <h3>Delta content 표현</h3>
-      <p><strong>확정:</strong> continuous slots로 먼저 증명하고 discrete VQ는 후속 ablation으로 둔다.</p>
-    </article>
-    <article class="card decision">
-      <h3>Commit 결정 주체</h3>
-      <p><strong>확정:</strong> modality별 commit head가 boundary를 결정하고, Thinker는 caption/control token을 생성하는 hybrid 방식.</p>
-    </article>
-    <article class="card decision">
-      <h3>1차 통합 데이터셋</h3>
-      <p><strong>확정:</strong> 검증된 caption dataset과 source-disjoint QA dataset을 역할별로 분리한다.
-        ActivityNet/Ego4D, AudioCaps/Clotho는 caption 후보이고 NExT-QA, MUSIC-AVQA/AVQA, AVSD,
-        Perception Test는 QA 후보다. PLM은 현재 제외한다.</p>
-    </article>
-    <article class="card decision">
-      <h3>Caption memory의 최종 QA 노출</h3>
-      <p><strong>확정:</strong> 생성 caption과 아직 commit되지 않은 active delta state를 모두 QA에 제공한다.
-        Caption-only/state-only/shuffled-caption은 ablation으로 둔다.</p>
-    </article>
-  </section>
-
-  <section>
-    <h2>11. 현재 범위와 다음 행동</h2>
-    <div class="callout bad">
-      기존 DINOv2/CLAP/separate-Qwen 결과는 Qwen2.5-Omni가 first+delta를 이해한다는 증거가 아니다.
-      공식 Omni 경로에서는 아직 raw baseline, delta training, caption, QA 결과가 모두 남아 있다.
-    </div>
-    <p>
-      설계 선택은 확정됐다. 다음으로 dependency 추가와 encoder smoke를 재개하고, 데이터 취득 전에는 각 후보의
-      credibility·license·source-overlap audit 결과를 먼저 보고한다. Raw Omni baseline을 고정하고 각 단계의
-      actual-task gate를 통과하지 못하면 다음 단계로 넘어가지 않는다.
-    </p>
-  </section>
-</main>
-</body>
-</html>
+</main></body></html>
