@@ -82,6 +82,8 @@ class TrainingConfig:
     checkpoint_interval_steps: int
     keep_last_checkpoints: int
     gradient_clip_norm: float
+    control_loss_weight: float
+    control_margin: float
     resume: str
 
 
@@ -152,6 +154,8 @@ def load_config(path: Path) -> VideoQAConfig:
         config.training.checkpoint_interval_steps,
         config.training.keep_last_checkpoints,
         config.training.gradient_clip_norm,
+        config.training.control_loss_weight,
+        config.training.control_margin,
         config.evaluation.validation_examples,
         config.evaluation.train_examples,
     )
@@ -320,12 +324,16 @@ class VideoQAModel(nn.Module):
             positions = positions[:, -width:]
         return positions.unsqueeze(0).expand(3, -1, -1)
 
-    def forward(self, items: list[dict[str, Any]]) -> tuple[Tensor, Tensor]:
+    def forward(
+        self,
+        items: list[dict[str, Any]],
+        control: str = "normal",
+    ) -> tuple[Tensor, Tensor]:
         device = self.adapter.anchor_type.device
         embeddings = self.thinker.get_input_embeddings()
         sequences, labels = [], []
         for item in items:
-            prefix = self._prefix(item, "normal", device)
+            prefix = self._prefix(item, control, device)
             prompt = self._prompt_ids(item, device)
             target = torch.tensor(
                 self.tokenizer(chr(65 + item["answer_index"]), add_special_tokens=False)[
@@ -577,7 +585,7 @@ def run(
         for step in range(start_step, final_step + 1):
             model.train()
             optimizer.zero_grad(set_to_none=True)
-            accumulated = torch.zeros(2, device=context.device)
+            accumulated = torch.zeros(4, device=context.device)
             for accumulation in range(config.runtime.gradient_accumulation_steps):
                 generator = torch.Generator().manual_seed(
                     config.seed * 1_000_003 + step * 101 + accumulation
@@ -594,10 +602,22 @@ def run(
                 )
                 with sync:
                     with torch.autocast(device_type=context.device.type, dtype=torch.bfloat16):
-                        loss, tokens = model(items)
+                        normal_loss, tokens = model(items, "normal")
+                        zero_loss, _ = model(items, "delta_zero")
+                        ranking = torch.relu(
+                            config.training.control_margin + normal_loss - zero_loss
+                        )
+                        loss = normal_loss + config.training.control_loss_weight * ranking
                         scaled = loss / config.runtime.gradient_accumulation_steps
                     scaled.backward()
-                    accumulated += torch.stack((scaled.detach(), tokens.detach().float()))
+                    accumulated += torch.stack(
+                        (
+                            scaled.detach(),
+                            tokens.detach().float(),
+                            normal_loss.detach() / config.runtime.gradient_accumulation_steps,
+                            zero_loss.detach() / config.runtime.gradient_accumulation_steps,
+                        )
+                    )
             torch.nn.utils.clip_grad_norm_(model.parameters(), config.training.gradient_clip_norm)
             warmup = min(1.0, step / config.training.warmup_steps)
             optimizer.param_groups[0]["lr"] = config.training.lora_learning_rate * warmup
@@ -607,7 +627,13 @@ def run(
             if context.is_primary:
                 elapsed = time.perf_counter() - started
                 eta = elapsed / (step - start_step + 1) * (final_step - step)
-                record = {"step": step, "loss": float(reduced[0]), "tokens": float(reduced[1])}
+                record = {
+                    "step": step,
+                    "loss": float(reduced[0]),
+                    "tokens": float(reduced[1]),
+                    "normal_loss": float(reduced[2]),
+                    "zero_loss": float(reduced[3]),
+                }
                 _append_jsonl(log_path, record)
                 if step % 5 == 0 or step == final_step:
                     print(

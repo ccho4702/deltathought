@@ -30,6 +30,8 @@ training:
   checkpoint_interval_steps: 100
   keep_last_checkpoints: 3
   gradient_clip_norm: 1.0
+  control_loss_weight: 0.5
+  control_margin: 0.2
   resume: auto
 evaluation:
   validation_examples: 1024

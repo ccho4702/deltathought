@@ -30,11 +30,13 @@ training:
   checkpoint_interval_steps: 10
   keep_last_checkpoints: 2
   gradient_clip_norm: 1.0
+  control_loss_weight: 0.5
+  control_margin: 0.2
   resume: auto
 evaluation:
   validation_examples: 32
   train_examples: 32
   controls: [normal, delta_zero, last_only, reversed, cross_source]
-output_root: outputs/real_pilots/nextqa_video_lora_smoke
+output_root: outputs/real_pilots/nextqa_video_lora_smoke_v2
 log_root: logs/experiments
-report_path: outputs/reports/nextqa_video_lora_smoke.json
+report_path: outputs/reports/nextqa_video_lora_smoke_v2.json
