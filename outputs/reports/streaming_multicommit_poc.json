@@ -260,7 +260,14 @@
       "sequence_id": "test:00000002"
     }
   ],
-  "passed": true,
+  "legacy_mechanics_passed": true,
+  "limitations": [
+    "No tracked source entry point reproduces this aggregate report.",
+    "Every section has the same fixed nine-second boundary.",
+    "This artifact is retained as historical output and is not research evidence."
+  ],
+  "passed": false,
+  "research_passed": false,
   "reset_isolation": "hard_full_refresh_between_sections",
   "schema": "deltaomni.streaming_multicommit_generation_poc.v1",
   "sequences": 8

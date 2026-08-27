@@ -1,29 +1,44 @@
-raw_root: /mnt/nfs_shared_data/dataset/deltaomni
-canonical_root: intermediates/manifests/canonical
+raw_root: /mnt/nfs_shared_data/dataset/deltathought/raw
+canonical_root: intermediates/canonical
 derived_root: intermediates/data
 chunk_seconds: 1.0
 sources:
   something_something_v2:
-    enabled: false
+    enabled: true
     resource_name: something_something_v2
-    media_dir: /mnt/nfs_shared_data/dataset/ssv2/20bn-something-something-v2
-    annotations_dir: /mnt/nfs_shared_data/dataset/ssv2/labels
-    required_annotations: [train.json, validation.json, labels.json]
+    annotation_files:
+      - /mnt/nfs_shared_data/dataset/ssv2/labels/train.json
+      - /mnt/nfs_shared_data/dataset/ssv2/labels/validation.json
+      - /mnt/nfs_shared_data/dataset/ssv2/labels/test.json
+      - /mnt/nfs_shared_data/dataset/ssv2/labels/labels.json
+      - /mnt/nfs_shared_data/dataset/ssv2/labels/test-answers.csv
+    media_dirs:
+      - /mnt/nfs_shared_data/dataset/ssv2/20bn-something-something-v2
     media_extensions: [.webm]
     license_record: inputs/licenses/something_something_v2.accepted.json
   audioset_strong:
-    enabled: false
+    enabled: true
     resource_name: audioset_strong_annotations
-    media_dir: audioset_strong/media
-    annotations_dir: audioset_strong/annotations
-    required_annotations: [audioset_train_strong.tsv, audioset_eval_strong.tsv, mid_to_display_name.tsv]
+    annotation_files:
+      - /mnt/nfs_shared_data/dataset/deltaomni/audioset_strong/annotations/audioset_train_strong.tsv
+      - /mnt/nfs_shared_data/dataset/deltaomni/audioset_strong/annotations/audioset_eval_strong.tsv
+      - /mnt/nfs_shared_data/dataset/deltaomni/audioset_strong/annotations/mid_to_display_name.tsv
+    media_dirs:
+      - /mnt/nfs_shared_data/dataset/omniembed/audioset/balanced_train_segments/audio
+      - /mnt/nfs_shared_data/dataset/omniembed/audioset/unbalanced_train_segments/audio
+      - /mnt/nfs_shared_data/dataset/omniembed/audioset_unbalanced_more/audio
+      - /mnt/nfs_shared_data/dataset/omniembed/audioset/eval_segments/audio
     media_extensions: [.wav, .flac, .mp4]
     license_record: inputs/licenses/audioset_media.accepted.json
   nextqa:
-    enabled: false
+    enabled: true
     resource_name: nextqa_annotations
-    media_dir: nextqa/videos
-    annotations_dir: nextqa/annotations
-    required_annotations: [train.csv, val.csv, test.csv, map_vid_vidorID.json]
+    annotation_files:
+      - /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/train.csv
+      - /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/val.csv
+      - /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/test.csv
+      - /mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/map_vid_vidorID.json
+    media_dirs:
+      - /mnt/nfs_shared_data/dataset/NExT-QA/processed_for_gcg/NExTVideo
     media_extensions: [.mp4, .webm]
     license_record: inputs/licenses/nextqa_media.accepted.json

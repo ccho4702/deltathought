@@ -5,6 +5,7 @@ import pytest
 
 from deltaomni.omni_vanilla_baseline import (
     _clean_prediction,
+    _control_inputs,
     _lexical_choice,
     _msrvtt_items,
     _parse_choice,
@@ -33,6 +34,9 @@ def test_freeform_metrics_and_lexical_mapping() -> None:
 def test_config_rejects_invalid_duration_range(tmp_path: Path) -> None:
     config = {
         "seed": 1,
+        "dataset_resource_name": "nextqa_annotations",
+        "media_license_record": "accepted.json",
+        "provenance_config": "provenance.yaml",
         "omni_config": "omni.yaml",
         "nextqa_manifest": "nextqa.json",
         "nextqa_selection_manifest": "selection.json",
@@ -47,6 +51,7 @@ def test_config_rejects_invalid_duration_range(tmp_path: Path) -> None:
         "freeform_max_new_tokens": 8,
         "multiple_choice_max_new_tokens": 2,
         "caption_max_new_tokens": 16,
+        "nextqa_control_modes": ["multimodal", "text_only", "video_only", "audio_only"],
         "runtime": {
             "device": "cuda",
             "backend": "nccl",
@@ -81,3 +86,15 @@ def test_msrvtt_selection_is_deterministic(monkeypatch, tmp_path: Path) -> None:
     first = _msrvtt_items(config)
     second = _msrvtt_items(config)
     assert [item["source_id"] for item in first] == [item["source_id"] for item in second]
+
+
+def test_modality_controls_remove_only_the_requested_inputs() -> None:
+    frames = [object()]
+    audio = __import__("numpy").zeros(4, dtype="float32")
+
+    multimodal_frames, multimodal_audio = _control_inputs("multimodal", frames, audio)
+    assert multimodal_frames is frames and multimodal_audio is audio
+    assert _control_inputs("text_only", frames, audio) == (None, None)
+    assert _control_inputs("video_only", frames, audio) == (frames, None)
+    audio_only_frames, audio_only_audio = _control_inputs("audio_only", frames, audio)
+    assert audio_only_frames is None and audio_only_audio is audio

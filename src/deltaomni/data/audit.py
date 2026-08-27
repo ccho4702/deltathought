@@ -9,6 +9,7 @@ from typing import Any
 import yaml
 
 from deltaomni.provenance import audit as audit_provenance
+from deltaomni.run_integrity import validate_license_record
 from deltaomni.train_sanity import _atomic_json
 
 
@@ -25,6 +26,24 @@ def _resolve(root: Path, value: str) -> Path:
     return path if path.is_absolute() else root / path
 
 
+def _source_paths(
+    raw_root: Path,
+    source: dict[str, Any],
+) -> tuple[list[Path], list[Path]]:
+    if "annotation_files" in source:
+        annotations = [_resolve(raw_root, value) for value in source["annotation_files"]]
+    else:
+        annotations_dir = raw_root / source["annotations_dir"]
+        annotations = [annotations_dir / name for name in source["required_annotations"]]
+    if "media_dirs" in source:
+        media_dirs = [_resolve(raw_root, value) for value in source["media_dirs"]]
+    else:
+        media_dirs = [raw_root / source["media_dir"]]
+    if not annotations or not media_dirs:
+        raise ValueError("Data sources require annotation files and media directories")
+    return annotations, media_dirs
+
+
 def audit_source(
     project_root: Path,
     data_config: dict[str, Any],
@@ -34,25 +53,29 @@ def audit_source(
     source = data_config["sources"][source_name]
     resource_name = source["resource_name"]
     raw_root = _resolve(project_root, data_config["raw_root"])
-    annotations_dir = raw_root / source["annotations_dir"]
-    media_dir = raw_root / source["media_dir"]
+    required, media_dirs = _source_paths(raw_root, source)
     license_record = _resolve(project_root, source["license_record"])
-    required = [annotations_dir / name for name in source["required_annotations"]]
     missing_annotations = [str(path) for path in required if not path.is_file()]
+    try:
+        validate_license_record(license_record)
+        license_record_valid = True
+    except (FileNotFoundError, ValueError):
+        license_record_valid = False
     extensions = {extension.lower() for extension in source["media_extensions"]}
-    media_files = (
-        sorted(
+    media_files = sorted(
+        {
             path
+            for media_dir in media_dirs
+            if media_dir.is_dir()
             for path in media_dir.rglob("*")
             if path.is_file() and path.suffix.lower() in extensions
-        )
-        if media_dir.is_dir()
-        else []
+        }
     )
     prerequisites = {
         "enabled": source.get("enabled") is True,
         "provenance_approved": resource_name in provenance_report["approved"],
         "license_record_present": license_record.is_file(),
+        "license_record_valid": license_record_valid,
         "annotations_complete": not missing_annotations,
         "media_present": bool(media_files),
     }
@@ -67,7 +90,7 @@ def audit_source(
         "annotation_files": [
             {"path": str(path), "sha256": _sha256(path)} for path in required if path.is_file()
         ],
-        "media_dir": str(media_dir),
+        "media_dirs": [str(path) for path in media_dirs],
         "media_count": len(media_files),
         "media_bytes": sum(path.stat().st_size for path in media_files),
     }
@@ -115,4 +138,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

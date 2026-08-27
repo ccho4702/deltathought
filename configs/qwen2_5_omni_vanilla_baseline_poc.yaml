@@ -1,4 +1,7 @@
 seed: 42
+dataset_resource_name: nextqa_annotations
+media_license_record: inputs/licenses/nextqa_media.accepted.json
+provenance_config: configs/provenance.yaml
 omni_config: configs/qwen2_5_omni.yaml
 nextqa_manifest: intermediates/canonical/nextqa/official-2021-ann-1955d89e-schema-v2-r2/manifest.json
 nextqa_selection_manifest: intermediates/cache/omni_nextqa_joint_poc/manifest.json
@@ -13,13 +16,14 @@ frame_height: 224
 freeform_max_new_tokens: 20
 multiple_choice_max_new_tokens: 4
 caption_max_new_tokens: 32
+nextqa_control_modes: [multimodal, text_only, video_only, audio_only]
 runtime:
   device: cuda
   backend: nccl
   nccl_compatibility_mode: true
   cpu_threads: 4
-run_id: qwen2-5-omni-vanilla-poc-r1
-output_root: outputs/baselines/qwen2_5_omni_vanilla_poc
+run_id: qwen2-5-omni-vanilla-controls-v2
+output_root: outputs/baselines/qwen2_5_omni_vanilla_controls_v2
 log_root: logs/experiments
-report_path: outputs/reports/qwen2_5_omni_vanilla_baseline_poc.json
+report_path: outputs/reports/qwen2_5_omni_vanilla_controls_v2.json
 comparison_report: outputs/reports/nextqa_joint_head_poc.json

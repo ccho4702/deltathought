@@ -35,6 +35,7 @@ from transformers.utils import logging as transformers_logging
 
 from deltaomni.distributed import distributed_context, reduce_sums, unwrap
 from deltaomni.omni_backbones import load_omni_backbone_config
+from deltaomni.run_integrity import git_worktree_is_clean, resolved_input_signature
 from deltaomni.train_sanity import _atomic_json, _set_seed
 
 
@@ -102,6 +103,16 @@ class CaptionConfig:
     evaluation: EvaluationConfig
     output_root: Path
     log_root: Path
+
+
+def run_signature(config: CaptionConfig) -> str:
+    return resolved_input_signature(
+        config,
+        {
+            "prefix_manifest": config.prefix_manifest,
+            "omni_config": config.omni_config,
+        },
+    )
 
 
 def load_config(path: Path) -> CaptionConfig:
@@ -682,6 +693,9 @@ def run(
     stop_after_step: int | None,
 ) -> dict[str, Any]:
     config = load_config(config_path)
+    project_root = config_path.resolve().parent.parent
+    if not git_worktree_is_clean(project_root):
+        raise RuntimeError("Caption LoRA runs require a clean Git worktree")
     transformers_logging.set_verbosity_error()
     torch.set_num_threads(config.runtime.cpu_threads)
     _set_seed(config.seed)
@@ -711,7 +725,7 @@ def run(
             ],
             weight_decay=config.training.weight_decay,
         )
-        signature = json.dumps(asdict(config), sort_keys=True, default=str)
+        signature = run_signature(config)
         selected = run_id_override
         if context.is_primary and selected is None:
             selected = _select_run_id(config, signature)
@@ -835,6 +849,7 @@ def run(
                             "adapter": core.adapter.state_dict(),
                             "optimizer": optimizer.state_dict(),
                             "signature": signature,
+                            "signature_version": "content-sha256-v2",
                             "rng_states": rng_states,
                             "world_size": context.world_size,
                             "code_revision": code_revision,

@@ -20,8 +20,8 @@ import yaml
 from transformers.utils import logging as transformers_logging
 
 from deltaomni.data.schema import CanonicalEpisode, iter_jsonl
+from deltaomni.deltatok import DeltaTok
 from deltaomni.deltatok_scale_train import load_config as load_deltatok_config
-from deltaomni.deltatok_train import DeltaTok
 from deltaomni.distributed import distributed_context
 from deltaomni.omni_backbones import (
     QwenOmniThinkerEmbeddingBackend,

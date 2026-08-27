@@ -466,7 +466,14 @@
       ]
     }
   },
-  "passed": true,
+  "legacy_mechanics_passed": true,
+  "limitations": [
+    "The delta_shuffled control reused the same source for 87.5% of validation QA rows.",
+    "This hashed-text lightweight head is not the Qwen Thinker Stage 3 model.",
+    "The artifact is retained only as a historical overfit diagnostic."
+  ],
+  "passed": false,
+  "research_passed": false,
   "run_id": "nextqa-joint-poc-main",
   "schema": "deltaomni.nextqa_joint_head_poc.v1",
   "training_seconds": 18.085424467921257,

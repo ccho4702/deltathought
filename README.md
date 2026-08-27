@@ -73,12 +73,14 @@ baseline for the delta mechanism, not Qwen2.5-Omni understanding of first-plus-d
 ## Commands
 
 ```bash
-uv sync --group dev
+uv sync --frozen --group dev
 uv run ruff check src tests
 uv run pytest -q
 uv run deltaomni-sanity --config configs/sanity.yaml
 uv run deltaomni-verify --config configs/sanity.yaml
 uv run deltaomni-provenance --config configs/provenance.yaml
+uv run deltaomni-data-audit
+# Diagnostic report only; exits zero even when data are blocked:
 uv run deltaomni-data-audit --allow-not-ready
 uv run deltaomni-annotation-audit
 uv run deltaomni-backbone-smoke
@@ -102,8 +104,9 @@ uv run deltaomni-report
 Configuration is centralized in `configs/`. Retained runs are stored under unique IDs in
 `outputs/sanity/` and `logs/experiments/`.
 
-Official raw datasets and annotations live under `/mnt/nfs_shared_data/dataset`; DeltaOmni-owned
-annotation copies are under `/mnt/nfs_shared_data/dataset/deltaomni`.
+Official raw datasets and shared read-only annotations live under `/mnt/nfs_shared_data/dataset`.
+DeltaThought-owned immutable raw distributions live under
+`/mnt/nfs_shared_data/dataset/deltathought/raw`; `/dataset/deltaomni` is legacy read-only context.
 Canonical manifests, extracted/derived media, embedding caches, checkpoints, logs, and reports stay
 under this project in `intermediates/`, `outputs/`, and `logs/`.
 

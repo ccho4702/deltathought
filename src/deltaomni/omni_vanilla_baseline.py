@@ -26,8 +26,11 @@ from deltaomni.audiocaps_caption_lora import _rouge_l, _tokens, _word_f1
 from deltaomni.data.schema import CanonicalEpisode, iter_jsonl
 from deltaomni.distributed import distributed_context
 from deltaomni.omni_backbones import load_omni_backbone_config
+from deltaomni.provenance import audit as audit_provenance
+from deltaomni.provenance import require_approved
+from deltaomni.run_integrity import require_verified_resource, resolved_input_signature
 
-REPORT_SCHEMA = "deltaomni.qwen2_5_omni_vanilla_baseline.v1"
+REPORT_SCHEMA = "deltaomni.qwen2_5_omni_vanilla_baseline.v2"
 
 
 @dataclass(frozen=True)
@@ -41,6 +44,9 @@ class RuntimeConfig:
 @dataclass(frozen=True)
 class BaselineConfig:
     seed: int
+    dataset_resource_name: str
+    media_license_record: Path
+    provenance_config: Path
     omni_config: Path
     nextqa_manifest: Path
     nextqa_selection_manifest: Path
@@ -55,6 +61,7 @@ class BaselineConfig:
     freeform_max_new_tokens: int
     multiple_choice_max_new_tokens: int
     caption_max_new_tokens: int
+    nextqa_control_modes: tuple[str, ...]
     runtime: RuntimeConfig
     run_id: str
     output_root: Path
@@ -73,6 +80,8 @@ def load_config(path: Path) -> BaselineConfig:
 
     path_fields = {
         "omni_config",
+        "media_license_record",
+        "provenance_config",
         "nextqa_manifest",
         "nextqa_selection_manifest",
         "msrvtt_metadata",
@@ -84,6 +93,7 @@ def load_config(path: Path) -> BaselineConfig:
     }
     values = {key: resolve(value) if key in path_fields else value for key, value in raw.items()}
     values["runtime"] = RuntimeConfig(**raw["runtime"])
+    values["nextqa_control_modes"] = tuple(raw["nextqa_control_modes"])
     config = BaselineConfig(**values)
     positive = (
         config.msrvtt_count,
@@ -101,7 +111,24 @@ def load_config(path: Path) -> BaselineConfig:
         raise ValueError("Invalid vanilla baseline controls")
     if not config.run_id or "/" in config.run_id:
         raise ValueError("run_id must be a non-empty path component")
+    required_controls = {"multimodal", "text_only", "video_only", "audio_only"}
+    if set(config.nextqa_control_modes) != required_controls:
+        raise ValueError(f"NExT-QA controls must be exactly {sorted(required_controls)}")
     return config
+
+
+def run_signature(config: BaselineConfig) -> str:
+    return resolved_input_signature(
+        config,
+        {
+            "media_license_record": config.media_license_record,
+            "provenance": config.provenance_config,
+            "omni_config": config.omni_config,
+            "nextqa_manifest": config.nextqa_manifest,
+            "nextqa_selection_manifest": config.nextqa_selection_manifest,
+            "msrvtt_metadata": config.msrvtt_metadata,
+        },
+    )
 
 
 def _atomic_json(path: Path, payload: Any) -> None:
@@ -292,39 +319,47 @@ class VanillaGenerator:
     @torch.inference_mode()
     def generate(
         self,
-        frames: list[Image.Image],
+        frames: list[Image.Image] | None,
         audio: np.ndarray | None,
         prompt: str,
         max_new_tokens: int,
     ) -> tuple[str, float]:
+        content = []
+        if frames is not None:
+            content.append({"type": "video", "video": "local-media"})
+        elif audio is not None:
+            content.append({"type": "audio", "audio": "local-media"})
+        content.append({"type": "text", "text": prompt})
         conversation = [
             {
                 "role": "user",
-                "content": [
-                    {"type": "video", "video": "local-media"},
-                    {"type": "text", "text": prompt},
-                ],
+                "content": content,
             }
         ]
         text = self.processor.apply_chat_template(
             conversation, add_generation_prompt=True, tokenize=False
         )
-        use_audio = audio is not None
-        inputs = self.processor(
-            text=text,
-            videos=[frames],
-            audio=[audio] if use_audio else None,
-            return_tensors="pt",
-            padding=True,
-            use_audio_in_video=use_audio,
-            videos_kwargs={
+        use_audio_in_video = frames is not None and audio is not None
+        processor_inputs: dict[str, Any] = {
+            "text": text,
+            "return_tensors": "pt",
+            "padding": True,
+            "use_audio_in_video": use_audio_in_video,
+        }
+        if frames is not None:
+            processor_inputs["videos"] = [frames]
+            processor_inputs["videos_kwargs"] = {
                 "fps": self.config.sample_fps,
                 "min_pixels": self.omni.video.min_pixels,
                 "max_pixels": self.omni.video.max_pixels,
                 "seconds_per_chunk": self.omni.seconds_per_chunk,
                 "position_id_per_seconds": self.omni.position_id_per_seconds,
-            },
-            audio_kwargs={"sampling_rate": self.omni.sample_rate},
+            }
+        if audio is not None:
+            processor_inputs["audio"] = [audio]
+            processor_inputs["audio_kwargs"] = {"sampling_rate": self.omni.sample_rate}
+        inputs = self.processor(
+            **processor_inputs,
         )
         inputs = {
             key: value.to(self.device) if torch.is_tensor(value) else value
@@ -335,7 +370,7 @@ class VanillaGenerator:
             **inputs,
             max_new_tokens=max_new_tokens,
             do_sample=False,
-            use_audio_in_video=use_audio,
+            use_audio_in_video=use_audio_in_video,
         )
         latency = time.perf_counter() - started
         generated = output[:, inputs["input_ids"].shape[1] :]
@@ -363,11 +398,32 @@ def _pending(run_dir: Path, keys: list[str]) -> bool:
 def _task_keys(kind: str, value: Any) -> list[str]:
     if kind == "nextqa":
         return [
-            f"nextqa:{value.source_id}:{qa.question_id}:{mode}"
+            f"nextqa:{value.source_id}:{qa.question_id}:freeform"
             for qa in value.qa or ()
-            for mode in ("freeform", "multiple_choice")
+        ] + [
+            f"nextqa:{value.source_id}:{qa.question_id}:multiple_choice:{control}"
+            for qa in value.qa or ()
+            for control in ("multimodal", "text_only", "video_only", "audio_only")
         ]
     return [f"msrvtt:{value['source_id']}:caption"]
+
+
+def _control_inputs(
+    control: str,
+    frames: list[Image.Image],
+    audio: np.ndarray | None,
+) -> tuple[list[Image.Image] | None, np.ndarray | None]:
+    if control == "multimodal":
+        return frames, audio
+    if control == "text_only":
+        return None, None
+    if control == "video_only":
+        return frames, None
+    if control == "audio_only":
+        if audio is None:
+            raise ValueError("Audio-only control requires an audio stream")
+        return None, audio
+    raise ValueError(f"Unknown NExT-QA control: {control}")
 
 
 def _mean(rows: list[dict[str, Any]], key: str) -> float:
@@ -394,13 +450,18 @@ def _consolidate(
     freeform = [row for row in rows if row["task"] == "nextqa_freeform"]
     multiple_choice = [row for row in rows if row["task"] == "nextqa_multiple_choice"]
     captions = [row for row in rows if row["task"] == "msrvtt_caption"]
+    multiple_choice_by_control = {
+        control: [row for row in multiple_choice if row["control"] == control]
+        for control in config.nextqa_control_modes
+    }
+    multimodal = multiple_choice_by_control["multimodal"]
     comparison = None
     if config.comparison_report.is_file():
         current = json.loads(config.comparison_report.read_text(encoding="utf-8"))
         comparison = {
             "report": str(config.comparison_report),
             "delta_joint_head_test_accuracy": current["final"]["test"]["accuracy"],
-            "vanilla_raw_omni_test_accuracy": _mean(multiple_choice, "correct"),
+            "vanilla_raw_omni_test_accuracy": _mean(multimodal, "correct"),
             "warning": "The delta result is a trained lightweight classifier, not Qwen LoRA.",
         }
     revision = subprocess.run(
@@ -416,7 +477,9 @@ def _consolidate(
         "code_revision": revision,
         "resolved_config": json.loads(json.dumps(asdict(config), default=str)),
         "inputs": {
-            "config_sha256": _sha256(config.omni_config),
+            "omni_config_sha256": _sha256(config.omni_config),
+            "provenance_sha256": _sha256(config.provenance_config),
+            "media_license_record_sha256": _sha256(config.media_license_record),
             "nextqa_manifest_sha256": _sha256(config.nextqa_manifest),
             "nextqa_selection_manifest_sha256": _sha256(config.nextqa_selection_manifest),
             "msrvtt_metadata_sha256": _sha256(config.msrvtt_metadata),
@@ -430,10 +493,13 @@ def _consolidate(
             "word_f1_by_question_type": _by_question_type(freeform, "word_f1"),
         },
         "nextqa_multiple_choice": {
-            "examples": len(multiple_choice),
-            "accuracy": _mean(multiple_choice, "correct"),
-            "parse_rate": _mean(multiple_choice, "parsed"),
-            "accuracy_by_question_type": _by_question_type(multiple_choice, "correct"),
+            control: {
+                "examples": len(control_rows),
+                "accuracy": _mean(control_rows, "correct"),
+                "parse_rate": _mean(control_rows, "parsed"),
+                "accuracy_by_question_type": _by_question_type(control_rows, "correct"),
+            }
+            for control, control_rows in multiple_choice_by_control.items()
         },
         "msrvtt_caption": {
             "examples": len(captions),
@@ -462,9 +528,21 @@ def _consolidate(
 
 def run(config_path: Path) -> dict[str, Any]:
     config = load_config(config_path)
+    provenance = audit_provenance(config.provenance_config)
+    require_approved(provenance, [load_omni_backbone_config(config.omni_config).resource_name])
+    require_verified_resource(
+        provenance,
+        config.dataset_resource_name,
+        config.media_license_record,
+    )
+    signature = run_signature(config)
     if config.report_path.exists():
         existing = json.loads(config.report_path.read_text(encoding="utf-8"))
-        if existing.get("run_id") == config.run_id and existing.get("schema") == REPORT_SCHEMA:
+        if (
+            existing.get("run_id") == config.run_id
+            and existing.get("schema") == REPORT_SCHEMA
+            and existing.get("run_signature") == signature
+        ):
             return existing
         raise FileExistsError(f"Refusing to overwrite baseline report: {config.report_path}")
     transformers_logging.set_verbosity_error()
@@ -476,6 +554,18 @@ def run(config_path: Path) -> dict[str, Any]:
         nccl_compatibility_mode=config.runtime.nccl_compatibility_mode,
     ) as context:
         run_dir = config.output_root / config.run_id
+        signature_path = run_dir / "run_signature.json"
+        if context.is_primary:
+            if signature_path.is_file():
+                existing_signature = json.loads(signature_path.read_text(encoding="utf-8"))
+                if existing_signature.get("value") != signature:
+                    raise ValueError("Baseline run directory signature mismatch")
+            elif (run_dir / "predictions").exists():
+                raise ValueError("Legacy prediction cache has no content-bound run signature")
+            else:
+                _atomic_json(signature_path, {"value": signature})
+        if context.world_size > 1:
+            torch.distributed.barrier()
         log_path = config.log_root / config.run_id / f"rank-{context.rank:04d}.jsonl"
         episodes = _nextqa_episodes(config)
         captions = _msrvtt_items(config)
@@ -547,15 +637,21 @@ def run(config_path: Path) -> dict[str, Any]:
                             },
                         )
                         local_completed += 1
-                    mc_key = f"nextqa:{episode.source_id}:{qa.question_id}:multiple_choice"
-                    if not _prediction_path(run_dir, mc_key).is_file():
+                    for control in config.nextqa_control_modes:
+                        mc_key = (
+                            f"nextqa:{episode.source_id}:{qa.question_id}:"
+                            f"multiple_choice:{control}"
+                        )
+                        if _prediction_path(run_dir, mc_key).is_file():
+                            continue
                         choices = "\n".join(
                             f"{chr(65 + index)}. {choice}"
                             for index, choice in enumerate(qa.choices)
                         )
+                        control_frames, control_audio = _control_inputs(control, frames, audio)
                         prediction, latency = generator.generate(
-                            frames,
-                            audio,
+                            control_frames,
+                            control_audio,
                             "Choose the best answer to the video question. "
                             "Reply with only one letter.\n"
                             f"Question: {qa.question}\n{choices}",
@@ -567,6 +663,7 @@ def run(config_path: Path) -> dict[str, Any]:
                             mc_key,
                             {
                                 "task": "nextqa_multiple_choice",
+                                "control": control,
                                 "source_id": episode.source_id,
                                 "question_id": qa.question_id,
                                 "question_type": qa.question_type,
@@ -656,7 +753,11 @@ def run(config_path: Path) -> dict[str, Any]:
                 for path in sorted((run_dir / "hardware").glob("rank-*.json"))
             ]
             report = _consolidate(config, run_dir, hardware)
-            expected_total = sum(2 * len(episode.qa or ()) for episode in episodes) + len(captions)
+            report["run_signature"] = signature
+            expected_total = sum(
+                (1 + len(config.nextqa_control_modes)) * len(episode.qa or ())
+                for episode in episodes
+            ) + len(captions)
             actual_total = len(list((run_dir / "predictions").glob("*.json")))
             if actual_total != expected_total:
                 raise RuntimeError(f"Incomplete prediction set: {actual_total}/{expected_total}")

@@ -22,8 +22,12 @@ from torch import Tensor, nn
 from torch.nn import functional as F
 from torch.nn.parallel import DistributedDataParallel
 
-from deltaomni.deltatok_train import DeltaTok
+from deltaomni.deltatok import DeltaTok
 from deltaomni.distributed import distributed_context, reduce_sums, unwrap
+from deltaomni.run_integrity import (
+    git_worktree_is_clean,
+    resolved_input_signature,
+)
 from deltaomni.train_sanity import _atomic_json, _set_seed
 
 
@@ -80,6 +84,10 @@ class ScaleConfig:
     evaluation: EvaluationConfig
     output_root: Path
     log_root: Path
+
+
+def run_signature(config: ScaleConfig) -> str:
+    return resolved_input_signature(config, {"cache_manifest": config.cache_manifest})
 
 
 def load_config(path: Path) -> ScaleConfig:
@@ -492,6 +500,9 @@ def run(
     stop_after_step: int | None,
 ) -> dict[str, Any]:
     config = load_config(config_path)
+    project_root = config_path.resolve().parent.parent
+    if not git_worktree_is_clean(project_root):
+        raise RuntimeError("DeltaTok runs require a clean Git worktree")
     torch.set_num_threads(config.runtime.cpu_threads)
     _set_seed(config.seed)
     with distributed_context(
@@ -509,7 +520,7 @@ def run(
             weight_decay=config.training.weight_decay,
         )
         resolved = asdict(config)
-        signature = json.dumps(resolved, sort_keys=True, default=str)
+        signature = run_signature(config)
         selected = run_id_override
         if context.is_primary and selected is None:
             selected = _select_run_id(config, signature)
@@ -639,6 +650,7 @@ def run(
                             "model": unwrap(model).state_dict(),
                             "optimizer": optimizer.state_dict(),
                             "config_signature": signature,
+                            "signature_version": "content-sha256-v2",
                             "rng_states": rng_states,
                             "world_size": context.world_size,
                             "code_revision": code_revision,

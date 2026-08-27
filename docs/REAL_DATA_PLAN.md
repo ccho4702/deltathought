@@ -3,9 +3,10 @@
 This plan begins only after `deltaomni-data-audit` reports a source as ready. No custom research
 dataset or unofficial mirror is used.
 
-Official raw files are read from `/mnt/nfs_shared_data/dataset/deltaomni`. Every extracted clip,
-canonical episode, full/delta embedding cache, checkpoint, and prediction remains under the
-project-local `intermediates/` or `outputs/` trees.
+DeltaThought-owned official raw files are read from
+`/mnt/nfs_shared_data/dataset/deltathought/raw`. Existing shared datasets and legacy annotations are
+read in place without modification. Every canonical episode, embedding cache, checkpoint, and
+prediction remains under the project-local `intermediates/` or `outputs/` trees.
 
 ## R1 — Video delta representation and scoped action caption
 
@@ -52,9 +53,10 @@ Matched evaluation arms:
 The claim requires arm 3 to preserve full-input accuracy and beat arms 2 and 4 on the untouched test
 split. Caption concatenation, answer-string overlap, or QA built from caption text is invalid.
 
-Current gate: blocked. NExT-QA media and embedding caches are ready, and medium SSV2 reconstruction
-transfers with a small positive signal, but the delta-caption projector does not yet beat zero and
-shuffled delta. Running final QA now would not isolate useful caption feedback.
+Current gate: blocked. NExT-QA annotations and media are present, but the required local media-license
+record is absent. The historical lightweight QA diagnostic also used an invalid QA-row `roll(1)`
+shuffle: 87.5% of validation rows retained the same source delta. Source-group-disjoint controls are
+now required. Running final QA before both gates pass would not provide valid evidence.
 
 The change-aware resampler and text-alignment pretraining also failed zero/shuffle ablations. Do not
 try larger caption runs with the same representation objective. Add semantic/action supervision to

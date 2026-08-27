@@ -1,7 +1,7 @@
-.PHONY: setup lint test sanity verify provenance data-audit annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot report verify-all
+.PHONY: setup lint test sanity verify provenance data-audit data-audit-report annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot report verify-code verify-research verify-all
 
 setup:
-	uv sync --group dev
+	uv sync --frozen --group dev
 
 lint:
 	uv run ruff check src tests
@@ -19,7 +19,10 @@ provenance:
 	uv run deltaomni-provenance --config configs/provenance.yaml
 
 data-audit:
-	uv run deltaomni-data-audit --allow-not-ready
+	uv run --frozen deltaomni-data-audit
+
+data-audit-report:
+	uv run --frozen deltaomni-data-audit --allow-not-ready
 
 annotation-audit:
 	uv run deltaomni-annotation-audit
@@ -98,4 +101,8 @@ nextqa-reconstruction-pilot:
 report:
 	uv run deltaomni-report
 
-verify-all: lint test provenance data-audit annotation-audit verify backbone-smoke language-smoke report
+verify-code: lint test provenance
+
+verify-research: data-audit annotation-audit verify omni-backbone-smoke report
+
+verify-all: verify-code verify-research

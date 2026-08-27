@@ -10,14 +10,15 @@ from pathlib import Path
 
 import torch
 
+from deltaomni.deltatok import DeltaTok
 from deltaomni.deltatok_scale_train import (
     PairDataset,
     _evaluate_pairs,
     _evaluate_rollout,
     _evaluation_checks,
     load_config,
+    run_signature,
 )
-from deltaomni.deltatok_train import DeltaTok
 from deltaomni.train_sanity import _atomic_json, _set_seed
 
 
@@ -45,10 +46,16 @@ def run(
     manifest = json.loads(config.cache_manifest.read_text(encoding="utf-8"))
     data = PairDataset(manifest, split, config.runtime.cache_entries)
     payload = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
-    signature = json.dumps(asdict(config), sort_keys=True, default=str)
-    if payload.get("config_signature") != signature:
+    signature = run_signature(config)
+    legacy_signature = json.dumps(asdict(config), sort_keys=True, default=str)
+    if payload.get("config_signature") not in {signature, legacy_signature}:
         raise ValueError("Evaluation checkpoint/configuration mismatch")
-    device = torch.device("cuda:0")
+    signature_version = (
+        "content-sha256-v2"
+        if payload.get("config_signature") == signature
+        else "legacy-path-only-v1"
+    )
+    device = torch.device(config.runtime.device)
     model = DeltaTok(config.model).to(device).eval()
     model.load_state_dict(payload["model"])
     teacher = _evaluate_pairs(model, data, config, device)
@@ -69,6 +76,7 @@ def run(
         "checkpoint_sha256": _sha256(checkpoint_path),
         "training_code_revision": payload.get("code_revision"),
         "evaluation_code_revision": code_revision,
+        "training_signature_version": signature_version,
         "cache_manifest_sha256": _sha256(config.cache_manifest),
         "teacher_forced": teacher,
         "autoregressive_rollout": rollout,

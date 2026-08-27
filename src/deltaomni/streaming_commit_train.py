@@ -17,6 +17,7 @@ import torch
 import yaml
 from torch import Tensor
 
+from deltaomni.run_integrity import git_worktree_is_clean, resolved_input_signature
 from deltaomni.streaming_sequence import CommitHead, StreamingSequence, build_sequences, commit_loss
 from deltaomni.train_sanity import _atomic_json, _set_seed
 
@@ -172,50 +173,78 @@ def evaluate(
     data: SequenceDataset,
     config: CommitConfig,
     device: torch.device,
-) -> dict[str, float]:
+) -> dict[str, dict[str, float]]:
     model.eval()
-    true_positive = false_positive = false_negative = correct = total = 0
-    loss_sum = 0.0
-    batches = 0
+    if len(data) < 2:
+        raise ValueError("Commit controls require at least two validation sequences")
+    totals = {
+        name: {
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0,
+            "correct": 0,
+            "total": 0,
+            "loss": 0.0,
+            "batches": 0,
+        }
+        for name in ("normal", "zero", "cross_sequence")
+    }
     for start in range(0, len(data), config.batch_size):
         indices = torch.arange(start, min(start + config.batch_size, len(data)))
         deltas, targets, refresh, elapsed = data.batch(indices)
+        donor_indices = (indices + 1) % len(data)
+        cross_sequence, _, _, _ = data.batch(donor_indices)
         deltas, targets = deltas.to(device), targets.to(device)
+        cross_sequence = cross_sequence.to(device)
         refresh, elapsed = refresh.to(device), elapsed.to(device)
         valid = torch.ones_like(refresh)
-        logits = model(deltas, elapsed, refresh, valid)
-        loss_sum += float(
-            commit_loss(
-                logits,
-                targets,
-                valid,
-                positive_weight=config.positive_weight,
+        for name, values in (
+            ("normal", deltas),
+            ("zero", torch.zeros_like(deltas)),
+            ("cross_sequence", cross_sequence),
+        ):
+            logits = model(values, elapsed, refresh, valid)
+            totals[name]["loss"] += float(
+                commit_loss(
+                    logits,
+                    targets,
+                    valid,
+                    positive_weight=config.positive_weight,
+                )
             )
-        )
-        predicted = logits.sigmoid() >= config.threshold
-        expected = targets.bool()
-        true_positive += int((predicted & expected).sum())
-        false_positive += int((predicted & ~expected).sum())
-        false_negative += int((~predicted & expected).sum())
-        correct += int(predicted.eq(expected).sum())
-        total += expected.numel()
-        batches += 1
-    precision = true_positive / max(true_positive + false_positive, 1)
-    recall = true_positive / max(true_positive + false_negative, 1)
-    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
-    return {
-        "loss": loss_sum / batches,
-        "precision": precision,
-        "recall": recall,
-        "f1": f1,
-        "accuracy": correct / total,
-        "predicted_commits": float(true_positive + false_positive),
-        "target_commits": float(true_positive + false_negative),
-    }
+            predicted = logits.sigmoid() >= config.threshold
+            expected = targets.bool()
+            totals[name]["true_positive"] += int((predicted & expected).sum())
+            totals[name]["false_positive"] += int((predicted & ~expected).sum())
+            totals[name]["false_negative"] += int((~predicted & expected).sum())
+            totals[name]["correct"] += int(predicted.eq(expected).sum())
+            totals[name]["total"] += expected.numel()
+            totals[name]["batches"] += 1
+    result = {}
+    for name, values in totals.items():
+        true_positive = values["true_positive"]
+        false_positive = values["false_positive"]
+        false_negative = values["false_negative"]
+        precision = true_positive / max(true_positive + false_positive, 1)
+        recall = true_positive / max(true_positive + false_negative, 1)
+        f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
+        result[name] = {
+            "loss": values["loss"] / values["batches"],
+            "precision": precision,
+            "recall": recall,
+            "f1": f1,
+            "accuracy": values["correct"] / values["total"],
+            "predicted_commits": float(true_positive + false_positive),
+            "target_commits": float(true_positive + false_negative),
+        }
+    return result
 
 
 def run(config_path: Path, run_id: str | None, stop_after_step: int | None) -> dict[str, Any]:
     config = load_config(config_path)
+    project_root = config_path.resolve().parent.parent
+    if not git_worktree_is_clean(project_root):
+        raise RuntimeError("Streaming commit runs require a clean Git worktree")
     _set_seed(config.seed)
     torch.set_num_threads(config.cpu_threads)
     device = torch.device(config.device)
@@ -230,12 +259,17 @@ def run(config_path: Path, run_id: str | None, stop_after_step: int | None) -> d
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay
     )
-    signature = json.dumps(asdict(config), sort_keys=True, default=str)
-    selected = run_id or f"streaming-commit-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}"
+    signature = resolved_input_signature(config, {"prefix_manifest": config.prefix_manifest})
+    selected = run_id or (
+        f"streaming-commit-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"
+    )
     run_dir = config.output_root / selected
     log_path = config.log_root / selected / "metrics.jsonl"
+    if run_dir.exists() and config.resume == "never":
+        raise FileExistsError(f"Streaming commit run already exists: {run_dir}")
     run_dir.mkdir(parents=True, exist_ok=True)
-    _atomic_json(run_dir / "resolved_config.json", asdict(config))
+    if not (run_dir / "resolved_config.json").is_file():
+        _atomic_json(run_dir / "resolved_config.json", asdict(config))
     code_revision = subprocess.run(
         ["git", "rev-parse", "HEAD"],
         cwd=config_path.resolve().parent.parent,
@@ -249,7 +283,7 @@ def run(config_path: Path, run_id: str | None, stop_after_step: int | None) -> d
             {
                 "code_revision": code_revision,
                 "device": config.device,
-                "gpu": torch.cuda.get_device_name(device),
+                "gpu": torch.cuda.get_device_name(device) if device.type == "cuda" else None,
                 "torch_version": torch.__version__,
                 "started_at_utc": datetime.now(UTC).isoformat(),
             },
@@ -266,7 +300,8 @@ def run(config_path: Path, run_id: str | None, stop_after_step: int | None) -> d
         optimizer.load_state_dict(payload["optimizer"])
         random.setstate(payload["rng"]["python"])
         torch.random.set_rng_state(payload["rng"]["torch"])
-        torch.cuda.set_rng_state(payload["rng"]["cuda"], device)
+        if device.type == "cuda" and payload["rng"].get("cuda") is not None:
+            torch.cuda.set_rng_state(payload["rng"]["cuda"], device)
         start_step = int(payload["next_step"])
         print(f"resume={checkpoint_path} next_step={start_step}", flush=True)
     final_step = min(config.max_steps, stop_after_step or config.max_steps)
@@ -312,7 +347,9 @@ def run(config_path: Path, run_id: str | None, stop_after_step: int | None) -> d
                     "rng": {
                         "python": random.getstate(),
                         "torch": torch.random.get_rng_state(),
-                        "cuda": torch.cuda.get_rng_state(device),
+                        "cuda": (
+                            torch.cuda.get_rng_state(device) if device.type == "cuda" else None
+                        ),
                     },
                 },
             )
@@ -321,12 +358,23 @@ def run(config_path: Path, run_id: str | None, stop_after_step: int | None) -> d
         result = {"run_id": selected, "status": "interrupted", "step": final_step}
     else:
         metrics = evaluate(model, validation, config, device)
+        mechanics_passed = metrics["normal"]["f1"] >= 0.99
+        content_specific_passed = (
+            metrics["normal"]["f1"] > metrics["cross_sequence"]["f1"]
+        )
         result = {
-            "schema": "deltaomni.streaming_commit_poc.v1",
+            "schema": "deltaomni.streaming_commit_poc.v2",
             "run_id": selected,
             "status": "complete",
             "metrics": metrics,
-            "passed": metrics["f1"] >= 0.99,
+            "mechanics_passed": mechanics_passed,
+            "content_specific_passed": content_specific_passed,
+            "research_passed": False,
+            "passed": False,
+            "limitations": [
+                "Every section has the same fixed commit period.",
+                "Natural timing requires variable boundaries and no-event negatives.",
+            ],
             "sequences": {split: len(values) for split, values in sequences.items()},
             "discarded_sections": discarded,
             "training_seconds": time.perf_counter() - started,

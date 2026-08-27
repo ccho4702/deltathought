@@ -6,7 +6,10 @@ research dataset.
 
 ## Storage boundary
 
-- Immutable official raw distributions: `/mnt/nfs_shared_data/dataset/deltaomni`
+- DeltaThought-owned immutable raw distributions:
+  `/mnt/nfs_shared_data/dataset/deltathought/raw`
+- Legacy shared annotations under `/mnt/nfs_shared_data/dataset/deltaomni` are read-only context;
+  they are not a DeltaThought-owned write target.
 - Canonical manifests and extracted/derived media: project-local `intermediates/`
 - Generated embedding caches and checkpoints: project-local `intermediates/`
 - Retained metrics/reports and logs: project-local `outputs/` and `logs/`
@@ -64,6 +67,10 @@ and adoption meet the same gate.
 Official approval in the provenance file does not mean media is ready. `deltaomni-data-audit`
 additionally requires local official files, a user-created license acceptance record, checksums, and
 a non-empty media inventory.
+
+As of 2026-08-28, NExT-QA annotations and all 5,440 media files are present and provenance-approved,
+but the local media-license acceptance record is absent. New NExT-QA cache generation, baselines,
+and training are therefore blocked in code until that record is supplied by the user.
 
 ## Role separation
 

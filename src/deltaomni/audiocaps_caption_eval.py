@@ -16,6 +16,7 @@ from deltaomni.audiocaps_caption_lora import (
     _load_model,
     evaluate,
     load_config,
+    run_signature,
 )
 from deltaomni.train_sanity import _atomic_json, _set_seed
 
@@ -51,13 +52,19 @@ def run(
     if output_path.exists():
         raise FileExistsError(f"Caption evaluation output already exists: {output_path}")
     config = load_config(config_path)
-    signature = json.dumps(asdict(config), sort_keys=True, default=str)
+    signature = run_signature(config)
+    legacy_signature = json.dumps(asdict(config), sort_keys=True, default=str)
     payload = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
-    if payload.get("signature") != signature:
+    if payload.get("signature") not in {signature, legacy_signature}:
         raise ValueError("Caption evaluation checkpoint/configuration mismatch")
+    signature_version = (
+        "content-sha256-v2"
+        if payload.get("signature") == signature
+        else "legacy-path-only-v1"
+    )
     _set_seed(config.seed)
     torch.set_num_threads(config.runtime.cpu_threads)
-    device = torch.device("cuda:0")
+    device = torch.device(config.runtime.device)
     model, _ = _load_model(config, device)
     set_peft_model_state_dict(model.thinker, payload["lora"])
     model.adapter.load_state_dict(payload["adapter"])
@@ -81,6 +88,7 @@ def run(
         "checkpoint_sha256": _sha256(checkpoint_path),
         "training_code_revision": payload.get("code_revision"),
         "evaluation_code_revision": code_revision,
+        "training_signature_version": signature_version,
         "prefix_manifest_sha256": _sha256(config.prefix_manifest),
         "metrics": metrics,
         "checks": checks,

@@ -1,5 +1,30 @@
 # DeltaOmni status
 
+## Integrity correction and execution gate (2026-08-28)
+
+An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a
+cross-source shuffle. Because questions from one video are contiguous, 119/136 validation QA
+(`87.5%`) and 115/132 test QA (`87.1%`) received the same source delta. The reported shuffled
+validation accuracy `23.5%` is invalid. A post-hoc source-group-disjoint reassessment of the retained
+checkpoint produced `19.1%` versus normal `24.3%`; this is diagnostic only and does not upgrade the
+lightweight head into Stage 3 evidence. The tracked v1 report is retained with `passed=false`.
+
+Future NExT-QA caches use a content-signed v2 manifest. Cache reuse now requires matching canonical
+manifest, model/config revisions, audio/video DeltaTok checkpoint hashes, media hashes, tensor
+shapes, finiteness, and a user-provided media-license record. The annotations and all 5,440 media
+files are present, but `inputs/licenses/nextqa_media.accepted.json` is absent, so new NExT-QA cache,
+vanilla controls, and training are intentionally blocked.
+
+The fixed-period multi-commit aggregate has no tracked producer and its cross-sequence shuffled
+timing F1 remains `1.0`. It is now classified as a legacy mechanics artifact, not research evidence.
+The next vanilla baseline schema is prepared to measure multimodal, text-only, video-only, and
+audio-only conditions under one content-bound run signature; it has not been executed.
+
+The obsolete single-GPU `deltatok_train.py` runner and its integration config were removed. The
+unchanged `DeltaTok` model now lives in `deltaomni.deltatok`; the supported trainer is the scalable
+single-/multi-GPU path with content controls, atomic checkpoints, and exact-resume state. Historical
+checkpoints load strictly into the extracted model with no missing or unexpected parameters.
+
 ## Target-architecture correction
 
 The intended method uses the native vision encoder, audio encoder, and Thinker from pinned
@@ -138,7 +163,8 @@ greedy generation smokes. It trains only PEFT adapters in the 28 Thinker text la
 validation NLL from 3.105 to 2.705 and generated recognizable free-form captions, but correctly
 failed the eight-example shuffled-delta word-F1 gate. The exposure-matched full run is next.
 
-Audio Caption LoRA S2 is now proven on the untouched AudioCaps test split. Validation selected the
+Audio Caption LoRA S2 has single-seed bounded evidence on the untouched AudioCaps test split.
+Validation selected the
 200-step checkpoint over the 1,000-step run: the latter improved generation controls but worsened
 NLL from 2.958 to 3.326, so it is retained as an overfit negative result and never evaluated on
 test. The selected rank-8 LoRA trained at global batch 32 and peaked at 34.04 GiB/rank. On all 943
@@ -190,13 +216,14 @@ the main remaining S1 limitation. Audio/video checkpoint SHA-256 values are resp
 
 ## Rapid multi-commit and Stage 3 diagnostic
 
-A deliberately small one-second PoC now exercises repeated streaming mechanics rather than one
-caption per record. It concatenates three source-disjoint AudioCaps sections into the sequence
+A deliberately small one-second PoC exercised repeated streaming mechanics rather than one caption
+per record. It concatenated three source-disjoint AudioCaps sections into the sequence
 `FULL→9 DELTA→CAPTION→FULL→9 DELTA→CAPTION→FULL→9 DELTA→CAPTION`. A recurrent CommitHead trained
 with timing BCE reached precision/recall/F1 `1.0/1.0/1.0` on 42 validation sequences, predicting
 all 126 fixed-period commits. Eight test sequences generated 24 actual captions; normal/zero/shuffle
-word-F1 was `0.399/0.367/0.365`. This proves repeated caption/full reset mechanics but not natural
-event-boundary timing because every synthetic section is nine seconds.
+word-F1 was `0.399/0.367/0.365`. The aggregate has no tracked producer and is retained only as a
+legacy artifact. It does not prove natural event-boundary timing because every section is nine
+seconds and cross-sequence shuffled deltas retain timing F1 `1.0`.
 
 The first Stage 3 diagnostic uses actual synchronized NExT-QA video, audio, questions, and five-way
 answers from 64/16/16 complete clips (519/136/132 QA). A lightweight joint head was chosen to get a
@@ -205,12 +232,13 @@ performance answer before building the expensive Qwen QA LoRA. Accuracy changed 
 - Train: `20.8% → 99.2%`.
 - Validation: `21.3% → 24.3%`.
 - Test: `24.2% → 25.0%` (chance 20%).
-- Validation normal/video-zero/audio-zero/delta-zero/shuffled-delta:
-  `24.3/19.9/20.6/15.4/23.5%`.
+- Validation normal/video-zero/audio-zero/delta-zero/invalid-row-shuffle:
+  `24.3/19.9/20.6/15.4/23.5%`. The last number is invalid; source-disjoint post-hoc accuracy is
+  `19.1%`.
 
-The representation is sufficient to overfit real QA and both modalities plus delta content affect
-held-out predictions, but generalization is weak at this scale. The current result is a Stage 3
-feasibility diagnostic, not final Qwen QA LoRA evidence.
+The representation is sufficient to overfit real QA, but the original shuffle experiment cannot
+support a causal held-out claim. Generalization is weak at this scale. The current result is a
+legacy feasibility diagnostic, not final Qwen QA LoRA evidence.
 
 The matched vanilla Qwen2.5-Omni generative baseline makes the Stage 3 gap explicit. On the same
 16 short source-disjoint NExT-QA test videos and all 132 five-way questions, raw synchronized
@@ -227,9 +255,10 @@ fine-tuned Qwen. The latter is a temporary hashed-text, mean-pooled-feature clas
 only 64 videos/519 QA; it does not run the Qwen Thinker and does not consume caption memory. Its
 test score improved only `24.24% → 25.0%` while train reached `99.23%`. The diagnostic head should
 not be scaled further. The next Stage 3 experiment must train and evaluate an actual Qwen Thinker
-LoRA using typed video/audio anchor-plus-delta prefixes, prior committed captions, and identical
-prompts/splits. A text-only vanilla control is also required before attributing all `77.27%` to
-media understanding.
+LoRA using typed video/audio anchor-plus-delta prefixes and prior committed captions. Before that
+run, the local media-license gate must pass and the prepared multimodal/text-only/video-only/
+audio-only vanilla controls must be measured. The repeatedly inspected 16-video subset remains a
+development diagnostic and cannot serve as the final untouched test.
 
 Last updated: 2026-08-28
 
@@ -261,13 +290,14 @@ These are synthetic functional metrics and are not real-media research results.
 
 ## Raw data locations
 
-- DeltaOmni-owned official annotations: `/mnt/nfs_shared_data/dataset/deltaomni`
+- Legacy shared official annotations (read-only): `/mnt/nfs_shared_data/dataset/deltaomni`
+- DeltaThought-owned raw root: `/mnt/nfs_shared_data/dataset/deltathought/raw`
 - Existing shared SSV2 official media: `/mnt/nfs_shared_data/dataset/ssv2`
 - Existing shared NExT-QA media: `/mnt/nfs_shared_data/dataset/NExT-QA`
 - Existing shared VGGSound media: `/mnt/nfs_shared_data/dataset/omniembed/vggsound`
 
 All paths are read-only inputs. Derived manifests, decoded subsets, embeddings, checkpoints, and
-reports remain under `/home/changho.choi/deltaomni`.
+reports remain under `/home/changho.choi/deltathought`.
 
 ## First real SSV2 pilot
 

@@ -5,7 +5,6 @@ import hashlib
 import json
 import math
 import os
-import subprocess
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -20,9 +19,10 @@ from PIL import Image, ImageOps
 from torch import Tensor
 from transformers.utils import logging as transformers_logging
 
-from deltaomni.data.schema import CanonicalEpisode, iter_jsonl
+from deltaomni.data.canonicalize import read_canonical_dataset
+from deltaomni.data.schema import CanonicalEpisode
+from deltaomni.deltatok import DeltaTok
 from deltaomni.deltatok_scale_train import load_config as load_deltatok_config
-from deltaomni.deltatok_train import DeltaTok
 from deltaomni.distributed import distributed_context
 from deltaomni.omni_audiocaps_prefix_cache import _atomic_torch_save
 from deltaomni.omni_backbones import (
@@ -30,9 +30,15 @@ from deltaomni.omni_backbones import (
     load_omni_backbone_config,
 )
 from deltaomni.provenance import audit as audit_provenance
+from deltaomni.run_integrity import (
+    git_revision,
+    require_verified_resource,
+    resolved_input_signature,
+    sha256_file,
+)
 from deltaomni.train_sanity import _atomic_json
 
-CACHE_SCHEMA = "deltaomni.omni_nextqa_joint_prefix.v1"
+CACHE_SCHEMA = "deltaomni.omni_nextqa_joint_prefix.v2"
 
 
 @dataclass(frozen=True)
@@ -46,6 +52,8 @@ class RuntimeConfig:
 @dataclass(frozen=True)
 class JointCacheConfig:
     seed: int
+    dataset_resource_name: str
+    media_license_record: Path
     canonical_manifest: Path
     omni_config: Path
     video_deltatok_config: Path
@@ -89,6 +97,7 @@ def load_config(path: Path) -> JointCacheConfig:
                 if key
                 not in {
                     "runtime",
+                    "media_license_record",
                     "canonical_manifest",
                     "omni_config",
                     "video_deltatok_config",
@@ -99,6 +108,7 @@ def load_config(path: Path) -> JointCacheConfig:
                     "report_path",
                 }
             },
+            "media_license_record": resolve(raw["media_license_record"]),
             "canonical_manifest": resolve(raw["canonical_manifest"]),
             "omni_config": resolve(raw["omni_config"]),
             "video_deltatok_config": resolve(raw["video_deltatok_config"]),
@@ -130,6 +140,11 @@ def load_config(path: Path) -> JointCacheConfig:
         <= 0
     ):
         raise ValueError("Invalid NExT-QA joint cache controls")
+    frames_per_block = config.block_seconds * config.sample_fps
+    if config.maximum_seconds < config.minimum_seconds or not frames_per_block.is_integer():
+        raise ValueError("NExT-QA duration and frame-grid controls are inconsistent")
+    if len(config.video_deltatok_sha256) != 64 or len(config.audio_deltatok_sha256) != 64:
+        raise ValueError("NExT-QA DeltaTok checksums must be SHA-256 values")
     return config
 
 
@@ -141,22 +156,18 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _split_path(manifest_path: Path, split: str) -> Path:
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    return manifest_path.parent / manifest["splits"][split]["path"]
-
-
 def select_episodes(config: JointCacheConfig) -> dict[str, list[CanonicalEpisode]]:
     counts = {
         "train": config.train_count,
         "validation": config.validation_count,
         "test": config.test_count,
     }
+    canonical = read_canonical_dataset(config.canonical_manifest)
     result = {}
     for split, count in counts.items():
         eligible = [
             episode
-            for episode in iter_jsonl(_split_path(config.canonical_manifest, split))
+            for episode in canonical[split]
             if episode.media.audio is not None
             and episode.media.video is not None
             and episode.qa
@@ -181,7 +192,11 @@ def _block_count(episode: CanonicalEpisode, config: JointCacheConfig) -> int:
 
 def _video_blocks(episode: CanonicalEpisode, config: JointCacheConfig) -> list[list[Image.Image]]:
     assert episode.media.video is not None
-    targets = [index / config.sample_fps for index in range(_block_count(episode, config) * 2)]
+    frames_per_block = round(config.block_seconds * config.sample_fps)
+    targets = [
+        index / config.sample_fps
+        for index in range(_block_count(episode, config) * frames_per_block)
+    ]
     selected = []
     target_index = 0
     previous = None
@@ -221,7 +236,10 @@ def _video_blocks(episode: CanonicalEpisode, config: JointCacheConfig) -> list[l
             )
         )
         target_index += 1
-    return [selected[start : start + 2] for start in range(0, len(selected), 2)]
+    return [
+        selected[start : start + frames_per_block]
+        for start in range(0, len(selected), frames_per_block)
+    ]
 
 
 def _audio_blocks(
@@ -273,17 +291,88 @@ def _deltas(model: DeltaTok, features: list[Tensor], device: torch.device) -> Te
     return torch.stack(values)
 
 
+def _valid_cache(
+    path: Path,
+    *,
+    episode: CanonicalEpisode,
+    split: str,
+    blocks: int,
+    video_tokens: int,
+    audio_tokens: int,
+    full_width: int,
+    delta_width: int,
+    cache_signature: str,
+) -> bool:
+    if not path.is_file():
+        return False
+    try:
+        payload = torch.load(path, map_location="cpu", weights_only=False)
+    except (EOFError, OSError, RuntimeError):
+        return False
+    tensors = {
+        "video_first": (video_tokens, full_width),
+        "video_deltas": (blocks - 1, 1, delta_width),
+        "audio_first": (audio_tokens, full_width),
+        "audio_deltas": (blocks - 1, 1, delta_width),
+    }
+    assert episode.media.video is not None and episode.media.audio is not None
+    return bool(
+        payload.get("schema") == CACHE_SCHEMA
+        and payload.get("cache_signature") == cache_signature
+        and payload.get("source_id") == episode.source_id
+        and payload.get("source_group_id") == episode.source_group_id
+        and payload.get("split") == split
+        and payload.get("blocks") == blocks
+        and payload.get("video_media_sha256") == episode.media.video.sha256
+        and payload.get("audio_media_sha256") == episode.media.audio.sha256
+        and len(payload.get("qa", ())) == len(episode.qa or ())
+        and all(
+            isinstance(payload.get(name), torch.Tensor)
+            and tuple(payload[name].shape) == shape
+            and payload[name].dtype == torch.float16
+            and torch.isfinite(payload[name]).all()
+            for name, shape in tensors.items()
+        )
+    )
+
+
 @torch.no_grad()
 def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
     config = load_config(config_path)
     transformers_logging.set_verbosity_error()
     torch.set_num_threads(config.runtime.cpu_threads)
+    provenance = audit_provenance(provenance_path)
+    media_license_sha256 = require_verified_resource(
+        provenance,
+        config.dataset_resource_name,
+        config.media_license_record,
+    )
     for path, expected in (
         (config.video_deltatok_checkpoint, config.video_deltatok_sha256),
         (config.audio_deltatok_checkpoint, config.audio_deltatok_sha256),
     ):
         if _sha256(path) != expected:
             raise ValueError(f"DeltaTok checksum mismatch: {path}")
+    omni_config = load_omni_backbone_config(config.omni_config)
+    video_cfg, audio_cfg = (
+        load_deltatok_config(config.video_deltatok_config),
+        load_deltatok_config(config.audio_deltatok_config),
+    )
+    if video_cfg.model.model_dim != audio_cfg.model.model_dim:
+        raise ValueError("Joint cache requires matching audio/video delta widths")
+    cache_signature = resolved_input_signature(
+        config,
+        {
+            "canonical_manifest": config.canonical_manifest,
+            "omni_config": config.omni_config,
+            "video_deltatok_config": config.video_deltatok_config,
+            "video_deltatok_checkpoint": config.video_deltatok_checkpoint,
+            "audio_deltatok_config": config.audio_deltatok_config,
+            "audio_deltatok_checkpoint": config.audio_deltatok_checkpoint,
+            "media_license_record": config.media_license_record,
+            "provenance": provenance_path,
+        },
+    )
     with distributed_context(
         config.runtime.device,
         config.runtime.backend,
@@ -293,13 +382,9 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
         flat = [(split, episode) for split, values in episodes.items() for episode in values]
         local = flat[context.rank :: context.world_size]
         backend = QwenOmniThinkerEmbeddingBackend(
-            load_omni_backbone_config(config.omni_config),
+            omni_config,
             context.device,
-            audit_provenance(provenance_path),
-        )
-        video_cfg, audio_cfg = (
-            load_deltatok_config(config.video_deltatok_config),
-            load_deltatok_config(config.audio_deltatok_config),
+            provenance,
         )
         video_model, audio_model = (
             DeltaTok(video_cfg.model).to(context.device).eval(),
@@ -318,7 +403,18 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
         started = time.perf_counter()
         for completed, (split, episode) in enumerate(local, 1):
             path = config.cache_root / split / f"{episode.source_id}.pt"
-            if path.is_file():
+            blocks = _block_count(episode, config)
+            if _valid_cache(
+                path,
+                episode=episode,
+                split=split,
+                blocks=blocks,
+                video_tokens=config.expected_video_tokens,
+                audio_tokens=config.expected_audio_tokens,
+                full_width=backend.output_dim,
+                delta_width=video_cfg.model.model_dim,
+                cache_signature=cache_signature,
+            ):
                 continue
             video = _encode_batches(
                 backend.encode_video_chunks,
@@ -334,6 +430,11 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                 config.expected_audio_tokens,
                 "audio",
             )
+            if len(video) != blocks or len(audio) != blocks:
+                raise ValueError(
+                    f"NExT-QA synchronized block mismatch for {episode.source_id}: "
+                    f"video={len(video)} audio={len(audio)} expected={blocks}"
+                )
             qa = [
                 {
                     "question_id": item.question_id,
@@ -349,7 +450,9 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                 path,
                 {
                     "schema": CACHE_SCHEMA,
+                    "cache_signature": cache_signature,
                     "source_id": episode.source_id,
+                    "source_group_id": episode.source_group_id,
                     "split": split,
                     "video_first": video[0].cpu().to(torch.float16),
                     "video_deltas": _deltas(video_model, video, context.device),
@@ -357,6 +460,8 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                     "audio_deltas": _deltas(audio_model, audio, context.device),
                     "qa": qa,
                     "blocks": len(video),
+                    "video_media_sha256": episode.media.video.sha256,
+                    "audio_media_sha256": episode.media.audio.sha256,
                 },
             )
             if context.is_primary and (completed % 4 == 0 or completed == len(local)):
@@ -375,6 +480,18 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
             for split, values in episodes.items():
                 for episode in values:
                     path = config.cache_root / split / f"{episode.source_id}.pt"
+                    if not _valid_cache(
+                        path,
+                        episode=episode,
+                        split=split,
+                        blocks=_block_count(episode, config),
+                        video_tokens=config.expected_video_tokens,
+                        audio_tokens=config.expected_audio_tokens,
+                        full_width=backend.output_dim,
+                        delta_width=video_cfg.model.model_dim,
+                        cache_signature=cache_signature,
+                    ):
+                        raise ValueError(f"Invalid or stale NExT-QA joint cache: {path}")
                     payload = torch.load(path, map_location="cpu", weights_only=False)
                     records[split].append(
                         {
@@ -385,16 +502,14 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                             "qa": len(payload["qa"]),
                         }
                     )
-            revision = subprocess.run(
-                ["git", "rev-parse", "HEAD"],
-                cwd=config_path.resolve().parent.parent,
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout.strip()
+            revision = git_revision(config_path.resolve().parent.parent)
             manifest = {
-                "schema": "deltaomni.omni_nextqa_joint_manifest.v1",
+                "schema": "deltaomni.omni_nextqa_joint_manifest.v2",
                 "code_revision": revision,
+                "cache_signature": cache_signature,
+                "canonical_manifest_sha256": sha256_file(config.canonical_manifest),
+                "media_license_record_sha256": media_license_sha256,
+                "omni_revision": omni_config.revision,
                 "video_deltatok_sha256": config.video_deltatok_sha256,
                 "audio_deltatok_sha256": config.audio_deltatok_sha256,
                 "splits": records,

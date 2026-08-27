@@ -2,6 +2,7 @@ from pathlib import Path
 
 import torch
 
+from deltaomni.deltatok import DeltaTok
 from deltaomni.deltatok_scale_train import (
     ModelConfig,
     PairDataset,
@@ -9,7 +10,6 @@ from deltaomni.deltatok_scale_train import (
     _evaluation_checks,
     load_config,
 )
-from deltaomni.deltatok_train import DeltaTok
 
 
 def test_scale_config_uses_one_delta_token_and_distributed_effective_batch() -> None:
