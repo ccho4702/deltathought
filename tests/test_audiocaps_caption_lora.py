@@ -31,6 +31,9 @@ def test_delta_prefix_adapter_emits_one_soft_token_per_update() -> None:
     assert anchors.shape == (2, 50, 3584)
     assert deltas.shape == (2, 4, 3584)
 
+    _, shorter = adapter(torch.randn(1, 50, 3584), torch.randn(1, 2, 1, 768))
+    assert shorter.shape == (1, 2, 3584)
+
 
 def test_caption_metrics_use_best_human_reference() -> None:
     metrics = _caption_metrics(

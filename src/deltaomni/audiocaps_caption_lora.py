@@ -216,12 +216,12 @@ class DeltaPrefixAdapter(nn.Module):
         )
 
     def forward(self, first_full: Tensor, deltas: Tensor) -> tuple[Tensor, Tensor]:
-        if deltas.shape[1] != self.delta_positions.shape[0] or deltas.shape[2] != 1:
+        if not 0 < deltas.shape[1] <= self.delta_positions.shape[0] or deltas.shape[2] != 1:
             raise ValueError(f"Unexpected delta prefix shape: {tuple(deltas.shape)}")
         anchors = first_full + self.anchor_type
         squeezed = deltas[:, :, 0]
         projected = self.delta_projection(self.delta_norm(squeezed))
-        projected = projected + self.delta_type + self.delta_positions
+        projected = projected + self.delta_type + self.delta_positions[: deltas.shape[1]]
         return anchors, projected
 
 
