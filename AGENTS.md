@@ -22,8 +22,10 @@
 
 ## NAS management
 
-- DeltaOmni-owned immutable raw distributions belong under
-  `/mnt/nfs_shared_data/dataset/deltaomni`.
+- DeltaThought-owned immutable raw distributions belong under
+  `/mnt/nfs_shared_data/dataset/deltathought/raw` and must be owned by the project account.
+- `/mnt/nfs_shared_data/dataset/deltaomni` is a legacy `donghun.kim`-owned tree and is read-only
+  context; do not add, modify, move, or delete files there.
 - Existing shared datasets such as SSV2, NExT-QA, and AudioSet are read-only inputs; do not move,
   modify, rename, or duplicate another user's shared copy.
 - Do not write canonical manifests, extracted media, embeddings, predictions, checkpoints, or logs
@@ -42,4 +44,3 @@
   restore commands, and intentionally omitted artifacts.
 - A handoff is complete only when GitHub remote SHA, migration tag, NAS backup checksums, and the
   project test suite all verify successfully.
-

@@ -24,7 +24,8 @@ uv run pytest -q
 
 ## Raw data
 
-- DeltaOmni annotation root: `/mnt/nfs_shared_data/dataset/deltaomni`
+- DeltaThought authoritative raw root: `/mnt/nfs_shared_data/dataset/deltathought/raw`
+- Legacy read-only annotation root: `/mnt/nfs_shared_data/dataset/deltaomni`
 - Existing shared SSV2: `/mnt/nfs_shared_data/dataset/ssv2`
 - Existing shared NExT-QA: `/mnt/nfs_shared_data/dataset/NExT-QA`
 - Existing shared AudioSet media: `/mnt/nfs_shared_data/dataset/omniembed/audioset`
@@ -32,6 +33,14 @@ uv run pytest -q
 - Existing shared Ego4D media/annotations: `/mnt/nfs_shared_data/dataset/ego4d_540`
 
 Raw files are not stored in Git and were never modified by DeltaOmni.
+
+AudioCaps annotations are pinned at
+`/mnt/nfs_shared_data/dataset/deltathought/raw/audiocaps` revision
+`d004db3ea1b01cf4fd0347dd8d27db90cadc8809`. Original split CSV SHA-256 values are:
+
+- train: `c0c5223db682b3bf724ce7e7ce58d5b36929f74572e8526a7211f92d2eef7c8e`
+- validation: `dab1c96641d5f3053ddb99dca3949450da9a75737bda53e11cc0aa8b102be0c3`
+- test: `b91c4b7ded2f4f6e7db5b9c4983dc1e1dca3d556f505b61e3fd65cac7e1c638a`
 
 ## Selected generated-state backup
 

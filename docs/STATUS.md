@@ -111,6 +111,13 @@ All predeclared controls passed. Native Qwen2.5-Omni audio delta content and ord
 strongly useful through four updates on this distribution. Checkpoint SHA-256 is
 `8c64d86088180e045b75720d1e0270ced413043683914fb17dbbd60328c15796`.
 
+S2 data preparation has started from an authoritative project-owned raw root at
+`/mnt/nfs_shared_data/dataset/deltathought/raw`. The official AudioCaps repository is pinned there
+at revision `d004db3ea1b01cf4fd0347dd8d27db90cadc8809`. Exact ID matching against existing AudioSet media
+found 48,344/49,838 train clips (97.0%), 483/495 validation clips (97.6%), and 943/975 test clips
+(96.7%). Missing media will be recorded as deterministic attrition; it will not be downloaded from
+unverified mirrors. Ego4D narrations and media remain the video-caption source candidate.
+
 Last updated: 2026-08-27
 
 ## Completed
