@@ -17,6 +17,11 @@ def test_caption_lora_targets_only_thinker_text_layers() -> None:
     assert config.interface.hidden_width == 3584
     assert config.training.max_steps == 1000
 
+    early = load_config(Path("configs/audiocaps_caption_lora_earlystop.yaml"))
+    assert early.training.max_steps == 200
+    assert early.training.warmup_steps == config.training.warmup_steps
+    assert early.lora == config.lora
+
 
 def test_delta_prefix_adapter_emits_one_soft_token_per_update() -> None:
     config = load_config(Path("configs/audiocaps_caption_lora_smoke.yaml"))
