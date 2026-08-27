@@ -297,6 +297,7 @@ def _evaluate_pairs(
 ) -> dict[str, float | int]:
     model.eval()
     squared = copy_squared = cosine = 0.0
+    zero_squared = 0.0
     reconstructed = []
     targets = []
     count = 0
@@ -307,9 +308,17 @@ def _evaluate_pairs(
         current = current.to(device)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16):
             predicted, _ = model(previous, current)
+            zero_delta = torch.zeros(
+                len(indices),
+                model.delta_queries.shape[0],
+                model.delta_queries.shape[1],
+                device=device,
+            )
+            zero_predicted = model.decode(previous, zero_delta)
         batch = len(indices)
         squared += float((predicted.float() - current).square().mean()) * batch
         copy_squared += float((previous - current).square().mean()) * batch
+        zero_squared += float((zero_predicted.float() - current).square().mean()) * batch
         cosine += (
             float(F.cosine_similarity(predicted.float().flatten(1), current.flatten(1)).mean())
             * batch
@@ -326,6 +335,7 @@ def _evaluate_pairs(
     return {
         "mse": squared / count,
         "copy_previous_mse": copy_squared / count,
+        "zero_delta_mse": zero_squared / count,
         "cosine": cosine / count,
         "retrieval_r1": retrieval,
         "retrieval_candidates": len(rec),
@@ -345,7 +355,10 @@ def _evaluate_rollout(
     final_targets = []
     final_anchors = []
     final_reversed = []
-    normal_final = anchor_final = reversed_final = 0.0
+    final_zero = []
+    all_deltas = []
+    groups: dict[int, list[int]] = {}
+    normal_final = anchor_final = reversed_final = zero_final = 0.0
     for record_index in range(len(data.records)):
         actual = data.load_record(record_index).to(device)
         with torch.autocast(device_type=device.type, dtype=torch.bfloat16):
@@ -354,8 +367,10 @@ def _evaluate_rollout(
                 for step in range(1, actual.shape[0])
             ]
             reconstructed = actual[0:1]
+            zero = actual[0:1]
             for horizon, delta in enumerate(deltas, start=1):
                 reconstructed = model.decode(reconstructed, delta)
+                zero = model.decode(zero, torch.zeros_like(delta))
                 target = actual[horizon : horizon + 1]
                 teacher = model.decode(actual[horizon - 1 : horizon], delta)
                 values = by_horizon.setdefault(
@@ -368,19 +383,39 @@ def _evaluate_rollout(
             reverse = actual[0:1]
             for delta in reversed(deltas):
                 reverse = model.decode(reverse, delta)
+        all_deltas.append([delta.float().cpu() for delta in deltas])
+        groups.setdefault(len(deltas), []).append(record_index)
         final_target = actual[-1:]
         anchor = actual[0:1]
         normal_final += float((reconstructed.float() - final_target).square().mean())
         anchor_final += float((anchor - final_target).square().mean())
         reversed_final += float((reverse.float() - final_target).square().mean())
+        zero_final += float((zero.float() - final_target).square().mean())
         final_reconstructed.append(reconstructed.mean(1).float().cpu())
         final_targets.append(final_target.mean(1).float().cpu())
         final_anchors.append(anchor.mean(1).float().cpu())
         final_reversed.append(reverse.mean(1).float().cpu())
+        final_zero.append(zero.mean(1).float().cpu())
     rec = torch.cat(final_reconstructed)
     target = torch.cat(final_targets)
     anchor = torch.cat(final_anchors)
     reverse = torch.cat(final_reversed)
+    zero = torch.cat(final_zero)
+
+    shuffled_final = 0.0
+    final_shuffled = []
+    for record_index in range(len(data.records)):
+        actual = data.load_record(record_index).to(device)
+        group = groups[len(all_deltas[record_index])]
+        donor_index = group[(group.index(record_index) + 1) % len(group)]
+        shuffled = actual[0:1]
+        with torch.autocast(device_type=device.type, dtype=torch.bfloat16):
+            for delta in all_deltas[donor_index]:
+                shuffled = model.decode(shuffled, delta.to(device))
+        final_target = actual[-1:]
+        shuffled_final += float((shuffled.float() - final_target).square().mean())
+        final_shuffled.append(shuffled.mean(1).float().cpu())
+    shuffled = torch.cat(final_shuffled)
 
     def retrieval(values: Tensor) -> float:
         similarity = F.normalize(values) @ F.normalize(target).T
@@ -399,11 +434,40 @@ def _evaluate_rollout(
         "final_mse": normal_final / count,
         "anchor_final_mse": anchor_final / count,
         "reversed_delta_final_mse": reversed_final / count,
+        "zero_delta_final_mse": zero_final / count,
+        "cross_clip_shuffled_delta_final_mse": shuffled_final / count,
         "final_retrieval_r1": retrieval(rec),
         "anchor_final_retrieval_r1": retrieval(anchor),
         "reversed_delta_final_retrieval_r1": retrieval(reverse),
+        "zero_delta_final_retrieval_r1": retrieval(zero),
+        "cross_clip_shuffled_delta_final_retrieval_r1": retrieval(shuffled),
         "retrieval_candidates": count,
         "clips": count,
+    }
+
+
+def _evaluation_checks(
+    teacher: dict[str, float | int],
+    rollout: dict[str, Any],
+    config: ScaleConfig,
+) -> dict[str, bool]:
+    minimum_relative = config.evaluation.minimum_mse_relative_improvement
+    minimum_retrieval = config.evaluation.minimum_retrieval_absolute_improvement
+    return {
+        "teacher_beats_copy_previous": teacher["mse"]
+        <= teacher["copy_previous_mse"] * (1 - minimum_relative),
+        "teacher_beats_zero_delta": teacher["mse"]
+        <= teacher["zero_delta_mse"] * (1 - minimum_relative),
+        "rollout_beats_anchor_final": rollout["final_mse"]
+        <= rollout["anchor_final_mse"] * (1 - minimum_relative),
+        "rollout_beats_zero_delta": rollout["final_mse"]
+        <= rollout["zero_delta_final_mse"] * (1 - minimum_relative),
+        "rollout_beats_cross_clip_shuffled_delta": rollout["final_mse"]
+        <= rollout["cross_clip_shuffled_delta_final_mse"] * (1 - minimum_relative),
+        "rollout_retrieval_beats_cross_clip_shuffled_delta": (
+            rollout["final_retrieval_r1"]
+            >= rollout["cross_clip_shuffled_delta_final_retrieval_r1"] + minimum_retrieval
+        ),
     }
 
 
@@ -595,26 +659,7 @@ def run(
         elif context.is_primary:
             teacher = _evaluate_pairs(unwrap(model), validation, config, context.device)
             rollout = _evaluate_rollout(unwrap(model), validation, context.device)
-            minimum_relative = config.evaluation.minimum_mse_relative_improvement
-            minimum_retrieval = config.evaluation.minimum_retrieval_absolute_improvement
-            checks = {
-                "teacher_beats_copy_previous": teacher["mse"]
-                <= teacher["copy_previous_mse"] * (1 - minimum_relative),
-                "rollout_beats_anchor_final": rollout["final_mse"]
-                <= rollout["anchor_final_mse"] * (1 - minimum_relative),
-                "rollout_beats_reversed_delta": (
-                    rollout["final_mse"]
-                    <= rollout["reversed_delta_final_mse"] * (1 - minimum_relative)
-                ),
-                "rollout_retrieval_beats_anchor": (
-                    rollout["final_retrieval_r1"]
-                    >= rollout["anchor_final_retrieval_r1"] + minimum_retrieval
-                ),
-                "rollout_retrieval_beats_reversed_delta": (
-                    rollout["final_retrieval_r1"]
-                    >= rollout["reversed_delta_final_retrieval_r1"] + minimum_retrieval
-                ),
-            }
+            checks = _evaluation_checks(teacher, rollout, config)
             result = {
                 "schema": "deltaomni.deltatok_scale_training.v1",
                 "run_id": run_id,

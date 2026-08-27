@@ -6,6 +6,7 @@ from deltaomni.deltatok_scale_train import (
     ModelConfig,
     PairDataset,
     _evaluate_rollout,
+    _evaluation_checks,
     load_config,
 )
 from deltaomni.deltatok_train import DeltaTok
@@ -68,3 +69,24 @@ def test_rollout_reports_every_accumulated_delta_horizon(tmp_path: Path) -> None
     assert set(result["by_horizon"]) == {"1", "2", "3"}
     assert result["clips"] == 1
     assert result["retrieval_candidates"] == 1
+    assert "zero_delta_final_mse" in result
+    assert "cross_clip_shuffled_delta_final_mse" in result
+
+
+def test_evaluation_gate_requires_delta_content_controls() -> None:
+    config = load_config(Path("configs/deltatok_vggsound_video_smoke.yaml"))
+    teacher = {"mse": 0.7, "copy_previous_mse": 1.0, "zero_delta_mse": 0.8}
+    rollout = {
+        "final_mse": 0.7,
+        "anchor_final_mse": 1.0,
+        "zero_delta_final_mse": 0.8,
+        "cross_clip_shuffled_delta_final_mse": 0.9,
+        "final_retrieval_r1": 0.5,
+        "cross_clip_shuffled_delta_final_retrieval_r1": 0.4,
+    }
+
+    assert all(_evaluation_checks(teacher, rollout, config).values())
+    rollout["cross_clip_shuffled_delta_final_mse"] = 0.7
+    assert not _evaluation_checks(teacher, rollout, config)[
+        "rollout_beats_cross_clip_shuffled_delta"
+    ]
