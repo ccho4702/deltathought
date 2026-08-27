@@ -1,0 +1,33 @@
+seed: 42
+modality: video
+cache_manifest: intermediates/cache/omni_vggsound_s1_2s_224/video_manifest.json
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  precision: bfloat16
+  cpu_threads: 4
+  per_device_batch_size: 4
+  gradient_accumulation_steps: 2
+  cache_entries: 64
+model:
+  input_dim: 3584
+  model_dim: 256
+  tokens_per_frame: 128
+  delta_tokens: 1
+  depth: 2
+  num_heads: 8
+training:
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  warmup_steps: 5
+  max_steps: 20
+  checkpoint_interval_steps: 10
+  keep_last_checkpoints: 2
+  gradient_clip_norm: 0.01
+  resume: auto
+evaluation:
+  batch_size: 8
+  retrieval_limit: 256
+output_root: outputs/real_pilots/deltatok_vggsound_video_smoke
+log_root: logs/experiments
