@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from soundfile import LibsndfileError
 
 from deltaomni.data.canonicalize import read_canonical_dataset, write_canonical_dataset
 from deltaomni.data.media import inspect_audio_media
@@ -166,12 +167,19 @@ def _cache_path(config: AudioCapsConfig, source_id: str) -> Path:
 def _inspect(
     config: AudioCapsConfig,
     job: tuple[str, str],
-) -> tuple[str, str, dict[str, Any] | None]:
+) -> tuple[str, str, dict[str, Any] | None, str | None]:
     split, source_id = job
     path = _find_media(config, source_id)
     if path is None:
-        return split, source_id, None
-    return split, source_id, inspect_audio_media(source_id, path, _cache_path(config, source_id))
+        return split, source_id, None, "missing"
+    if path.stat().st_size == 0:
+        return split, source_id, None, "empty_file"
+    try:
+        media = inspect_audio_media(source_id, path, _cache_path(config, source_id))
+    except (json.JSONDecodeError, LibsndfileError, OSError, ValueError) as error:
+        reason = f"{type(error).__name__}:{str(error)[:500]}"
+        return split, source_id, None, reason
+    return split, source_id, media, None
 
 
 def _attrition(values: list[str]) -> dict[str, Any]:
@@ -181,6 +189,16 @@ def _attrition(values: list[str]) -> dict[str, Any]:
         "count": len(ordered),
         "source_ids_sha256": hashlib.sha256("\n".join(ordered).encode()).hexdigest(),
         "examples": ordered[:20],
+    }
+
+
+def _invalid_media(values: dict[str, str]) -> dict[str, Any]:
+    serialized = [f"{source_id}:{reason}" for source_id, reason in sorted(values.items())]
+    return {
+        "reason": "existing_media_failed_integrity_or_decoder_inspection",
+        "count": len(serialized),
+        "records_sha256": hashlib.sha256("\n".join(serialized).encode()).hexdigest(),
+        "examples": serialized[:20],
     }
 
 
@@ -222,11 +240,15 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
     started = time.perf_counter()
     inspected: dict[tuple[str, str], dict[str, Any]] = {}
     missing = {"train": [], "validation": [], "test": []}
+    invalid: dict[str, dict[str, str]] = {"train": {}, "validation": {}, "test": {}}
     with ThreadPoolExecutor(max_workers=config.cpu_workers) as executor:
         iterator = executor.map(lambda job: _inspect(config, job), jobs)
-        for index, (split, source_id, media) in enumerate(iterator, start=1):
+        for index, (split, source_id, media, reason) in enumerate(iterator, start=1):
             if media is None:
-                missing[split].append(source_id)
+                if reason == "missing":
+                    missing[split].append(source_id)
+                else:
+                    invalid[split][source_id] = reason or "unknown_inspection_failure"
             else:
                 inspected[(split, source_id)] = media
             if index % 1000 == 0 or index == len(jobs):
@@ -327,7 +349,8 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
             for path in source_paths
         ],
         exclusions={
-            "missing_media": {split: _attrition(values) for split, values in missing.items()}
+            "missing_media": {split: _attrition(values) for split, values in missing.items()},
+            "invalid_media": {split: _invalid_media(values) for split, values in invalid.items()},
         },
     )
     loaded = read_canonical_dataset(manifest)
@@ -343,6 +366,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
             for split, values in loaded.items()
         },
         "missing_media": {split: len(values) for split, values in missing.items()},
+        "invalid_media": {split: len(values) for split, values in invalid.items()},
         "code_revision": code_revision,
         "elapsed_seconds": time.perf_counter() - started,
         "completed_at_utc": datetime.now(UTC).isoformat(),
