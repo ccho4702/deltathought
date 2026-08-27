@@ -18,8 +18,15 @@ YFCC100M Creative Commons metadata audit.
 
 The fixed-period multi-commit aggregate has no tracked producer and its cross-sequence shuffled
 timing F1 remains `1.0`. It is now classified as a legacy mechanics artifact, not research evidence.
-The next vanilla baseline schema is prepared to measure multimodal, text-only, video-only, and
-audio-only conditions under one content-bound run signature; it has not been executed.
+The content-signed NExT-QA v2 cache was regenerated on four A6000s in 34.4s. Matched vanilla
+Qwen2.5-Omni controls on all 132 QA from the same 16-video diagnostic subset reached multimodal/
+text-only/video-only/audio-only accuracy `77.27/48.48/81.06/55.30%`, all with 100% parse rate.
+Video-only beat text-only by `32.58` points (16-video cluster-bootstrap 95% CI
+`[23.40, 41.53]`; paired exact p `< 1e-9`). Video-only exceeded multimodal by `3.79` points:
+five QA flipped only in video's favor and none only in multimodal's favor, but paired exact
+p=`0.0625`. Audio-only versus text-only was inconclusive (`+6.82` points, CI
+`[-3.25, 16.15]`, p=`0.150`). The next Stage 3 trainer therefore starts with video anchor+deltas;
+audio is added only as a subsequent ablation.
 
 The obsolete single-GPU `deltatok_train.py` runner and its integration config were removed. The
 unchanged `DeltaTok` model now lives in `deltaomni.deltatok`; the supported trainer is the scalable

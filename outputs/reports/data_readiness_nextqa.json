@@ -1,0 +1,46 @@
+{
+  "blocked": [],
+  "ready": [
+    "nextqa"
+  ],
+  "sources": {
+    "nextqa": {
+      "annotation_files": [
+        {
+          "path": "/mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/train.csv",
+          "sha256": "51ae6e611fa58835f63a0beb325fe647bb197c7e320a31f0bb7a9cf969e082b2"
+        },
+        {
+          "path": "/mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/val.csv",
+          "sha256": "43198bdef8436b8d64a9b75d846b0987c10cbf94ebf4be325c4a4e54634d66b8"
+        },
+        {
+          "path": "/mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/test.csv",
+          "sha256": "cdf46de237b3b3b846ff0209ae1394ad559791b5a0de0bb8c78648f74da83542"
+        },
+        {
+          "path": "/mnt/nfs_shared_data/dataset/deltaomni/nextqa/annotations/map_vid_vidorID.json",
+          "sha256": "1955d89e7a175346faf8d4a582297ff349619231394f59fd7872f459ac8a8685"
+        }
+      ],
+      "authorization_kind": "media_policy",
+      "authorization_record": "/home/changho.choi/deltathought/configs/nextqa_media_policy.yaml",
+      "media_bytes": 24583229969,
+      "media_count": 5440,
+      "media_dirs": [
+        "/mnt/nfs_shared_data/dataset/NExT-QA/processed_for_gcg/NExTVideo"
+      ],
+      "missing_annotations": [],
+      "prerequisites": {
+        "annotations_complete": true,
+        "enabled": true,
+        "media_present": true,
+        "provenance_approved": true,
+        "usage_authorization_valid": true
+      },
+      "resource_name": "nextqa_annotations",
+      "source": "nextqa",
+      "status": "ready"
+    }
+  }
+}

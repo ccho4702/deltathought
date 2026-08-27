@@ -1,0 +1,384 @@
+{
+  "code_revision": "d9aff2d6346c2a517a55d3fcd76fb7a503e686ae",
+  "comparison": {
+    "delta_joint_head_test_accuracy": 0.25,
+    "report": "/home/changho.choi/deltathought/outputs/reports/nextqa_joint_head_poc.json",
+    "vanilla_raw_omni_test_accuracy": 0.7727272727272727,
+    "warning": "The delta result is a trained lightweight classifier, not Qwen LoRA."
+  },
+  "completed_at_utc": "2026-08-27T19:31:28.439963+00:00",
+  "examples": [
+    {
+      "answer_index": 3,
+      "control": "video_only",
+      "correct": 1.0,
+      "generation_latency_seconds": 0.6718330234289169,
+      "key": "nextqa:8392813576:3:multiple_choice:video_only",
+      "parsed": 1.0,
+      "parsed_index": 3,
+      "prediction": "D",
+      "question": "how many people are sledding down the slope together",
+      "question_id": "3",
+      "question_type": "DC",
+      "reference": "three",
+      "source_id": "8392813576",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "answer_index": 4,
+      "control": "multimodal",
+      "correct": 1.0,
+      "generation_latency_seconds": 0.7797751873731613,
+      "key": "nextqa:4226033751:0:multiple_choice:multimodal",
+      "parsed": 1.0,
+      "parsed_index": 4,
+      "prediction": "E",
+      "question": "why does the man squeeze his hand",
+      "question_id": "0",
+      "question_type": "CW",
+      "reference": "playing with stress ball",
+      "source_id": "4226033751",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "answer_index": 3,
+      "control": "audio_only",
+      "correct": 0.0,
+      "generation_latency_seconds": 0.1800674945116043,
+      "key": "nextqa:4226033751:7:multiple_choice:audio_only",
+      "parsed": 1.0,
+      "parsed_index": 1,
+      "prediction": "B",
+      "question": "how many times did the person squeeze the ball in this video",
+      "question_id": "7",
+      "question_type": "DC",
+      "reference": "five",
+      "source_id": "4226033751",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "answer_index": 2,
+      "control": "video_only",
+      "correct": 1.0,
+      "generation_latency_seconds": 0.739472035318613,
+      "key": "nextqa:4226033751:6:multiple_choice:video_only",
+      "parsed": 1.0,
+      "parsed_index": 2,
+      "prediction": "C",
+      "question": "what is the person doing in this video",
+      "question_id": "6",
+      "question_type": "TC",
+      "reference": "squeezing a ball",
+      "source_id": "4226033751",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "answer_index": 2,
+      "control": "audio_only",
+      "correct": 1.0,
+      "generation_latency_seconds": 0.18001027405261993,
+      "key": "nextqa:2786223802:5:multiple_choice:audio_only",
+      "parsed": 1.0,
+      "parsed_index": 2,
+      "prediction": "C",
+      "question": "how does the lady position herself as she walks backwards",
+      "question_id": "5",
+      "question_type": "DO",
+      "reference": "facing the children",
+      "source_id": "2786223802",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "answer_index": 0,
+      "control": "multimodal",
+      "correct": 1.0,
+      "generation_latency_seconds": 0.7106011137366295,
+      "key": "nextqa:8900428927:12:multiple_choice:multimodal",
+      "parsed": 1.0,
+      "parsed_index": 0,
+      "prediction": "A",
+      "question": "how did the trainer held the stick before he signalled the girl to lie on the mattress",
+      "question_id": "12",
+      "question_type": "CH",
+      "reference": "use hand gesture",
+      "source_id": "8900428927",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "choices": [
+        "kiss the boy",
+        "jump up",
+        "lie down on back",
+        "lie face down",
+        "use trunk"
+      ],
+      "exact_match": 0.0,
+      "generation_latency_seconds": 1.1107553765177727,
+      "key": "nextqa:8900428927:8:freeform",
+      "lexical_choice_correct": 0.0,
+      "lexical_choice_index": 0,
+      "prediction": "with its leg",
+      "question": "how was the elephant massaging the boy",
+      "question_id": "8",
+      "question_type": "CH",
+      "reference": "use trunk",
+      "rouge_l": 0.0,
+      "source_id": "8900428927",
+      "task": "nextqa_freeform",
+      "word_f1": 0.0
+    },
+    {
+      "answer_index": 3,
+      "control": "audio_only",
+      "correct": 0.0,
+      "generation_latency_seconds": 0.18529845029115677,
+      "key": "nextqa:13339367205:3:multiple_choice:audio_only",
+      "parsed": 1.0,
+      "parsed_index": 4,
+      "prediction": "E",
+      "question": "how many dogs are there",
+      "question_id": "3",
+      "question_type": "DC",
+      "reference": "three",
+      "source_id": "13339367205",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "answer_index": 2,
+      "control": "video_only",
+      "correct": 0.0,
+      "generation_latency_seconds": 0.7370895817875862,
+      "key": "nextqa:5929534589:2:multiple_choice:video_only",
+      "parsed": 1.0,
+      "parsed_index": 1,
+      "prediction": "B",
+      "question": "why did the man walk towards the car after the car crossed over to his side of the shore",
+      "question_id": "2",
+      "question_type": "CW",
+      "reference": "follow it",
+      "source_id": "5929534589",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "answer_index": 1,
+      "control": "audio_only",
+      "correct": 1.0,
+      "generation_latency_seconds": 0.18272295966744423,
+      "key": "nextqa:2639225467:7:multiple_choice:audio_only",
+      "parsed": 1.0,
+      "parsed_index": 1,
+      "prediction": "B",
+      "question": "how does the man in red use the whip",
+      "question_id": "7",
+      "question_type": "CH",
+      "reference": "swing it around",
+      "source_id": "2639225467",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "answer_index": 1,
+      "control": "text_only",
+      "correct": 1.0,
+      "generation_latency_seconds": 0.10657890141010284,
+      "key": "nextqa:2639225467:3:multiple_choice:text_only",
+      "parsed": 1.0,
+      "parsed_index": 1,
+      "prediction": "B",
+      "question": "why is the woman in black shirt looking at the man with red jacket",
+      "question_id": "3",
+      "question_type": "CW",
+      "reference": "watch him waving whip",
+      "source_id": "2639225467",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "answer_index": 2,
+      "control": "video_only",
+      "correct": 1.0,
+      "generation_latency_seconds": 0.669036228209734,
+      "key": "nextqa:4738042036:8:multiple_choice:video_only",
+      "parsed": 1.0,
+      "parsed_index": 2,
+      "prediction": "C",
+      "question": "what is the child doing in this video",
+      "question_id": "8",
+      "question_type": "TC",
+      "reference": "grab bottle",
+      "source_id": "4738042036",
+      "task": "nextqa_multiple_choice"
+    }
+  ],
+  "hardware": [
+    {
+      "device": "cuda:0",
+      "elapsed_seconds": 117.14632178470492,
+      "name": "NVIDIA RTX A6000",
+      "peak_allocated_bytes": 19471944192,
+      "rank": 0,
+      "total_memory_bytes": 50925535232
+    },
+    {
+      "device": "cuda:1",
+      "elapsed_seconds": 131.6304466985166,
+      "name": "NVIDIA RTX A6000",
+      "peak_allocated_bytes": 19468053504,
+      "rank": 1,
+      "total_memory_bytes": 50925535232
+    },
+    {
+      "device": "cuda:2",
+      "elapsed_seconds": 96.11169109866023,
+      "name": "NVIDIA RTX A6000",
+      "peak_allocated_bytes": 19471958528,
+      "rank": 2,
+      "total_memory_bytes": 50925535232
+    },
+    {
+      "device": "cuda:3",
+      "elapsed_seconds": 100.29442599415779,
+      "name": "NVIDIA RTX A6000",
+      "peak_allocated_bytes": 19471944192,
+      "rank": 3,
+      "total_memory_bytes": 50925535232
+    }
+  ],
+  "inputs": {
+    "media_policy_sha256": "d563d1c3d84a10f03ca46909712ce4fe579384ea4ab65427e55f74ffa064c332",
+    "msrvtt_metadata_sha256": "93e3d79ff7f86cf3dc75e5ee5ef1ef4efe32424400c1f6e27b3b41b488a1dae1",
+    "nextqa_manifest_sha256": "06abface4a7ca438e9cffbfc0d63fc182c253ce845be5c8f08f278d86368f00a",
+    "nextqa_selection_manifest_sha256": "c1b20387d68b0d94e9b19e9463d1d1968a2663cca5b618431f73c73bcb67b4ae",
+    "omni_config_sha256": "18e57857be417863b0994594d37883ce2c47827f2a8b1a3c925e1dcfcdb281c4",
+    "provenance_sha256": "b9bdec030b6a322d13f37df5cb7acf2cd6880cd563e8178d6563fe4dcfa57c12"
+  },
+  "limitations": [
+    "NExT-QA references are multiple-choice answer phrases; free-form metrics are a derived evaluation.",
+    "Lexical-choice accuracy maps generated text to the most overlapping choice and is diagnostic, not a standard open-QA metric.",
+    "MSR-VTT scores use maximum word-F1/ROUGE-L over 20 references, not the standard COCO caption evaluation suite.",
+    "This PoC uses 16 source-disjoint NExT-QA test videos and 16 short MSR-VTT test videos."
+  ],
+  "mean_generation_latency_seconds": 0.6078508333826559,
+  "msrvtt_caption": {
+    "exact_match": 0.0,
+    "examples": 16,
+    "rouge_l": 0.5019991650506357,
+    "word_f1": 0.533507275211029
+  },
+  "nextqa_freeform": {
+    "exact_match": 0.09848484848484848,
+    "examples": 132,
+    "lexical_choice_accuracy": 0.3712121212121212,
+    "rouge_l": 0.22590898159079975,
+    "word_f1": 0.22590898159079975,
+    "word_f1_by_question_type": {
+      "CH": 0.23617123617123617,
+      "CW": 0.1707311207311207,
+      "DC": 0.0,
+      "DL": 0.6296296296296297,
+      "DO": 0.375,
+      "TC": 0.1886904761904762,
+      "TN": 0.18148148148148147
+    }
+  },
+  "nextqa_multiple_choice": {
+    "audio_only": {
+      "accuracy": 0.553030303030303,
+      "accuracy_by_question_type": {
+        "CH": 0.6060606060606061,
+        "CW": 0.5882352941176471,
+        "DC": 0.3333333333333333,
+        "DL": 0.5555555555555556,
+        "DO": 0.375,
+        "TC": 0.5,
+        "TN": 0.5555555555555556
+      },
+      "examples": 132,
+      "parse_rate": 1.0
+    },
+    "multimodal": {
+      "accuracy": 0.7727272727272727,
+      "accuracy_by_question_type": {
+        "CH": 0.7878787878787878,
+        "CW": 0.7647058823529411,
+        "DC": 0.6666666666666666,
+        "DL": 0.8888888888888888,
+        "DO": 0.625,
+        "TC": 0.8125,
+        "TN": 0.7777777777777778
+      },
+      "examples": 132,
+      "parse_rate": 1.0
+    },
+    "text_only": {
+      "accuracy": 0.48484848484848486,
+      "accuracy_by_question_type": {
+        "CH": 0.5454545454545454,
+        "CW": 0.5294117647058824,
+        "DC": 0.3333333333333333,
+        "DL": 0.2222222222222222,
+        "DO": 0.5,
+        "TC": 0.4375,
+        "TN": 0.4444444444444444
+      },
+      "examples": 132,
+      "parse_rate": 1.0
+    },
+    "video_only": {
+      "accuracy": 0.8106060606060606,
+      "accuracy_by_question_type": {
+        "CH": 0.8181818181818182,
+        "CW": 0.803921568627451,
+        "DC": 0.8333333333333334,
+        "DL": 0.8888888888888888,
+        "DO": 0.625,
+        "TC": 0.875,
+        "TN": 0.7777777777777778
+      },
+      "examples": 132,
+      "parse_rate": 1.0
+    }
+  },
+  "resolved_config": {
+    "caption_max_new_tokens": 32,
+    "comparison_report": "/home/changho.choi/deltathought/outputs/reports/nextqa_joint_head_poc.json",
+    "dataset_resource_name": "nextqa_annotations",
+    "frame_height": 224,
+    "frame_width": 224,
+    "freeform_max_new_tokens": 20,
+    "log_root": "/home/changho.choi/deltathought/logs/experiments",
+    "maximum_seconds": 12.0,
+    "media_policy": "/home/changho.choi/deltathought/configs/nextqa_media_policy.yaml",
+    "minimum_seconds": 5.0,
+    "msrvtt_count": 16,
+    "msrvtt_metadata": "/mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/test.json",
+    "msrvtt_video_root": "/mnt/nfs_shared_data/dataset/omniembed/MSRVTT/videos",
+    "multiple_choice_max_new_tokens": 4,
+    "nextqa_control_modes": [
+      "multimodal",
+      "text_only",
+      "video_only",
+      "audio_only"
+    ],
+    "nextqa_manifest": "/home/changho.choi/deltathought/intermediates/canonical/nextqa/official-2021-ann-1955d89e-schema-v2-r2/manifest.json",
+    "nextqa_selection_manifest": "/home/changho.choi/deltathought/intermediates/cache/omni_nextqa_joint_poc/manifest.json",
+    "omni_config": "/home/changho.choi/deltathought/configs/qwen2_5_omni.yaml",
+    "output_root": "/home/changho.choi/deltathought/outputs/baselines/qwen2_5_omni_vanilla_controls_v2",
+    "provenance_config": "/home/changho.choi/deltathought/configs/provenance.yaml",
+    "report_path": "/home/changho.choi/deltathought/outputs/reports/qwen2_5_omni_vanilla_controls_v2.json",
+    "run_id": "qwen2-5-omni-vanilla-controls-v2",
+    "runtime": {
+      "backend": "nccl",
+      "cpu_threads": 4,
+      "device": "cuda",
+      "nccl_compatibility_mode": true
+    },
+    "sample_fps": 2.0,
+    "seed": 42
+  },
+  "run_id": "qwen2-5-omni-vanilla-controls-v2",
+  "run_signature": "{\"config\": {\"caption_max_new_tokens\": 32, \"comparison_report\": \"/home/changho.choi/deltathought/outputs/reports/nextqa_joint_head_poc.json\", \"dataset_resource_name\": \"nextqa_annotations\", \"frame_height\": 224, \"frame_width\": 224, \"freeform_max_new_tokens\": 20, \"log_root\": \"/home/changho.choi/deltathought/logs/experiments\", \"maximum_seconds\": 12.0, \"media_policy\": \"/home/changho.choi/deltathought/configs/nextqa_media_policy.yaml\", \"minimum_seconds\": 5.0, \"msrvtt_count\": 16, \"msrvtt_metadata\": \"/mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/test.json\", \"msrvtt_video_root\": \"/mnt/nfs_shared_data/dataset/omniembed/MSRVTT/videos\", \"multiple_choice_max_new_tokens\": 4, \"nextqa_control_modes\": [\"multimodal\", \"text_only\", \"video_only\", \"audio_only\"], \"nextqa_manifest\": \"/home/changho.choi/deltathought/intermediates/canonical/nextqa/official-2021-ann-1955d89e-schema-v2-r2/manifest.json\", \"nextqa_selection_manifest\": \"/home/changho.choi/deltathought/intermediates/cache/omni_nextqa_joint_poc/manifest.json\", \"omni_config\": \"/home/changho.choi/deltathought/configs/qwen2_5_omni.yaml\", \"output_root\": \"/home/changho.choi/deltathought/outputs/baselines/qwen2_5_omni_vanilla_controls_v2\", \"provenance_config\": \"/home/changho.choi/deltathought/configs/provenance.yaml\", \"report_path\": \"/home/changho.choi/deltathought/outputs/reports/qwen2_5_omni_vanilla_controls_v2.json\", \"run_id\": \"qwen2-5-omni-vanilla-controls-v2\", \"runtime\": {\"backend\": \"nccl\", \"cpu_threads\": 4, \"device\": \"cuda\", \"nccl_compatibility_mode\": true}, \"sample_fps\": 2.0, \"seed\": 42}, \"extra\": {}, \"inputs\": {\"media_policy\": {\"path\": \"/home/changho.choi/deltathought/configs/nextqa_media_policy.yaml\", \"sha256\": \"d563d1c3d84a10f03ca46909712ce4fe579384ea4ab65427e55f74ffa064c332\"}, \"msrvtt_metadata\": {\"path\": \"/mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/test.json\", \"sha256\": \"93e3d79ff7f86cf3dc75e5ee5ef1ef4efe32424400c1f6e27b3b41b488a1dae1\"}, \"nextqa_manifest\": {\"path\": \"/home/changho.choi/deltathought/intermediates/canonical/nextqa/official-2021-ann-1955d89e-schema-v2-r2/manifest.json\", \"sha256\": \"06abface4a7ca438e9cffbfc0d63fc182c253ce845be5c8f08f278d86368f00a\"}, \"nextqa_selection_manifest\": {\"path\": \"/home/changho.choi/deltathought/intermediates/cache/omni_nextqa_joint_poc/manifest.json\", \"sha256\": \"c1b20387d68b0d94e9b19e9463d1d1968a2663cca5b618431f73c73bcb67b4ae\"}, \"omni_config\": {\"path\": \"/home/changho.choi/deltathought/configs/qwen2_5_omni.yaml\", \"sha256\": \"18e57857be417863b0994594d37883ce2c47827f2a8b1a3c925e1dcfcdb281c4\"}, \"provenance\": {\"path\": \"/home/changho.choi/deltathought/configs/provenance.yaml\", \"sha256\": \"b9bdec030b6a322d13f37df5cb7acf2cd6880cd563e8178d6563fe4dcfa57c12\"}}}",
+  "schema": "deltaomni.qwen2_5_omni_vanilla_baseline.v2",
+  "software": {
+    "torch": "2.6.0+cu124",
+    "transformers": "4.52.3"
+  }
+}

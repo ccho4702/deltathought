@@ -241,7 +241,7 @@
     <li><strong>Video rollout drift:</strong> 9초에서 teacher-forcing 대비 약 54.8% drift. 우선 4–5초 FULL refresh 또는 reconstructed-previous/scheduled rollout 학습이 필요하다.</li>
     <li><strong>Natural commit:</strong> 고정 9초 label F1 100%는 의미 없다. 가변 event boundary와 no-event negative가 필요하다.</li>
     <li><strong>1초 caption scale:</strong> 1K는 overfit. 최소 8K–10K caption으로 동일 granularity에서 다시 확인해야 한다.</li>
-    <li><strong>Baseline controls:</strong> vanilla 77.3%에 text-only, video-only, audio-only control이 아직 없다. v2 실행 코드는 준비됐다.</li>
+    <li><strong>Baseline controls 완료:</strong> multimodal/text-only/video-only/audio-only가 77.27/48.48/81.06/55.30%였다. 실제 Stage 3는 video anchor+delta LoRA부터 시작한다.</li>
     <li><strong>Media policy:</strong> internal non-commercial research만 허용하며 raw media/recoverable embedding 공개는 금지한다. 외부 release 전 per-item YFCC100M license metadata audit가 필요하다.</li>
     <li><strong>표준 생성 metric:</strong> MSR-VTT에 COCO CIDEr/METEOR/BLEU suite와 충분한 test 규모가 필요하다.</li>
   </ol>
@@ -253,8 +253,8 @@
       media inventory/checksum을 검증한다. 개인 acceptance record를 만들지 않는다.
     </li>
     <li>
-      <strong>Baseline control 고정:</strong> 동일 132 QA에서 vanilla text-only/video-only/audio-only를 먼저 측정한다.
-      이 결과로 77.3% 중 modality contribution을 분리한다.
+      <strong>완료 — Baseline control:</strong> video-only가 가장 강했고 text-only보다 +32.58pp였다.
+      Audio를 첫 trainer에 섞지 않는다.
     </li>
     <li>
       <strong>임시 joint head 확장 금지:</strong> <code>nextqa_joint_head_poc.py</code>는 진단 artifact로 보존하되
@@ -262,8 +262,8 @@
     </li>
     <li>
       <strong>실제 Stage 3 구현:</strong> 기존 Audio Caption LoRA의 Qwen prefix injection을 일반화해
-      video FULL+delta, audio FULL+delta, committed captions, question text를 하나의 typed sequence로 만든다.
-      Qwen backbone은 LoRA만 학습한다.
+      먼저 video FULL+delta와 question/choices를 하나의 typed sequence로 만든다. Qwen backbone은
+      LoRA만 학습한다. Video gate가 통과한 뒤 audio와 committed captions를 각각 ablation으로 추가한다.
     </li>
     <li>
       <strong>빠른 overfit gate:</strong> source-disjoint 64/16/16에서 train 생성 accuracy/word-F1가 충분히 오르고,

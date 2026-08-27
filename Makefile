@@ -1,7 +1,7 @@
 GPU_IDS ?= 0,1,2,3
 NPROC_PER_NODE ?= 4
 
-.PHONY: setup lint test sanity verify provenance data-audit data-audit-report annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot nextqa-readiness nextqa-joint-cache-v2 nextqa-vanilla-controls-v2 nextqa-stage3-preflight report verify-code verify-research verify-all
+.PHONY: setup lint test sanity verify provenance data-audit data-audit-report annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot nextqa-readiness nextqa-joint-cache-v2 nextqa-vanilla-controls-v2 nextqa-vanilla-controls-analysis nextqa-stage3-preflight report verify-code verify-research verify-all
 
 setup:
 	uv sync --frozen --group dev
@@ -117,9 +117,13 @@ nextqa-vanilla-controls-v2:
 		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.omni_vanilla_baseline \
 		--config configs/qwen2_5_omni_vanilla_baseline_poc.yaml
 
+nextqa-vanilla-controls-analysis:
+	uv run --frozen deltaomni-analyze-omni-vanilla
+
 nextqa-stage3-preflight:
 	$(MAKE) nextqa-joint-cache-v2
 	$(MAKE) nextqa-vanilla-controls-v2
+	$(MAKE) nextqa-vanilla-controls-analysis
 
 report:
 	uv run deltaomni-report
