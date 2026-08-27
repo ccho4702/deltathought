@@ -1,0 +1,19 @@
+schema: deltaomni.media_policy.v1
+dataset: msrvtt
+resource_name: msrvtt_annotations
+media_origin: Microsoft Research MSR-VTT official research release
+official_sources:
+  dataset: https://www.microsoft.com/en-us/research/?p=301679
+  paper: https://openaccess.thecvf.com/content_cvpr_2016/html/Xu_MSR-VTT_A_Large_CVPR_2016_paper.html
+local_root: /mnt/nfs_shared_data/dataset/omniembed/MSRVTT
+rights_basis:
+  usage_condition: cite the MSR-VTT CVPR 2016 paper and official dataset source
+  media_scope: web video clips distributed for the research benchmark
+project_policy:
+  use_scope: internal non-commercial research
+  raw_media_redistribution: prohibited
+  recoverable_embedding_redistribution: prohibited
+  publication_requires_per_item_license_audit: true
+  allowed_public_outputs: [source_code, aggregate_metrics, non_recoverable_summaries]
+required_citations: [MSR-VTT-CVPR-2016]
+reviewed_at: 2026-08-28

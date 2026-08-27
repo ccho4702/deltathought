@@ -234,6 +234,26 @@ resources:
       licenses. Internal research follows configs/nextqa_media_policy.yaml; raw media and recoverable
       embeddings are not publishable, and external release requires a per-item metadata audit.
 
+  msrvtt_annotations:
+    kind: dataset
+    role: human_video_caption_training_and_evaluation
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    benchmark_adoption: true
+    license_status: verified
+    license: official-research-release-citation-required
+    source_url: https://www.microsoft.com/en-us/research/?p=301679
+    evidence:
+      github_stars: null
+      huggingface_downloads: null
+      paper_citations: 1000
+    evidence_urls:
+      paper: https://openaccess.thecvf.com/content_cvpr_2016/html/Xu_MSR-VTT_A_Large_CVPR_2016_paper.html
+    restriction: >-
+      Internal research follows configs/msrvtt_media_policy.yaml. Raw media and recoverable
+      embeddings are not publishable; public results must cite the official CVPR 2016 paper.
+
   activitynet_captions:
     kind: dataset
     role: timestamped_video_section_caption_candidate

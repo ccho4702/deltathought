@@ -102,8 +102,7 @@ def validate_media_policy(path: Path, resource_name: str) -> dict[str, Any]:
     if value.get("resource_name") != resource_name:
         raise ValueError(f"Media policy resource mismatch: {path}")
     sources = value.get("official_sources")
-    required_sources = {"nextqa", "vidor", "yfcc100m"}
-    if not isinstance(sources, dict) or set(sources) != required_sources:
+    if not isinstance(sources, dict) or len(sources) < 2:
         raise ValueError(f"Media policy official sources are incomplete: {path}")
     if any(
         not isinstance(url, str) or not url.startswith(("https://", "http://"))

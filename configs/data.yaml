@@ -42,3 +42,14 @@ sources:
       - /mnt/nfs_shared_data/dataset/NExT-QA/processed_for_gcg/NExTVideo
     media_extensions: [.mp4, .webm]
     media_policy: configs/nextqa_media_policy.yaml
+  msrvtt:
+    enabled: true
+    resource_name: msrvtt_annotations
+    annotation_files:
+      - /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/train.json
+      - /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/val.json
+      - /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/test.json
+    media_dirs:
+      - /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/videos
+    media_extensions: [.mp4]
+    media_policy: configs/msrvtt_media_policy.yaml
