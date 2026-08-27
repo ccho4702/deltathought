@@ -1,0 +1,19 @@
+dataset: audiocaps
+dataset_revision: official-original-d004db3-media-schema-v2
+resource_name: audiocaps_original
+chunk_seconds: 2.0
+nominal_duration_seconds: 10.0
+cpu_workers: 16
+annotations:
+  train: /mnt/nfs_shared_data/dataset/deltathought/raw/audiocaps/dataset/train.csv
+  validation: /mnt/nfs_shared_data/dataset/deltathought/raw/audiocaps/dataset/val.csv
+  test: /mnt/nfs_shared_data/dataset/deltathought/raw/audiocaps/dataset/test.csv
+media_roots:
+  - /mnt/nfs_shared_data/dataset/omniembed/audioset/balanced_train_segments/audio
+  - /mnt/nfs_shared_data/dataset/omniembed/audioset/unbalanced_train_segments/audio
+  - /mnt/nfs_shared_data/dataset/omniembed/audioset_unbalanced_more/audio
+  - /mnt/nfs_shared_data/dataset/omniembed/audioset/eval_segments/audio
+license_record: /mnt/nfs_shared_data/dataset/deltathought/raw/audiocaps/README.md
+cache_root: intermediates/cache/canonical_audiocaps/official-original-d004db3-media-schema-v2
+output_root: intermediates/canonical
+report_path: outputs/reports/canonical_audiocaps_v2.json

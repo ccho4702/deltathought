@@ -129,6 +129,28 @@ resources:
       citations: https://api.openalex.org/works/W2593116425
     restriction: Raw YouTube media needs a separate availability and rights audit.
 
+  audiocaps_original:
+    kind: dataset
+    role: audio_caption_lora_training_and_evaluation
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: verified
+    license: academic-use-only-dataset-and-MIT-code
+    source_url: https://github.com/cdjkim/audiocaps
+    revision: d004db3ea1b01cf4fd0347dd8d27db90cadc8809
+    evidence:
+      github_stars: 215
+      huggingface_downloads: null
+      paper_citations: 86
+    evidence_urls:
+      github: https://api.github.com/repos/cdjkim/audiocaps
+      citations: https://api.openalex.org/works/W2945761034
+      paper: https://aclanthology.org/N19-1011/
+    restriction: >-
+      The official README limits dataset use to academic purposes. AudioSet-derived YouTube media
+      remains subject to original-owner rights and must not be redistributed.
+
   vggsound:
     kind: dataset
     role: paired_audio_video_self_supervised_delta_training
