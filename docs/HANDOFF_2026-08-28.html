@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeltaThought 연구 Handoff — 2026-08-28</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5e6879;
+      --line: #dce2eb;
+      --accent: #3157d5;
+      --good: #177245;
+      --warn: #9a5b00;
+      --bad: #ad2e24;
+      --code: #eef1f6;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1320;
+        --panel: #171e2d;
+        --text: #e8edf7;
+        --muted: #aab4c6;
+        --line: #30394a;
+        --accent: #8ea7ff;
+        --good: #72d6a2;
+        --warn: #f2bd65;
+        --bad: #ff8b83;
+        --code: #222b3b;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.62 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { max-width: 1160px; margin: 0 auto; padding: 36px 22px 80px; }
+    h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 3.3rem); line-height: 1.08; }
+    h2 { margin-top: 46px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+    h3 { margin-top: 28px; }
+    a { color: var(--accent); }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    code { background: var(--code); padding: .12rem .32rem; border-radius: 4px; }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: var(--code);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      white-space: pre-wrap;
+    }
+    .lead { color: var(--muted); font-size: 1.12rem; max-width: 900px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+    .card {
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .metric { font-size: 1.75rem; font-weight: 750; }
+    .muted { color: var(--muted); }
+    .good { color: var(--good); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); }
+    th, td { padding: 11px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--code); }
+    .table-wrap { overflow-x: auto; }
+    .flow { font-weight: 700; letter-spacing: .02em; }
+    .callout { border-left: 5px solid var(--accent); padding: 12px 16px; background: var(--panel); }
+    li + li { margin-top: 6px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>DeltaThought 연구 Handoff</h1>
+  <p class="lead">
+    2026-08-28 기준 공식 Qwen2.5-Omni 경로의 구현, 실험 결과, 실패 범위와 다음 세션의
+    시작점을 한 문서에 고정한다. 과거 DINOv2/CLAP/별도 Qwen 실험은 target architecture의
+    증거가 아니며, 아래 수치는 별도 표기가 없는 한 pinned native Qwen2.5-Omni-7B 결과다.
+  </p>
+
+  <div class="grid">
+    <div class="card"><div class="metric good">S1 통과</div><div>audio/video 1초 delta, 최대 9개 누적</div></div>
+    <div class="card"><div class="metric warn">S2 부분 통과</div><div>audio caption은 증명, 자연 commit/video caption은 미증명</div></div>
+    <div class="card"><div class="metric bad">S3 미통과</div><div>임시 delta head 25.0% vs vanilla Omni 77.3%</div></div>
+    <div class="card"><div class="metric">4×A6000</div><div>각 48 GiB, LoRA only; full fine-tuning 금지</div></div>
+  </div>
+
+  <h2>1. 고정된 연구 목표</h2>
+  <p class="flow">
+    FULL anchor → 1초 DELTA → DELTA → … → learned COMMIT → CAPTION → FULL refresh → … → FINAL ANSWER
+  </p>
+  <ul>
+    <li>Video와 audio는 pinned Qwen2.5-Omni native encoder를 사용한다.</li>
+    <li>DeltaTok은 modality별 독립 encoder/decoder이며 한 블록당 정확히 delta token 하나를 만든다.</li>
+    <li>LLM 학습은 항상 Qwen Thinker LoRA다. Full fine-tuning은 하지 않는다.</li>
+    <li>한 sequence에서 commit/caption/full refresh가 여러 번 발생해야 한다.</li>
+    <li>최종 QA는 이전 committed caption memory와 현재 synchronized A/V state를 함께 사용해야 한다.</li>
+  </ul>
+  <p>
+    Model: <code>Qwen/Qwen2.5-Omni-7B</code>, revision
+    <code>ae9e1690543ffd5c0221dc27f79834d0294cba00</code>. 직접 측정된 1초 블록은
+    video <code>64×3584</code>, audio <code>25×3584</code>이고 delta는 modality별
+    <code>1×768</code>이다.
+  </p>
+
+  <h2>2. 무엇이 실제로 증명됐는가</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>항목</th><th>현재 증거</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1초 audio delta</td>
+          <td>9-delta rollout MSE 0.2637; anchor 0.9028, zero 0.6606, shuffle 0.9402. Retrieval 96.88% vs shuffle 1.17%.</td>
+          <td class="good">강한 bounded evidence</td>
+        </tr>
+        <tr>
+          <td>1초 video delta</td>
+          <td>9-delta rollout MSE 0.4415; anchor 0.5346, zero 0.4782, shuffle 0.4951. Retrieval 86.33% vs shuffle 41.80%.</td>
+          <td class="warn">유의미하나 drift 큼</td>
+        </tr>
+        <tr>
+          <td>Audio delta → Qwen caption</td>
+          <td>2초/8K AudioCaps test word-F1 normal/zero/shuffle 0.407/0.359/0.339, NLL 2.552/2.800/2.834.</td>
+          <td class="good">실제 생성 성능 증거</td>
+        </tr>
+        <tr>
+          <td>1초/9-delta caption</td>
+          <td>1K PoC held-out word-F1가 0.382→0.375로 악화. Control gap은 있으나 일반화 개선 없음.</td>
+          <td class="warn">경로 PoC만 통과</td>
+        </tr>
+        <tr>
+          <td>Multiple commit/full refresh</td>
+          <td>3개 section에서 caption 24개 실제 생성, 위치 [9,18,27] 정확. 모든 boundary가 고정 9초인 합성 구성.</td>
+          <td class="warn">mechanics만 증명</td>
+        </tr>
+        <tr>
+          <td>최종 QA</td>
+          <td>임시 head train 99.2%, val 24.3%, test 25.0%; vanilla raw Omni 동일 subset 77.3%.</td>
+          <td class="bad">최종 방법 미증명</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>3. 최신 vanilla Qwen2.5-Omni baseline</h2>
+  <p>
+    Baseline code revision은 <code>933b0f92b3a0a844daa54e768585b724a40b4c27</code>이다.
+    기존 Stage 3와 동일한 16개 source-disjoint short NExT-QA test video의 132문항을 사용했고,
+    별도로 16개 short MSR-VTT test video를 요약했다. Native raw audio/video를 2 fps,
+    224×224로 입력하고 greedy text generation을 사용했다.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>평가</th><th>샘플</th><th>결과</th><th>해석</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>NExT-QA, 선택지 포함</td><td>132 QA</td><td><strong>77.27% accuracy</strong>, parse 100%</td>
+          <td>정답 위치 majority는 26.52%. 다만 text-only control 전에는 전부 media 이해로 귀속하면 안 됨.</td>
+        </tr>
+        <tr>
+          <td>NExT-QA, 선택지 제거 자유응답</td><td>132 QA</td>
+          <td>Exact 9.85%, word-F1 22.59%, ROUGE-L 22.59%</td>
+          <td>NExT-QA 정답 문구를 reference로 재사용한 derived open-QA 평가이며 표준 open-QA metric은 아님.</td>
+        </tr>
+        <tr>
+          <td>자유응답을 선택지에 lexical remap</td><td>132 QA</td><td>37.12%</td>
+          <td>생성 답변의 의미를 부분적으로 포착하지만 비표준 진단값.</td>
+        </tr>
+        <tr>
+          <td>MSR-VTT 한 문장 요약</td><td>16 video, 20 refs/video</td>
+          <td>best-ref word-F1 53.35%, ROUGE-L 50.20%</td>
+          <td>실제 자유 생성 요약 가능. 아직 CIDEr/METEOR/BLEU COCO suite는 미측정.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="callout">
+    현재 delta QA 25.0%는 “delta를 받은 Qwen이 망가진 결과”가 아니다. 그 실험은 Qwen을
+    호출하지 않는 <code>hashed question embedding + mean-pooled full/delta + lightweight choice scorer</code>다.
+    64 video/519 QA를 99.2%까지 외웠지만 test는 초기 24.24%에서 25.0%로 0.76%p만 올랐다.
+    이 head는 폐기 대상이며 실제 Qwen QA LoRA와 비교할 수 없다.
+  </p>
+
+  <h2>4. Caption CE/LoRA 상태</h2>
+  <ul>
+    <li>
+      CE/NLL은 실제 Qwen Thinker causal LM token loss에 적용된다. Trainable parameter는 PEFT LoRA와
+      delta interface뿐이고 audio/vision tower는 frozen이다.
+    </li>
+    <li>
+      2초 AudioCaps 8K run은 validation으로 200-step checkpoint를 선택했고 untouched test에서 normal이
+      zero/shuffle을 NLL과 실제 generated caption metric 모두 이겼다. 이것이 현재 가장 강한 S2 증거다.
+    </li>
+    <li>
+      1초 AudioCaps 1K run은 delta control gap은 있지만 held-out 개선에 실패했다. 이를 caption 학습 성공으로
+      표기하면 안 된다. 최소 8K–10K caption으로 1초/9-delta 조건을 다시 학습해야 한다.
+    </li>
+    <li>
+      Multi-commit caption은 위 1K checkpoint를 반복 호출한 mechanics PoC다. Natural commit timing 또는
+      장기 caption quality의 증거가 아니다.
+    </li>
+  </ul>
+
+  <h2>5. 데이터 상태</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>데이터</th><th>현재 용도/상태</th><th>주의</th></tr></thead>
+      <tbody>
+        <tr><td>VGGSound</td><td>S1 audio/video self-supervised delta, 4,608 source-disjoint clips</td><td>Weak labels는 S1에서 제외</td></tr>
+        <tr><td>AudioCaps</td><td>48,343/483/943 canonical; S2 audio caption</td><td>1초 8K+ 재학습 필요</td></tr>
+        <tr><td>Clotho v2.1</td><td>3,828/1,037/1,045, 15–30초, 5 captions</td><td>장기 audio caption/commit 후보</td></tr>
+        <tr><td>NExT-QA</td><td>3,870/570/1,000 videos, 47,692 five-way QA</td><td>본래 multiple-choice; open-ended 평가는 derived</td></tr>
+        <tr><td>MSR-VTT</td><td>로컬 video/audio 및 human 20-caption metadata 확인</td><td>현재 16-video vanilla summary baseline만 완료</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    자유응답/요약 데이터가 없어서 못 하는 상황은 아니다. MSR-VTT로 영상 summary/caption이 가능하고,
+    open-ended video QA 후보도 별도 검토할 수 있다. 다만 다음 세션에서 dataset card, license, 원본 human
+    annotation 여부, 공식 split, media coverage를 다시 audit한 뒤 채택해야 한다. 현재 NFS의
+    LLaVA-derived ActivityNetQA 파일을 검증 없이 학습 근거로 사용하면 안 된다.
+  </p>
+
+  <h2>6. 아직 해결되지 않은 핵심 문제</h2>
+  <ol>
+    <li><strong>실제 Qwen Stage 3 부재:</strong> typed video/audio delta와 caption memory를 Qwen Thinker LoRA가 소비하는 QA 학습 코드가 아직 없다.</li>
+    <li><strong>Video rollout drift:</strong> 9초에서 teacher-forcing 대비 약 54.8% drift. 우선 4–5초 FULL refresh 또는 reconstructed-previous/scheduled rollout 학습이 필요하다.</li>
+    <li><strong>Natural commit:</strong> 고정 9초 label F1 100%는 의미 없다. 가변 event boundary와 no-event negative가 필요하다.</li>
+    <li><strong>1초 caption scale:</strong> 1K는 overfit. 최소 8K–10K caption으로 동일 granularity에서 다시 확인해야 한다.</li>
+    <li><strong>Baseline controls:</strong> vanilla 77.3%에 text-only, video-only, audio-only control이 아직 없다.</li>
+    <li><strong>표준 생성 metric:</strong> MSR-VTT에 COCO CIDEr/METEOR/BLEU suite와 충분한 test 규모가 필요하다.</li>
+  </ol>
+
+  <h2>7. 다음 세션 실행 순서</h2>
+  <ol>
+    <li>
+      <strong>Baseline control 고정:</strong> 동일 132 QA에서 vanilla text-only/video-only/audio-only를 먼저 측정한다.
+      이 결과로 77.3% 중 modality contribution을 분리한다.
+    </li>
+    <li>
+      <strong>임시 joint head 확장 금지:</strong> <code>nextqa_joint_head_poc.py</code>는 진단 artifact로 보존하되
+      더 큰 데이터로 scale하지 않는다.
+    </li>
+    <li>
+      <strong>실제 Stage 3 구현:</strong> 기존 Audio Caption LoRA의 Qwen prefix injection을 일반화해
+      video FULL+delta, audio FULL+delta, committed captions, question text를 하나의 typed sequence로 만든다.
+      Qwen backbone은 LoRA만 학습한다.
+    </li>
+    <li>
+      <strong>빠른 overfit gate:</strong> source-disjoint 64/16/16에서 train 생성 accuracy/word-F1가 충분히 오르고,
+      delta zero/shuffle 및 caption-memory removal이 실제 답변을 악화하는지 확인한다.
+    </li>
+    <li>
+      <strong>held-out 비교:</strong> 동일 prompt/split에서 vanilla raw Omni, trained delta Omni,
+      FULL-only, zero/shuffle delta, no-caption-memory를 비교한다. Loss만으로 통과시키지 않는다.
+    </li>
+    <li>
+      <strong>그 다음 scale:</strong> 최소 500–1,000 train videos/5K–10K QA로 확장한다. Small PoC가
+      vanilla gap을 줄이지 못하면 데이터만 늘리기 전에 interface와 rollout을 수정한다.
+    </li>
+  </ol>
+
+  <h2>8. 새 세션 시작 명령</h2>
+  <pre>cd /home/changho.choi/deltathought
+git status --short --branch
+git log -3 --oneline
+uv run ruff check .
+uv run pytest -q
+
+# 최신 vanilla baseline 결과
+uv run python -m json.tool outputs/reports/qwen2_5_omni_vanilla_baseline_poc.json
+
+# baseline 재실행(기존 report가 있으면 안전하게 기존 결과 반환)
+CUDA_VISIBLE_DEVICES=0,1,2,3 uv run torchrun --standalone --nproc-per-node=4 \
+  -m deltaomni.omni_vanilla_baseline \
+  --config configs/qwen2_5_omni_vanilla_baseline_poc.yaml</pre>
+  <p>
+    새 세션 첫 요청은 다음처럼 시작하면 된다:
+    <code>docs/HANDOFF_2026-08-28.html과 docs/STATUS.md를 읽고, 7절 순서대로 실제 Qwen Stage 3 LoRA를 진행해.</code>
+  </p>
+
+  <h2>9. 결과 및 코드 위치</h2>
+  <ul>
+    <li><a href="STATUS.md">docs/STATUS.md</a> — 누적 authoritative status</li>
+    <li><a href="QWEN25_OMNI_DELTA_RESEARCH_PLAN.html">docs/QWEN25_OMNI_DELTA_RESEARCH_PLAN.html</a> — 전체 연구 계획</li>
+    <li><a href="../outputs/reports/qwen2_5_omni_vanilla_baseline_poc.json">vanilla baseline JSON</a></li>
+    <li><a href="../outputs/reports/deltatok_vggsound_audio_1s_test.json">1초 audio DeltaTok test JSON</a></li>
+    <li><a href="../outputs/reports/deltatok_vggsound_video_1s_test.json">1초 video DeltaTok test JSON</a></li>
+    <li><a href="../outputs/reports/audiocaps_caption_lora_test.json">2초 AudioCaps selected checkpoint test JSON</a></li>
+    <li><a href="../outputs/reports/streaming_multicommit_poc.json">multi-commit generation JSON</a></li>
+    <li><a href="../outputs/reports/nextqa_joint_head_poc.json">temporary Stage 3 head JSON</a></li>
+    <li><code>outputs/baselines/qwen2_5_omni_vanilla_poc/qwen2-5-omni-vanilla-poc-r1/</code> — 로컬 전체 prediction/hardware/summary</li>
+    <li><code>logs/experiments/qwen2-5-omni-vanilla-poc-r1/</code> — 중단/재개 포함 rank별 로그</li>
+  </ul>
+
+  <h2>10. 재현성 메모</h2>
+  <ul>
+    <li>Vanilla baseline은 실제로 한 번 중단한 뒤 45개 atomic prediction을 검증하고 재개해 총 280개 결과를 완성했다.</li>
+    <li>4×A6000 peak allocated memory는 rank별 약 18.13 GiB, 평균 generation latency는 1.004초였다.</li>
+    <li>전체 105 tests와 Ruff가 baseline 구현 revision에서 통과했다.</li>
+    <li>대형 cache/checkpoint/raw media는 GitHub에 올리지 않는다. Compact JSON report와 이 HTML만 추적한다.</li>
+    <li>1초 DeltaTok selected checkpoints는 NAS backup <code>/mnt/nfs_shared_data/project_backups/deltathought/2cb7048</code>에 checksum과 함께 있다.</li>
+  </ul>
+
+  <p class="muted">작성 시각: 2026-08-28 KST · 이 문서는 negative result와 미검증 범위를 포함한 handoff source of truth다.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,383 @@
+{
+  "code_revision": "933b0f92b3a0a844daa54e768585b724a40b4c27",
+  "comparison": {
+    "delta_joint_head_test_accuracy": 0.25,
+    "report": "/home/changho.choi/deltathought/outputs/reports/nextqa_joint_head_poc.json",
+    "vanilla_raw_omni_test_accuracy": 0.7727272727272727,
+    "warning": "The delta result is a trained lightweight classifier, not Qwen LoRA."
+  },
+  "completed_at_utc": "2026-08-27T18:11:34.939721+00:00",
+  "examples": [
+    {
+      "answer_index": 4,
+      "correct": 0.0,
+      "generation_latency_seconds": 0.7090274170041084,
+      "key": "nextqa:8900428927:0:multiple_choice",
+      "parsed": 1.0,
+      "parsed_index": 1,
+      "prediction": "B",
+      "question": "why did the elephant pat on the back of the boy who is lying on the ground",
+      "question_id": "0",
+      "question_type": "CW",
+      "reference": "massage",
+      "source_id": "8900428927",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "choices": [
+        "kiss the boy",
+        "jump up",
+        "lie down on back",
+        "lie face down",
+        "use trunk"
+      ],
+      "exact_match": 0.0,
+      "generation_latency_seconds": 1.107346635311842,
+      "key": "nextqa:8900428927:8:freeform",
+      "lexical_choice_correct": 0.0,
+      "lexical_choice_index": 0,
+      "prediction": "with its leg",
+      "question": "how was the elephant massaging the boy",
+      "question_id": "8",
+      "question_type": "CH",
+      "reference": "use trunk",
+      "rouge_l": 0.0,
+      "source_id": "8900428927",
+      "task": "nextqa_freeform",
+      "word_f1": 0.0
+    },
+    {
+      "choices": [
+        "reading from script",
+        "watching boy play",
+        "focusing on computer",
+        "look at picture frames",
+        "assist the chef"
+      ],
+      "exact_match": 0.0,
+      "generation_latency_seconds": 1.1053734086453915,
+      "key": "nextqa:8501394817:1:freeform",
+      "lexical_choice_correct": 1.0,
+      "lexical_choice_index": 1,
+      "prediction": "watching the boy",
+      "question": "why is the man in black standing at the side",
+      "question_id": "1",
+      "question_type": "CW",
+      "reference": "watching boy play",
+      "rouge_l": 0.6666666666666666,
+      "source_id": "8501394817",
+      "task": "nextqa_freeform",
+      "word_f1": 0.6666666666666666
+    },
+    {
+      "choices": [
+        "fell down from the toy",
+        "look at the boy touching him",
+        "imbalanced",
+        "pick up the stick",
+        "chase the ball"
+      ],
+      "exact_match": 0.0,
+      "generation_latency_seconds": 1.106553964316845,
+      "key": "nextqa:8501394817:7:freeform",
+      "lexical_choice_correct": 1.0,
+      "lexical_choice_index": 4,
+      "prediction": "to get ball",
+      "question": "why did the boy ran to the left of the video at the end of the video",
+      "question_id": "7",
+      "question_type": "CW",
+      "reference": "chase the ball",
+      "rouge_l": 0.3333333333333333,
+      "source_id": "8501394817",
+      "task": "nextqa_freeform",
+      "word_f1": 0.3333333333333333
+    },
+    {
+      "duration_seconds": 11.011,
+      "exact_match": 0.0,
+      "generation_latency_seconds": 1.5173217579722404,
+      "key": "msrvtt:video8412:caption",
+      "prediction": "A cheetah is on a talk show being petted by the host.",
+      "references": [
+        "a cheetah eating something and a man talk about that",
+        "a cheetah is shown off on a television show",
+        "a leopard walking over the table on a tv show",
+        "a man describes how a certain wild cat hunts its prey",
+        "a man discusses his cheetah with a talk show host",
+        "a man discusses how a tiger hunts",
+        "a man explaining about tiger hunting",
+        "a man is holding a tiger on a leash",
+        "a man is singing and playing guitar on stage",
+        "a man is talking about animals",
+        "a talk show host petting a cheetah",
+        "a tiger on david letterman under control of his handler scaring dave",
+        "cheetah on late night talk show",
+        "jack hannah with a cheata on david letterman",
+        "late show presentation of a wild feline",
+        "man holding a cheetah on david letterman show",
+        "man with cheetah showing another man",
+        "late show presentation of a wild feline",
+        "a man is talking about animals",
+        "jack hannah with a cheata on david letterman"
+      ],
+      "rouge_l": 0.5714285714285715,
+      "source_id": "video8412",
+      "task": "msrvtt_caption",
+      "word_f1": 0.631578947368421
+    },
+    {
+      "answer_index": 2,
+      "correct": 1.0,
+      "generation_latency_seconds": 0.7006035968661308,
+      "key": "nextqa:4738042036:7:multiple_choice",
+      "parsed": 1.0,
+      "parsed_index": 2,
+      "prediction": "C",
+      "question": "where is this place",
+      "question_id": "7",
+      "question_type": "DL",
+      "reference": "living room",
+      "source_id": "4738042036",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "choices": [
+        "reach for something in back pocket",
+        "give the baby some space",
+        "finished playing",
+        "do nt want to get wet",
+        "pulling the hose"
+      ],
+      "exact_match": 0.0,
+      "generation_latency_seconds": 1.1134931445121765,
+      "key": "nextqa:2786223802:6:freeform",
+      "lexical_choice_correct": 1.0,
+      "lexical_choice_index": 4,
+      "prediction": "holding the girl",
+      "question": "why is the lady s back bent as she walks backwards",
+      "question_id": "6",
+      "question_type": "CW",
+      "reference": "pulling the hose",
+      "rouge_l": 0.3333333333333333,
+      "source_id": "2786223802",
+      "task": "nextqa_freeform",
+      "word_f1": 0.3333333333333333
+    },
+    {
+      "answer_index": 4,
+      "correct": 1.0,
+      "generation_latency_seconds": 0.7806677371263504,
+      "key": "nextqa:3386797396:5:multiple_choice",
+      "parsed": 1.0,
+      "parsed_index": 4,
+      "prediction": "E",
+      "question": "how did the girl steer away from the goat after she was frightened by them",
+      "question_id": "5",
+      "question_type": "CH",
+      "reference": "step backwards",
+      "source_id": "3386797396",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "choices": [
+        "wait for someone",
+        "riding bicycle",
+        "playing with sand",
+        "hanging clothes",
+        "sleeping"
+      ],
+      "exact_match": 0.0,
+      "generation_latency_seconds": 1.1939510181546211,
+      "key": "nextqa:5454409762:7:freeform",
+      "lexical_choice_correct": 0.0,
+      "lexical_choice_index": 0,
+      "prediction": "biking",
+      "question": "what is the lady in the video doing",
+      "question_id": "7",
+      "question_type": "TC",
+      "reference": "riding bicycle",
+      "rouge_l": 0.0,
+      "source_id": "5454409762",
+      "task": "nextqa_freeform",
+      "word_f1": 0.0
+    },
+    {
+      "answer_index": 0,
+      "correct": 1.0,
+      "generation_latency_seconds": 0.7816323526203632,
+      "key": "nextqa:4440840337:4:multiple_choice",
+      "parsed": 1.0,
+      "parsed_index": 0,
+      "prediction": "A",
+      "question": "what does the man in black do after the hand is put down",
+      "question_id": "4",
+      "question_type": "TN",
+      "reference": "drinks from his can",
+      "source_id": "4440840337",
+      "task": "nextqa_multiple_choice"
+    },
+    {
+      "choices": [
+        "distracted",
+        "take video of the car",
+        "follow it",
+        "ask for money",
+        "search for food"
+      ],
+      "exact_match": 0.0,
+      "generation_latency_seconds": 1.192999105900526,
+      "key": "nextqa:5929534589:2:freeform",
+      "lexical_choice_correct": 0.0,
+      "lexical_choice_index": 1,
+      "prediction": "take picture",
+      "question": "why did the man walk towards the car after the car crossed over to his side of the shore",
+      "question_id": "2",
+      "question_type": "CW",
+      "reference": "follow it",
+      "rouge_l": 0.0,
+      "source_id": "5929534589",
+      "task": "nextqa_freeform",
+      "word_f1": 0.0
+    },
+    {
+      "choices": [
+        "on the ground",
+        "swing it around",
+        "microphone",
+        "throwing from one hand to another",
+        "raise both his hands"
+      ],
+      "exact_match": 0.0,
+      "generation_latency_seconds": 1.2018111608922482,
+      "key": "nextqa:2639225467:7:freeform",
+      "lexical_choice_correct": 0.0,
+      "lexical_choice_index": 0,
+      "prediction": "hit the ball",
+      "question": "how does the man in red use the whip",
+      "question_id": "7",
+      "question_type": "CH",
+      "reference": "swing it around",
+      "rouge_l": 0.0,
+      "source_id": "2639225467",
+      "task": "nextqa_freeform",
+      "word_f1": 0.0
+    }
+  ],
+  "hardware": [
+    {
+      "device": "cuda:0",
+      "elapsed_seconds": 68.83353037759662,
+      "name": "NVIDIA RTX A6000",
+      "peak_allocated_bytes": 19472175104,
+      "rank": 0,
+      "total_memory_bytes": 50925535232
+    },
+    {
+      "device": "cuda:1",
+      "elapsed_seconds": 77.81976924464107,
+      "name": "NVIDIA RTX A6000",
+      "peak_allocated_bytes": 19468052992,
+      "rank": 1,
+      "total_memory_bytes": 50925535232
+    },
+    {
+      "device": "cuda:2",
+      "elapsed_seconds": 54.5921208076179,
+      "name": "NVIDIA RTX A6000",
+      "peak_allocated_bytes": 19472218112,
+      "rank": 2,
+      "total_memory_bytes": 50925535232
+    },
+    {
+      "device": "cuda:3",
+      "elapsed_seconds": 55.40352087467909,
+      "name": "NVIDIA RTX A6000",
+      "peak_allocated_bytes": 19472246784,
+      "rank": 3,
+      "total_memory_bytes": 50925535232
+    }
+  ],
+  "inputs": {
+    "config_sha256": "18e57857be417863b0994594d37883ce2c47827f2a8b1a3c925e1dcfcdb281c4",
+    "msrvtt_metadata_sha256": "93e3d79ff7f86cf3dc75e5ee5ef1ef4efe32424400c1f6e27b3b41b488a1dae1",
+    "nextqa_manifest_sha256": "06abface4a7ca438e9cffbfc0d63fc182c253ce845be5c8f08f278d86368f00a",
+    "nextqa_selection_manifest_sha256": "e3f9ad000c099952ac838b44b43e24c0070bbfb70b5c2c70d9ce8e86b186875a"
+  },
+  "limitations": [
+    "NExT-QA references are multiple-choice answer phrases; free-form metrics are a derived evaluation.",
+    "Lexical-choice accuracy maps generated text to the most overlapping choice and is diagnostic, not a standard open-QA metric.",
+    "MSR-VTT scores use maximum word-F1/ROUGE-L over 20 references, not the standard COCO caption evaluation suite.",
+    "This PoC uses 16 source-disjoint NExT-QA test videos and 16 short MSR-VTT test videos."
+  ],
+  "mean_generation_latency_seconds": 1.0040313433323587,
+  "msrvtt_caption": {
+    "exact_match": 0.0,
+    "examples": 16,
+    "rouge_l": 0.5019991650506357,
+    "word_f1": 0.533507275211029
+  },
+  "nextqa_freeform": {
+    "exact_match": 0.09848484848484848,
+    "examples": 132,
+    "lexical_choice_accuracy": 0.3712121212121212,
+    "rouge_l": 0.22590898159079975,
+    "word_f1": 0.22590898159079975,
+    "word_f1_by_question_type": {
+      "CH": 0.23617123617123617,
+      "CW": 0.1707311207311207,
+      "DC": 0.0,
+      "DL": 0.6296296296296297,
+      "DO": 0.375,
+      "TC": 0.1886904761904762,
+      "TN": 0.18148148148148147
+    }
+  },
+  "nextqa_multiple_choice": {
+    "accuracy": 0.7727272727272727,
+    "accuracy_by_question_type": {
+      "CH": 0.7878787878787878,
+      "CW": 0.7647058823529411,
+      "DC": 0.6666666666666666,
+      "DL": 0.8888888888888888,
+      "DO": 0.625,
+      "TC": 0.8125,
+      "TN": 0.7777777777777778
+    },
+    "examples": 132,
+    "parse_rate": 1.0
+  },
+  "resolved_config": {
+    "caption_max_new_tokens": 32,
+    "comparison_report": "/home/changho.choi/deltathought/outputs/reports/nextqa_joint_head_poc.json",
+    "frame_height": 224,
+    "frame_width": 224,
+    "freeform_max_new_tokens": 20,
+    "log_root": "/home/changho.choi/deltathought/logs/experiments",
+    "maximum_seconds": 12.0,
+    "minimum_seconds": 5.0,
+    "msrvtt_count": 16,
+    "msrvtt_metadata": "/mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/test.json",
+    "msrvtt_video_root": "/mnt/nfs_shared_data/dataset/omniembed/MSRVTT/videos",
+    "multiple_choice_max_new_tokens": 4,
+    "nextqa_manifest": "/home/changho.choi/deltathought/intermediates/canonical/nextqa/official-2021-ann-1955d89e-schema-v2-r2/manifest.json",
+    "nextqa_selection_manifest": "/home/changho.choi/deltathought/intermediates/cache/omni_nextqa_joint_poc/manifest.json",
+    "omni_config": "/home/changho.choi/deltathought/configs/qwen2_5_omni.yaml",
+    "output_root": "/home/changho.choi/deltathought/outputs/baselines/qwen2_5_omni_vanilla_poc",
+    "report_path": "/home/changho.choi/deltathought/outputs/reports/qwen2_5_omni_vanilla_baseline_poc.json",
+    "run_id": "qwen2-5-omni-vanilla-poc-r1",
+    "runtime": {
+      "backend": "nccl",
+      "cpu_threads": 4,
+      "device": "cuda",
+      "nccl_compatibility_mode": true
+    },
+    "sample_fps": 2.0,
+    "seed": 42
+  },
+  "run_id": "qwen2-5-omni-vanilla-poc-r1",
+  "schema": "deltaomni.qwen2_5_omni_vanilla_baseline.v1",
+  "software": {
+    "torch": "2.6.0+cu124",
+    "transformers": "4.52.3"
+  }
+}

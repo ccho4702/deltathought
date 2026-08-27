@@ -212,7 +212,26 @@ The representation is sufficient to overfit real QA and both modalities plus del
 held-out predictions, but generalization is weak at this scale. The current result is a Stage 3
 feasibility diagnostic, not final Qwen QA LoRA evidence.
 
-Last updated: 2026-08-27
+The matched vanilla Qwen2.5-Omni generative baseline makes the Stage 3 gap explicit. On the same
+16 short source-disjoint NExT-QA test videos and all 132 five-way questions, raw synchronized
+audio/video plus the original choices reached `77.27%` accuracy with a `100%` parse rate. The
+answer-position majority baseline is `26.52%`, so simple position imbalance does not explain the
+result. With the choices removed, vanilla Qwen generated short answers with `9.85%` normalized
+exact match, `22.59%` word-F1, and `22.59%` ROUGE-L; lexical mapping of those generations back to
+the five choices reached `37.12%`, but this mapping is a non-standard diagnostic. On 16 separate
+short MSR-VTT test videos with 20 human references each, one-sentence summaries reached best-
+reference word-F1 `53.35%` and ROUGE-L `50.20%`.
+
+The `77.27%` vanilla result must not be compared as if the current `25.0%` delta result were a
+fine-tuned Qwen. The latter is a temporary hashed-text, mean-pooled-feature classifier trained on
+only 64 videos/519 QA; it does not run the Qwen Thinker and does not consume caption memory. Its
+test score improved only `24.24% → 25.0%` while train reached `99.23%`. The diagnostic head should
+not be scaled further. The next Stage 3 experiment must train and evaluate an actual Qwen Thinker
+LoRA using typed video/audio anchor-plus-delta prefixes, prior committed captions, and identical
+prompts/splits. A text-only vanilla control is also required before attributing all `77.27%` to
+media understanding.
+
+Last updated: 2026-08-28
 
 ## Completed
 

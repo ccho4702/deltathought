@@ -360,6 +360,16 @@ def _pending(run_dir: Path, keys: list[str]) -> bool:
     return any(not _prediction_path(run_dir, key).is_file() for key in keys)
 
 
+def _task_keys(kind: str, value: Any) -> list[str]:
+    if kind == "nextqa":
+        return [
+            f"nextqa:{value.source_id}:{qa.question_id}:{mode}"
+            for qa in value.qa or ()
+            for mode in ("freeform", "multiple_choice")
+        ]
+    return [f"msrvtt:{value['source_id']}:caption"]
+
+
 def _mean(rows: list[dict[str, Any]], key: str) -> float:
     return sum(float(row[key]) for row in rows) / len(rows) if rows else 0.0
 
@@ -474,8 +484,10 @@ def run(config_path: Path) -> dict[str, Any]:
             *(("msrvtt", item) for item in captions),
         ]
         local = tasks[context.rank :: context.world_size]
-        expected = sum(
-            2 * len(value.qa or ()) if kind == "nextqa" else 1 for kind, value in local
+        local_keys = [key for kind, value in local for key in _task_keys(kind, value)]
+        expected = len(local_keys)
+        local_completed = sum(
+            _prediction_path(run_dir, key).is_file() for key in local_keys
         )
         _append_log(
             log_path,
@@ -490,17 +502,11 @@ def run(config_path: Path) -> dict[str, Any]:
         )
         generator = VanillaGenerator(config, context.device)
         started = time.perf_counter()
-        local_completed = 0
         for kind, value in local:
             if kind == "nextqa":
                 episode: CanonicalEpisode = value
-                keys = [
-                    f"nextqa:{episode.source_id}:{qa.question_id}:{mode}"
-                    for qa in episode.qa or ()
-                    for mode in ("freeform", "multiple_choice")
-                ]
+                keys = _task_keys(kind, value)
                 if not _pending(run_dir, keys):
-                    local_completed += len(keys)
                     continue
                 assert episode.media.video is not None
                 media_path = episode.media.video.path
@@ -586,7 +592,6 @@ def run(config_path: Path) -> dict[str, Any]:
                 item = value
                 key = f"msrvtt:{item['source_id']}:caption"
                 if _prediction_path(run_dir, key).is_file():
-                    local_completed += 1
                     continue
                 frames = _sample_video(
                     item["path"], config.sample_fps, (config.frame_width, config.frame_height)
