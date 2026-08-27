@@ -1,0 +1,25 @@
+seed: 42
+omni_config: configs/qwen2_5_omni.yaml
+nextqa_manifest: intermediates/canonical/nextqa/official-2021-ann-1955d89e-schema-v2-r2/manifest.json
+nextqa_selection_manifest: intermediates/cache/omni_nextqa_joint_poc/manifest.json
+msrvtt_metadata: /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/test.json
+msrvtt_video_root: /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/videos
+msrvtt_count: 16
+minimum_seconds: 5.0
+maximum_seconds: 12.0
+sample_fps: 2.0
+frame_width: 224
+frame_height: 224
+freeform_max_new_tokens: 20
+multiple_choice_max_new_tokens: 4
+caption_max_new_tokens: 32
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 4
+run_id: qwen2-5-omni-vanilla-poc-r1
+output_root: outputs/baselines/qwen2_5_omni_vanilla_poc
+log_root: logs/experiments
+report_path: outputs/reports/qwen2_5_omni_vanilla_baseline_poc.json
+comparison_report: outputs/reports/nextqa_joint_head_poc.json
