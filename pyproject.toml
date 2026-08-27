@@ -8,6 +8,7 @@ dependencies = [
   "av>=14,<16",
   "librosa==0.11.0",
   "numpy>=1.26,<3",
+  "peft==0.17.1",
   "pillow>=11,<12",
   "pyyaml>=6,<7",
   "soundfile==0.13.1",
@@ -44,6 +45,7 @@ deltaomni-language-smoke = "deltaomni.language_smoke:main"
 deltaomni-omni-backbone-smoke = "deltaomni.omni_backbone_smoke:main"
 deltaomni-cache-vggsound-s1 = "deltaomni.omni_vggsound_cache:main"
 deltaomni-cache-audiocaps-prefix = "deltaomni.omni_audiocaps_prefix_cache:main"
+deltaomni-train-audiocaps-caption = "deltaomni.audiocaps_caption_lora:main"
 deltaomni-train-deltatok-scale = "deltaomni.deltatok_scale_train:main"
 deltaomni-evaluate-deltatok-scale = "deltaomni.deltatok_scale_eval:main"
 deltaomni-ssv2-pilot = "deltaomni.ssv2_pilot:main"
