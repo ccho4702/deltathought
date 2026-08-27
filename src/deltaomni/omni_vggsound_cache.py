@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import bisect
 import hashlib
 import json
 import math
@@ -139,25 +138,19 @@ def _block_count(episode: CanonicalEpisode, block_seconds: float) -> int:
     return count
 
 
-def _nearest_frame(
-    timestamps: list[float],
-    frames: list[Image.Image],
-    target: float,
-) -> Image.Image:
-    right = min(bisect.bisect_left(timestamps, target), len(timestamps) - 1)
-    left = max(0, right - 1)
-    index = left if abs(timestamps[left] - target) <= abs(timestamps[right] - target) else right
-    return frames[index]
-
-
 def _decode_video_blocks(
     episode: CanonicalEpisode,
     config: OmniVGGSoundCacheConfig,
 ) -> list[list[Image.Image]]:
     if episode.media.video is None:
         raise ValueError(f"Episode has no video: {episode.episode_id}")
-    timestamps = []
-    frames = []
+    frames_per_block = round(config.sample_fps * config.block_seconds)
+    block_count = _block_count(episode, config.block_seconds)
+    targets = [index / config.sample_fps for index in range(block_count * frames_per_block)]
+    selected: list[Image.Image] = []
+    target_index = 0
+    previous_frame = None
+    previous_timestamp = 0.0
     with av.open(str(episode.media.video.path), mode="r") as container:
         stream = container.streams.video[0]
         source_fps = float(stream.average_rate) if stream.average_rate is not None else None
@@ -169,23 +162,41 @@ def _decode_video_blocks(
                 if source_fps
                 else 0.0
             )
-            timestamps.append(timestamp)
-            frames.append(frame.to_image().convert("RGB"))
-    if not frames:
+            if previous_frame is None:
+                previous_frame = frame
+                previous_timestamp = timestamp
+                continue
+            if timestamp < previous_timestamp:
+                raise ValueError(f"Non-monotonic video timestamps: {episode.media.video.path}")
+            while target_index < len(targets) and targets[target_index] <= timestamp:
+                target = targets[target_index]
+                nearest = (
+                    previous_frame
+                    if abs(previous_timestamp - target) <= abs(timestamp - target)
+                    else frame
+                )
+                selected.append(nearest.to_image().convert("RGB"))
+                target_index += 1
+            if target_index == len(targets):
+                break
+            previous_frame = frame
+            previous_timestamp = timestamp
+    if previous_frame is None:
         raise ValueError(f"No frames decoded: {episode.media.video.path}")
-    frames_per_block = round(config.sample_fps * config.block_seconds)
+    while target_index < len(targets):
+        selected.append(previous_frame.to_image().convert("RGB"))
+        target_index += 1
     result = []
-    for block_index in range(_block_count(episode, config.block_seconds)):
-        start = block_index * config.block_seconds
-        targets = [start + index / config.sample_fps for index in range(frames_per_block)]
+    for block_index in range(block_count):
+        start = block_index * frames_per_block
         result.append(
             [
                 ImageOps.pad(
-                    _nearest_frame(timestamps, frames, target),
+                    frame,
                     (config.frame_width, config.frame_height),
                     color=(0, 0, 0),
                 )
-                for target in targets
+                for frame in selected[start : start + frames_per_block]
             ]
         )
     return result
