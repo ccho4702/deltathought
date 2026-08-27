@@ -569,10 +569,14 @@ def run(
         resumed = _latest_checkpoint(run_dir) if config.training.resume == "auto" else None
         if resumed:
             _, payload = resumed
+            evaluation_only_resume = int(payload["next_step"]) > config.training.max_steps
             if (
                 payload["signature"] != signature
                 or payload["world_size"] != context.world_size
-                or payload["code_revision"] != code_revision
+                or (
+                    payload["code_revision"] != code_revision
+                    and not evaluation_only_resume
+                )
             ):
                 raise ValueError("Video QA checkpoint is incompatible")
             set_peft_model_state_dict(core.thinker, payload["lora"])
@@ -691,6 +695,10 @@ def run(
                 "training_seconds": time.perf_counter() - started,
                 "completed_at_utc": datetime.now(UTC).isoformat(),
                 "joint_manifest_sha256": sha256_file(config.joint_manifest),
+                "training_code_revision": (
+                    payload.get("code_revision") if resumed else code_revision
+                ),
+                "evaluation_code_revision": code_revision,
             }
             _atomic_json(run_dir / "summary.json", result)
             _atomic_json(config.report_path, result)
