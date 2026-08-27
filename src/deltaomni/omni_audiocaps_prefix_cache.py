@@ -366,6 +366,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                             "source_group_id": episode.source_group_id,
                             "cache_path": str(path),
                             "captions": len(episode.captions.audio or ()),
+                            "delta_updates": config.blocks_per_clip - 1,
                             "bytes": size,
                             "sha256": _sha256(path),
                         }

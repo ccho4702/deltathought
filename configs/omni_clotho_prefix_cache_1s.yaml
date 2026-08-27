@@ -1,0 +1,21 @@
+seed: 42
+canonical_manifest: intermediates/canonical/clotho/official-zenodo-4783391-v2.1-schema-v2/manifest.json
+omni_config: configs/qwen2_5_omni.yaml
+deltatok_config: configs/deltatok_vggsound_audio_1s.yaml
+deltatok_checkpoint: outputs/real_pilots/deltatok_vggsound_audio_1s/deltatok-audio-1s-main/checkpoints/step-001000.pt
+deltatok_checkpoint_sha256: f0706270d06b66821b18e2ed40513917caea1e6852de757ae0f66330985d7b38
+train_count: 2048
+validation_count: 1037
+test_count: 1045
+block_seconds: 1.0
+minimum_blocks: 15
+maximum_blocks: 30
+expected_audio_tokens: 25
+encoder_batch_size: 10
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 16
+cache_root: intermediates/cache/omni_clotho_prefix_1s_2k_b10
+report_path: outputs/reports/omni_clotho_prefix_1s_2k.json
