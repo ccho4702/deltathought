@@ -125,6 +125,19 @@ existing read-only AudioSet roots, and one zero-byte train FLAC is separately qu
 All YouTube source groups are split-disjoint. Manifest SHA-256 is
 `fce373275db9897a8967644c6691ef9678147f6a4bfb252fc7749c469cb0a307`.
 
+The first native-Omni AudioCaps S2 prefix cache is complete for 8,192 train, all 483 validation, and
+all 943 untouched-test clips. Every item contains one frozen native audio anchor of shape 50×3584,
+four ordered one-token Audio DeltaTok updates of shape 4×1×768, and the official references. The
+cache is 3.53 GB, took 1,329.9s on four A6000s, and peaked at 17.75 GiB reserved per rank. Every
+artifact was reloaded and hashed. Manifest SHA-256 is
+`84f388807195616e43b5214e1ba154b5d030a92f5b571053cbd58a79efa0b2de`.
+
+The Caption LoRA interface now passes real Qwen forward/backward, exact checkpoint resume, and
+greedy generation smokes. It trains only PEFT adapters in the 28 Thinker text layers plus the
+768→3584 delta interface; trainable audio/vision tower parameters are zero. A 20-step smoke improved
+validation NLL from 3.105 to 2.705 and generated recognizable free-form captions, but correctly
+failed the eight-example shuffled-delta word-F1 gate. The exposure-matched full run is next.
+
 Last updated: 2026-08-27
 
 ## Completed
