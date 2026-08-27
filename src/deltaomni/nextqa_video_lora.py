@@ -168,6 +168,7 @@ class VideoQADataset:
     def __init__(self, manifest: dict[str, Any], split: str, cache_entries: int) -> None:
         self.records = list(manifest["splits"][split])
         self.examples: list[tuple[int, int]] = []
+        self.example_sources: list[str] = []
         self.cache_entries = cache_entries
         self.cache: OrderedDict[str, dict[str, Any]] = OrderedDict()
         for record_index, record in enumerate(self.records):
@@ -175,6 +176,7 @@ class VideoQADataset:
             for qa_index, qa in enumerate(payload["qa"]):
                 if len(qa["choices"]) == 5 and qa["answer_index"] is not None:
                     self.examples.append((record_index, qa_index))
+                    self.example_sources.append(str(payload["source_id"]))
 
     def __len__(self) -> int:
         return len(self.examples)
@@ -218,23 +220,22 @@ class VideoQADataset:
 
     def cross_source_donors(self, count: int) -> Tensor:
         selected = list(range(min(count, len(self))))
+        first_by_source: dict[str, int] = {}
+        for index, source_id in enumerate(self.example_sources):
+            first_by_source.setdefault(source_id, index)
+        sources = sorted(first_by_source)
+        if len(sources) < 2:
+            raise ValueError("Cross-source control requires another source")
+        source_position = {source_id: index for index, source_id in enumerate(sources)}
         donors = []
         for index in selected:
-            item = self.item(index)
-            distinct = [
-                candidate
-                for candidate in range(len(self))
-                if self.item(candidate)["source_id"] != item["source_id"]
-            ]
-            if not distinct:
-                raise ValueError("Cross-source control requires another source")
-            rank = int(
-                hashlib.sha256(
-                    f"{item['source_id']}:{self.examples[index][1]}".encode()
-                ).hexdigest()[:16],
+            source_id = self.example_sources[index]
+            offset = 1 + int(
+                hashlib.sha256(f"{source_id}:{self.examples[index][1]}".encode()).hexdigest()[:8],
                 16,
-            )
-            donors.append(distinct[rank % len(distinct)])
+            ) % (len(sources) - 1)
+            donor_source = sources[(source_position[source_id] + offset) % len(sources)]
+            donors.append(first_by_source[donor_source])
         return torch.tensor(donors, dtype=torch.long)
 
 
