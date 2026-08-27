@@ -10,6 +10,7 @@ Prepared: 2026-08-27
 - Layout-aware delta milestone: `1a79f7b2fb91798603246086c872879cc7cdb9bf`
 - Native-Omni video S1 result: `71f5116`
 - Native-Omni audio S1 result: `73f9969`
+- Native-Omni AudioCaps Caption LoRA result: `ec8cf1d`
 - Migration handoff tag: `migration-20260826-v2`
 
 Clone and recreate the locked environment:
@@ -134,6 +135,17 @@ cd /mnt/nfs_shared_data/project_backups/deltathought/73f9969 && sha256sum -c SHA
 The corresponding untouched-test reports are tracked in Git under `outputs/reports/`. Native Omni
 embedding caches are intentionally omitted from NAS backup because they are checksummed but
 regenerable from pinned Qwen2.5-Omni and immutable VGGSound media.
+
+The selected AudioCaps Caption LoRA plus delta-interface checkpoint is retained at:
+
+- `/mnt/nfs_shared_data/project_backups/deltathought/ec8cf1d/checkpoints/step-000200.pt`
+- SHA-256 `c00e3e4d6466becccbed2616f50b7fa210bafb4e68227b71266ae68d0d9cf872`
+
+Verify with:
+
+```bash
+cd /mnt/nfs_shared_data/project_backups/deltathought/ec8cf1d && sha256sum -c SHA256SUMS
+```
 
 Synthetic checkpoints now record `PairDeltaEncoder.ALGORITHM_VERSION`. Automatic verification and
 resume reject unversioned or incompatible checkpoints rather than partially loading them. After
