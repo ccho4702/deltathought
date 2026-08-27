@@ -1,0 +1,19 @@
+seed: 42
+canonical_manifest: intermediates/canonical/audiocaps/official-original-d004db3-media-schema-v2/manifest.json
+omni_config: configs/qwen2_5_omni.yaml
+deltatok_config: configs/deltatok_vggsound_audio.yaml
+deltatok_checkpoint: outputs/real_pilots/deltatok_vggsound_audio/deltatok-audio-20260827T032453Z-1156e221/checkpoints/step-001000.pt
+deltatok_checkpoint_sha256: 8c64d86088180e045b75720d1e0270ced413043683914fb17dbbd60328c15796
+train_count: 8192
+validation_count: 483
+test_count: 943
+block_seconds: 2.0
+blocks_per_clip: 5
+expected_audio_tokens: 50
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 4
+cache_root: intermediates/cache/omni_audiocaps_prefix_8k
+report_path: outputs/reports/omni_audiocaps_prefix_8k.json
