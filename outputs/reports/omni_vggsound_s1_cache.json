@@ -1,0 +1,24 @@
+{
+  "code_revision": "ffafa382911fe365cdb591387991aed157675b0d",
+  "completed_at_utc": "2026-08-27T02:52:40.619218+00:00",
+  "elapsed_seconds": 45.43578636646271,
+  "modalities": {
+    "audio": {
+      "blocks": 22675,
+      "bytes": 8136801216
+    },
+    "video": {
+      "blocks": 22675,
+      "bytes": 20814463488
+    }
+  },
+  "model_revision": "ae9e1690543ffd5c0221dc27f79834d0294cba00",
+  "peak_reserved_bytes_per_rank_max": 18297651200,
+  "schema": "deltaomni.omni_vggsound_cache_summary.v1",
+  "splits": {
+    "test": 256,
+    "train": 4096,
+    "validation": 256
+  },
+  "world_size": 4
+}

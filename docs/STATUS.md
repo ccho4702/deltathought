@@ -56,14 +56,26 @@ feature (27.0% lower), cosine similarity was 0.6177, and 389-way feature retriev
 (chance 0.26%). No SSV2 labels were loaded by the trainer. This is an implementation gate, not the
 general-video result; the next run uses existing VGGSound media with the paper-scale tokenizer.
 
-The deterministic VGGSound S1 subset is now canonicalized from the existing read-only distribution:
-4,096 train, 256 validation, and 256 untouched-test paired clips. Every episode contains both video
-and audio, all weak class labels are explicitly excluded from S1, and YouTube source groups have
-zero cross-split overlap. Processing and verified reload took 112.2s; no requested pair was missing.
-Canonical manifest SHA-256 is
-`b86ed3e33e513ce739278abee13fbb0fe44e3b94949cf944f0d19e6f87ff7103`.
+The corrected VGGSound S1 subset revision is
+`official-2020-s1-subset4608-schema-v2-r2`: 4,096 train, 256 validation, and 256 untouched-test
+paired clips. Every episode contains both video and audio, all weak class labels are explicitly
+excluded from S1, and YouTube source groups have zero cross-split overlap. A full decode audit of all
+4,608 selected videos found one validation source with reproducible H.264 macroblock errors in both
+PyAV and FFmpeg. Revision r2 explicitly excludes `53UdZyM9MyE_000252` and deterministically replaces
+it with cleanly decoded `yLazKv68TeA_000078`; train and test are unchanged. Canonical manifest
+SHA-256 is `c37adcaf659a25b71cb75aa1709f3fc04e6d7db2ed4d42ed7da012495c2107b5`.
 The official dataset license is recorded as CC-BY-4.0 while original-video copyright remains with
 the source owner, so media and recoverable embeddings are not publication artifacts.
+
+The frozen native Qwen2.5-Omni cache for VGGSound r2 contains 22,675 aligned two-second blocks per
+modality, yielding 18,067 consecutive training/evaluation pairs. Each video block is 128×3584 and
+each audio block is 50×3584; both are float16 copies of independently computed BF16 encoder output.
+The cache occupies 20.81 GB for video and 8.14 GB for audio. Four-GPU generation used at most
+17.04 GiB reserved VRAM per rank and successfully resumed twice from atomic per-clip artifacts.
+Final manifests reloaded every tensor, checked shape/finiteness/model revision, and recorded a
+SHA-256 for every cache file. Video/audio manifest SHA-256 values are respectively
+`5f60dc135355516d3c8812410e76cfd4b9cdc39027fcbabe40719e10b8c175b8` and
+`6e90c8dd1e767d8cfb5b6ce1b0d0ace67a7ff3b4934cc69e4c180b30a3ddfc12`.
 
 Last updated: 2026-08-27
 
