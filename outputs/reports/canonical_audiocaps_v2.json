@@ -1,0 +1,30 @@
+{
+  "caption_items": {
+    "test": 4715,
+    "train": 48343,
+    "validation": 2415
+  },
+  "code_revision": "1b999e189322aef3290c7b27fe63c153fd909863",
+  "completed_at_utc": "2026-08-27T13:09:57.260161+00:00",
+  "dataset": "audiocaps",
+  "dataset_revision": "official-original-d004db3-media-schema-v2",
+  "elapsed_seconds": 121.46045704931021,
+  "episodes": {
+    "test": 943,
+    "train": 48343,
+    "validation": 483
+  },
+  "invalid_media": {
+    "test": 0,
+    "train": 1,
+    "validation": 0
+  },
+  "manifest": "/home/changho.choi/deltathought/intermediates/canonical/audiocaps/official-original-d004db3-media-schema-v2/manifest.json",
+  "missing_media": {
+    "test": 32,
+    "train": 1494,
+    "validation": 12
+  },
+  "schema": "deltaomni.canonical_preprocessing_summary.v1",
+  "status": "complete"
+}

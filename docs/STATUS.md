@@ -118,6 +118,13 @@ found 48,344/49,838 train clips (97.0%), 483/495 validation clips (97.6%), and 9
 (96.7%). Missing media will be recorded as deterministic attrition; it will not be downloaded from
 unverified mirrors. Ego4D narrations and media remain the video-caption source candidate.
 
+AudioCaps canonical revision `official-original-d004db3-media-schema-v2` is complete: 48,343 train,
+483 validation, and 943 untouched-test audio episodes with 48,343/2,415/4,715 captions. Train has
+one reference per clip and validation/test have five. Exactly 1,494/12/32 clips are absent from the
+existing read-only AudioSet roots, and one zero-byte train FLAC is separately quarantined as invalid.
+All YouTube source groups are split-disjoint. Manifest SHA-256 is
+`fce373275db9897a8967644c6691ef9678147f6a4bfb252fc7749c469cb0a307`.
+
 Last updated: 2026-08-27
 
 ## Completed
