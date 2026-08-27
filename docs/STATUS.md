@@ -77,6 +77,24 @@ SHA-256 for every cache file. Video/audio manifest SHA-256 values are respective
 `5f60dc135355516d3c8812410e76cfd4b9cdc39027fcbabe40719e10b8c175b8` and
 `6e90c8dd1e767d8cfb5b6ce1b0d0ace67a7ff3b4934cc69e4c180b30a3ddfc12`.
 
+The first exposure-matched native-Omni video DeltaTok run is complete. A 12-layer, width-768
+encoder/decoder with exactly one delta token trained for 2,000 four-GPU steps at global batch 128,
+equivalent to 14.2 passes over 18,067 train pairs. Training took 965.4s and peak reserved memory was
+4.98 GiB/rank. The final checkpoint was evaluated once on the untouched 256-clip test split:
+
+- Teacher-forced MSE was 0.32958 versus copy-previous 0.43404 and zero-delta 0.33659.
+- Final autoregressive rollout MSE over one to four deltas was 0.40841 versus anchor-only 0.52843,
+  zero-delta 0.42026, and length-matched cross-clip shuffled delta 0.42925.
+- Final retrieval R@1 was 83.59% versus cross-clip shuffled 76.95%, but remained below the static
+  anchor's 86.72% and zero-delta rollout's 84.77%.
+- Horizon-four rollout MSE was 0.40914 versus teacher-forced 0.32645, demonstrating 25.3% drift.
+
+All predeclared one-percent MSE and one-point retrieval content-control gates passed on untouched
+test. This is bounded empirical evidence that native Qwen2.5-Omni video delta content remains useful
+through four ordered updates. It is not evidence for longer horizons or Thinker caption
+understanding. Checkpoint SHA-256 is
+`0933e2d29b2cc0b8bbe20959250ef52feb16b87a5b0c5464996f042c6672b0ae`.
+
 Last updated: 2026-08-27
 
 ## Completed
