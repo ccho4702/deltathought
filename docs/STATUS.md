@@ -49,6 +49,13 @@ aspect-preserving 224×224 letterboxing; clips contain two to four blocks. Four-
 took 95.1s initially and 5.6s for the eligibility-corrected incremental pass. Manifest SHA-256 is
 `24239ece81b38eb34a0ff99112fafc3a3beaa8202bc93d2715a3f9e28df10012`.
 
+A label-free one-token DeltaTok integration run now validates the paper-style MSE trainer on frozen
+native-Omni video features. Four-layer encoder/decoder training ran for 1,000 steps in 37.2s. On 389
+held-out consecutive pairs, reconstruction MSE was 0.4202 versus 0.5759 for copying the previous
+feature (27.0% lower), cosine similarity was 0.6177, and 389-way feature retrieval R@1 was 52.4%
+(chance 0.26%). No SSV2 labels were loaded by the trainer. This is an implementation gate, not the
+general-video result; the next run uses existing VGGSound media with the paper-scale tokenizer.
+
 Last updated: 2026-08-26
 
 ## Completed

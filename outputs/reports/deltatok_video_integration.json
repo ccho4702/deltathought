@@ -1,0 +1,14 @@
+{
+  "completed_at_utc": "2026-08-27T01:51:10.385915+00:00",
+  "metrics": {
+    "copy_previous_mse": 0.5759221534496102,
+    "cosine": 0.6176756410488433,
+    "mse": 0.4201777775060855,
+    "pairs": 389,
+    "retrieval_r1": 0.5244215726852417
+  },
+  "passed": true,
+  "run_id": "deltatok-video-integration",
+  "schema": "deltaomni.deltatok_training.v1",
+  "training_seconds": 37.233119238168
+}
