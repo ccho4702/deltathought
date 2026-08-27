@@ -15,6 +15,7 @@ from deltaomni.data.schema import (
     ProvenanceRecord,
     QAAnnotation,
     TextBundle,
+    iter_jsonl,
     read_jsonl,
     temporal_grid,
     write_jsonl,
@@ -97,6 +98,7 @@ def test_v2_round_trip_preserves_null_and_empty_semantics(tmp_path: Path) -> Non
     loaded = read_jsonl(path)
 
     assert loaded == [episode]
+    assert list(iter_jsonl(path)) == [episode]
     record = json.loads(path.read_text().strip())
     assert record["schema"] == SCHEMA_VERSION
     assert record["media"]["image"] is None

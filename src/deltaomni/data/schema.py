@@ -4,6 +4,7 @@ import json
 import os
 import re
 import uuid
+from collections.abc import Iterator
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -501,17 +502,22 @@ def write_jsonl(path: Path, episodes: list[CanonicalEpisode]) -> None:
 
 
 def read_jsonl(path: Path) -> list[CanonicalEpisode]:
-    episodes = []
+    return list(iter_jsonl(path))
+
+
+def iter_jsonl(path: Path) -> Iterator[CanonicalEpisode]:
     seen = set()
-    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-        if not line.strip():
-            continue
-        episode = CanonicalEpisode.from_dict(json.loads(line))
-        if episode.episode_id in seen:
-            raise ValueError(f"Duplicate episode_id at line {line_number}: {episode.episode_id}")
-        seen.add(episode.episode_id)
-        episodes.append(episode)
-    return episodes
+    with path.open(encoding="utf-8") as stream:
+        for line_number, line in enumerate(stream, start=1):
+            if not line.strip():
+                continue
+            episode = CanonicalEpisode.from_dict(json.loads(line))
+            if episode.episode_id in seen:
+                raise ValueError(
+                    f"Duplicate episode_id at line {line_number}: {episode.episode_id}"
+                )
+            seen.add(episode.episode_id)
+            yield episode
 
 
 def _json_value(value: Any) -> Any:

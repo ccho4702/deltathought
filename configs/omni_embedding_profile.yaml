@@ -1,0 +1,14 @@
+canonical_manifest: intermediates/canonical/something_something_v2/official-v2-ann-b24e4609-schema-v2/manifest.json
+omni_config: configs/qwen2_5_omni.yaml
+seed: 42
+samples: 128
+block_seconds: 2.0
+sample_fps: 2.0
+batch_sizes: [1, 2, 4, 8]
+warmup_batches: 1
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 4
+output: outputs/reports/qwen2_5_omni_embedding_profile.json
