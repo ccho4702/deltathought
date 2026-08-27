@@ -4,6 +4,7 @@ import os
 from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass
+from datetime import timedelta
 
 import torch
 from torch import Tensor, nn
@@ -56,6 +57,7 @@ def distributed_context(
             backend=backend,
             init_method="env://",
             device_id=resolved if resolved.type == "cuda" else None,
+            timeout=timedelta(hours=1),
         )
     try:
         yield DistributedContext(rank, local_rank, world_size, resolved)
