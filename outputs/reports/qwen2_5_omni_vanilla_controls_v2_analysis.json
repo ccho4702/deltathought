@@ -1,0 +1,93 @@
+{
+  "analysis": {
+    "bootstrap_samples": 100000,
+    "comparisons": {
+      "audio_only_minus_text_only": {
+        "accuracy_difference": 0.06818181818181812,
+        "cluster_bootstrap_95ci": [
+          -0.03252032520325204,
+          0.16153846153846152
+        ],
+        "left_only_correct": 20,
+        "paired_exact_sign_p": 0.14961278438568115,
+        "right_only_correct": 11
+      },
+      "multimodal_minus_text_only": {
+        "accuracy_difference": 0.28787878787878785,
+        "cluster_bootstrap_95ci": [
+          0.19736842105263153,
+          0.3846153846153846
+        ],
+        "left_only_correct": 45,
+        "paired_exact_sign_p": 6.973810151578164e-08,
+        "right_only_correct": 7
+      },
+      "video_only_minus_multimodal": {
+        "accuracy_difference": 0.037878787878787845,
+        "cluster_bootstrap_95ci": [
+          0.007874015748031482,
+          0.07042253521126751
+        ],
+        "left_only_correct": 5,
+        "paired_exact_sign_p": 0.0625,
+        "right_only_correct": 0
+      },
+      "video_only_minus_text_only": {
+        "accuracy_difference": 0.3257575757575757,
+        "cluster_bootstrap_95ci": [
+          0.23404255319148937,
+          0.4152542372881356
+        ],
+        "left_only_correct": 48,
+        "paired_exact_sign_p": 7.077378683106872e-10,
+        "right_only_correct": 5
+      }
+    },
+    "controls": {
+      "audio_only": {
+        "accuracy": 0.553030303030303,
+        "cluster_bootstrap_95ci": [
+          0.4117647058823529,
+          0.6785714285714286
+        ],
+        "correct": 73,
+        "examples": 132
+      },
+      "multimodal": {
+        "accuracy": 0.7727272727272727,
+        "cluster_bootstrap_95ci": [
+          0.7028985507246377,
+          0.84
+        ],
+        "correct": 102,
+        "examples": 132
+      },
+      "text_only": {
+        "accuracy": 0.48484848484848486,
+        "cluster_bootstrap_95ci": [
+          0.3870967741935484,
+          0.5763888888888888
+        ],
+        "correct": 64,
+        "examples": 132
+      },
+      "video_only": {
+        "accuracy": 0.8106060606060606,
+        "cluster_bootstrap_95ci": [
+          0.734375,
+          0.8827586206896552
+        ],
+        "correct": 107,
+        "examples": 132
+      }
+    },
+    "qa_examples": 132,
+    "seed": 42,
+    "source_clusters": 16
+  },
+  "code_revision": "69c9b73a8b6c18d69d31f1633f260e6533a8cfa4",
+  "prediction_files": 676,
+  "prediction_root": "outputs/baselines/qwen2_5_omni_vanilla_controls_v2/qwen2-5-omni-vanilla-controls-v2/predictions",
+  "run_signature_sha256": "bc6e46ab6b80f0239ba36cdda064c4727d627397b91fb79c30eec2c296468cd2",
+  "schema": "deltaomni.vanilla_control_analysis.v1"
+}
