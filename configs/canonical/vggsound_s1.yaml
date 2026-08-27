@@ -1,0 +1,16 @@
+dataset: vggsound
+dataset_revision: official-2020-s1-subset4608-schema-v2
+resource_name: vggsound
+seed: 42
+train_count: 4096
+validation_count: 256
+test_count: 256
+chunk_seconds: 2.0
+cpu_workers: 8
+train_metadata: /mnt/nfs_shared_data/dataset/omniembed/vggsound/metadata/train.csv
+test_metadata: /mnt/nfs_shared_data/dataset/omniembed/vggsound/metadata/test.csv
+video_root: /mnt/nfs_shared_data/dataset/omniembed/vggsound/video
+audio_root: /mnt/nfs_shared_data/dataset/omniembed/vggsound/audio
+cache_root: intermediates/cache/canonical_vggsound_s1
+output_root: intermediates/canonical
+report_path: outputs/reports/canonical_vggsound_s1.json

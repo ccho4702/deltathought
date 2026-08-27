@@ -129,6 +129,27 @@ resources:
       citations: https://api.openalex.org/works/W2593116425
     restriction: Raw YouTube media needs a separate availability and rights audit.
 
+  vggsound:
+    kind: dataset
+    role: paired_audio_video_self_supervised_delta_training
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    license_status: verified
+    license: CC-BY-4.0-dataset-original-video-copyright-retained
+    source_url: https://github.com/hche11/VGGSound
+    evidence:
+      github_stars: null
+      huggingface_downloads: null
+      paper_citations: 426
+    evidence_urls:
+      citations: https://api.openalex.org/works/W3015371781
+      paper: https://doi.org/10.1109/ICASSP40776.2020.9053174
+      license: https://github.com/hche11/VGGSound/blob/master/LICENCE.txt
+    restriction: >-
+      The official license states CC-BY-4.0 while copyright remains with each original video owner;
+      publish only derived metrics and code, not media or recoverable embeddings.
+
   something_something_v2:
     kind: dataset
     role: video_delta_representation_and_action_caption
