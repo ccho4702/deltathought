@@ -1,0 +1,334 @@
+{
+  "checks": {
+    "nll_improved": false,
+    "normal_nll_beats_shuffled": true,
+    "normal_nll_beats_zero": true,
+    "word_f1_beats_shuffled": true,
+    "word_f1_beats_zero": true,
+    "word_f1_improved": false
+  },
+  "completed_at_utc": "2026-08-27T17:18:58.592974+00:00",
+  "final": {
+    "examples": [
+      {
+        "normal": "Sheep bleating followed by a man speaking",
+        "references": [
+          "An animal bleats, a pig squeals, and a loud boom occurs",
+          "A bang followed by baaing and silence",
+          "A sheep baas followed by an oink and then explosion",
+          "Continuous oinking",
+          "A sheep baas followed by a pig oinking, then a loud explosion and a grunt"
+        ],
+        "shuffled": "Some rustling with goats bleating",
+        "source_id": "tTKJR_oYdhw_11000_21000",
+        "zero": "Sheep baaing a couple of times"
+      },
+      {
+        "normal": "A child is laughing and talking out loud",
+        "references": [
+          "A baby coos and fidgets as a lady speaks and laughs",
+          "A child and woman laughs and the woman speaks",
+          "A young baby laughs and giggles while a man and woman speak and laugh",
+          "A baby and woman laugh",
+          "A female laughs as a baby fidgets and babbles"
+        ],
+        "shuffled": "A child is laughing and a motor is running",
+        "source_id": "uP_Dn2BFTHk_140000_150000",
+        "zero": "Young female child laughing and speaking"
+      },
+      {
+        "normal": "Constant knocking as a helicopter engine runs",
+        "references": [
+          "A helicopter engine runs continuously",
+          "A helicopter engine runs",
+          "A helicopter engine loudly hums in the air and then softens to a low hum",
+          "A helicopter engine runs steadily",
+          "A propeller spins and ticks"
+        ],
+        "shuffled": "Engine running with a small rumble in the background",
+        "source_id": "t5ZbXbniOWk_30000_40000",
+        "zero": "A helicopter engine runs"
+      },
+      {
+        "normal": "A frog croaking loudly",
+        "references": [
+          "Two frogs croak at each other",
+          "A frog vocalizes very loudly",
+          "A frog vocalizes loudly",
+          "A frog croaks repeatedly",
+          "An animal makes a squawking bleat"
+        ],
+        "shuffled": "A phone ringer rings as a person snores",
+        "source_id": "zg0X6BnhOLQ_410000_420000",
+        "zero": "A telephone rings and a person answers the phone"
+      },
+      {
+        "normal": "Birds chirp as a vehicle passes in the distance",
+        "references": [
+          "Multiple insects buzz over rustling wind",
+          "Bees buzz as wind blows",
+          "Bees buzz and wind blows",
+          "Bees buzz as wind blows",
+          "Many insects buzz as a wind lightly gusts"
+        ],
+        "shuffled": "A buzzing in the background as people are talking",
+        "source_id": "tMJne1a4AFI_0_10000",
+        "zero": "A close buzzing and a person speaking"
+      },
+      {
+        "normal": "Birds tweeting and plane flying by",
+        "references": [
+          "A vehicle passes by as people speak and ducks vocalize",
+          "Vehicles pass by as people speak and ducks chirp",
+          "People speak and as ducks quack",
+          "People converse as wind blows and birds chirp",
+          "Several people chatter over a motor noise and a rustling breeze"
+        ],
+        "shuffled": "Vehicle engines roar as small children speak",
+        "source_id": "tfwqvvLzC0E_30000_40000",
+        "zero": "Multiple vehicles pass by"
+      },
+      {
+        "normal": "Clicks from a machine with a man talking over a speaker as the machine whirs",
+        "references": [
+          "Birds vocalize and a man speaks",
+          "Birds fly around and a man speaks",
+          "A man speaks as pigeons vocalize and walk around",
+          "A person speaks as a cage rattles, birds chips and flap wings in the background",
+          "A man speaks as pigeons vocalize and walk around"
+        ],
+        "shuffled": "Rustling with constant humming",
+        "source_id": "v0wPrLBI3hg_30000_40000",
+        "zero": "Tapping is occurring, birds are cooing and calling, and an adult male speaks"
+      },
+      {
+        "normal": "Train engines, a steam whistle goes off",
+        "references": [
+          "A jet engine roars, almost making a man inaudible",
+          "An aircraft engine screams as a man speaks in low tones",
+          "The loud engine of an aircraft revving up and the wind pumping loudly, a male voice speaks as well",
+          "An aircraft engine screeches loudly as the wind bustles around men speaking",
+          "An airplane engine works nearby while a man talks"
+        ],
+        "shuffled": " vehicle engines are revving up",
+        "source_id": "xfaoyyzw2WU_180000_190000",
+        "zero": "Multiple sirens pass by"
+      },
+      {
+        "normal": "Engine sputtering in and out",
+        "references": [
+          "A motorcycle engine is idling",
+          "A vehicle engine runs and slows",
+          "A motorcycle engine revs then begins idling",
+          "A sputtering engine runs",
+          "A vehicle that is idling"
+        ],
+        "shuffled": "A large motor vehicle engine is running close by and then fades somewhat",
+        "source_id": "vZAqdHZ81yA_180000_190000",
+        "zero": "A small engine idles"
+      },
+      {
+        "normal": "A nearby goat\u72c2barks over the background sounds of a farmyard",
+        "references": [
+          "A duck quacks continuously",
+          "A duck quacks loudly and continuously",
+          "A duck quacks several times",
+          "An animal quacks rapidly",
+          "An animal chatters frantically, then quacks repeatedly"
+        ],
+        "shuffled": "A nearby goat bleats several times",
+        "source_id": "vh30P49Po6s_30000_40000",
+        "zero": "A vehicle engine is being started"
+      }
+    ],
+    "generation": {
+      "normal": {
+        "exact_match": 0.0,
+        "examples": 64.0,
+        "rouge_l": 0.3503094058429568,
+        "word_f1": 0.37482746104335696
+      },
+      "shuffled": {
+        "exact_match": 0.0,
+        "examples": 64.0,
+        "rouge_l": 0.3133679073658503,
+        "word_f1": 0.33014416925543566
+      },
+      "zero": {
+        "exact_match": 0.015625,
+        "examples": 64.0,
+        "rouge_l": 0.3001582653672437,
+        "word_f1": 0.31415924976296494
+      }
+    },
+    "nll": {
+      "normal": 3.894618156196719,
+      "shuffled": 4.150349539619955,
+      "zero": 4.101114473644305
+    }
+  },
+  "initial": {
+    "examples": [
+      {
+        "normal": "A goat bleats.",
+        "references": [
+          "An animal bleats, a pig squeals, and a loud boom occurs",
+          "A bang followed by baaing and silence",
+          "A sheep baas followed by an oink and then explosion",
+          "Continuous oinking",
+          "A sheep baas followed by a pig oinking, then a loud explosion and a grunt"
+        ],
+        "shuffled": "A goat bleats.",
+        "source_id": "tTKJR_oYdhw_11000_21000",
+        "zero": "A goat bleats."
+      },
+      {
+        "normal": "A child speaks and laughs.",
+        "references": [
+          "A baby coos and fidgets as a lady speaks and laughs",
+          "A child and woman laughs and the woman speaks",
+          "A young baby laughs and giggles while a man and woman speak and laugh",
+          "A baby and woman laugh",
+          "A female laughs as a baby fidgets and babbles"
+        ],
+        "shuffled": "A child speaks and laughs.",
+        "source_id": "uP_Dn2BFTHk_140000_150000",
+        "zero": "A child speaks and laughs."
+      },
+      {
+        "normal": "A motorboat engine is running.",
+        "references": [
+          "A helicopter engine runs continuously",
+          "A helicopter engine runs",
+          "A helicopter engine loudly hums in the air and then softens to a low hum",
+          "A helicopter engine runs steadily",
+          "A propeller spins and ticks"
+        ],
+        "shuffled": "A motorboat engine is running.",
+        "source_id": "t5ZbXbniOWk_30000_40000",
+        "zero": "A motorboat engine is running."
+      },
+      {
+        "normal": "A frog croaks.",
+        "references": [
+          "Two frogs croak at each other",
+          "A frog vocalizes very loudly",
+          "A frog vocalizes loudly",
+          "A frog croaks repeatedly",
+          "An animal makes a squawking bleat"
+        ],
+        "shuffled": "A frog croaks loudly.",
+        "source_id": "zg0X6BnhOLQ_410000_420000",
+        "zero": "A frog croaks loudly."
+      },
+      {
+        "normal": "A buzzing insect flies by as birds chirp in the background.",
+        "references": [
+          "Multiple insects buzz over rustling wind",
+          "Bees buzz as wind blows",
+          "Bees buzz and wind blows",
+          "Bees buzz as wind blows",
+          "Many insects buzz as a wind lightly gusts"
+        ],
+        "shuffled": "A buzzing insect flies by as birds chirp in the background.",
+        "source_id": "tMJne1a4AFI_0_10000",
+        "zero": "A buzzing insect flies by as birds chirp in the background."
+      },
+      {
+        "normal": "A large motor vehicle engine is running and fades, and a crowd is cheering.",
+        "references": [
+          "A vehicle passes by as people speak and ducks vocalize",
+          "Vehicles pass by as people speak and ducks chirp",
+          "People speak and as ducks quack",
+          "People converse as wind blows and birds chirp",
+          "Several people chatter over a motor noise and a rustling breeze"
+        ],
+        "shuffled": "A large motor vehicle engine is running, and a crowd is cheering.",
+        "source_id": "tfwqvvLzC0E_30000_40000",
+        "zero": "A large motor vehicle engine is running and fades."
+      },
+      {
+        "normal": "A clanking sound is followed by a squeaking sound.",
+        "references": [
+          "Birds vocalize and a man speaks",
+          "Birds fly around and a man speaks",
+          "A man speaks as pigeons vocalize and walk around",
+          "A person speaks as a cage rattles, birds chips and flap wings in the background",
+          "A man speaks as pigeons vocalize and walk around"
+        ],
+        "shuffled": "A clanking sound is followed by a squeaking sound.",
+        "source_id": "v0wPrLBI3hg_30000_40000",
+        "zero": "A metal object is being tapped."
+      },
+      {
+        "normal": "A machine is running and squeaking.",
+        "references": [
+          "A jet engine roars, almost making a man inaudible",
+          "An aircraft engine screams as a man speaks in low tones",
+          "The loud engine of an aircraft revving up and the wind pumping loudly, a male voice speaks as well",
+          "An aircraft engine screeches loudly as the wind bustles around men speaking",
+          "An airplane engine works nearby while a man talks"
+        ],
+        "shuffled": "A machine is running and squeaking.",
+        "source_id": "xfaoyyzw2WU_180000_190000",
+        "zero": "A machine is running and squeaking."
+      },
+      {
+        "normal": "A loud motor sound is followed by a series of clicks.",
+        "references": [
+          "A motorcycle engine is idling",
+          "A vehicle engine runs and slows",
+          "A motorcycle engine revs then begins idling",
+          "A sputtering engine runs",
+          "A vehicle that is idling"
+        ],
+        "shuffled": "A loud engine sound is followed by a man speaking.",
+        "source_id": "vZAqdHZ81yA_180000_190000",
+        "zero": "A loud engine sound is heard."
+      },
+      {
+        "normal": "A group of ducks quack.",
+        "references": [
+          "A duck quacks continuously",
+          "A duck quacks loudly and continuously",
+          "A duck quacks several times",
+          "An animal quacks rapidly",
+          "An animal chatters frantically, then quacks repeatedly"
+        ],
+        "shuffled": "A group of ducks quack.",
+        "source_id": "vh30P49Po6s_30000_40000",
+        "zero": "A group of ducks quack."
+      }
+    ],
+    "generation": {
+      "normal": {
+        "exact_match": 0.0,
+        "examples": 64.0,
+        "rouge_l": 0.37111834188623627,
+        "word_f1": 0.3824382125953775
+      },
+      "shuffled": {
+        "exact_match": 0.0,
+        "examples": 64.0,
+        "rouge_l": 0.3715873926298235,
+        "word_f1": 0.38057423416770025
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 64.0,
+        "rouge_l": 0.3584509294455115,
+        "word_f1": 0.36533516226313245
+      }
+    },
+    "nll": {
+      "normal": 3.2950679791921917,
+      "shuffled": 3.295804473994808,
+      "zero": 3.3098566340790554
+    }
+  },
+  "passed": false,
+  "run_id": "audiocaps-caption-1s-poc",
+  "schema": "deltaomni.audiocaps_caption_lora.v1",
+  "status": "complete",
+  "training_seconds": 181.92621645703912
+}

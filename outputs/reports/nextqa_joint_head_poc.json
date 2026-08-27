@@ -1,0 +1,783 @@
+{
+  "completed_at_utc": "2026-08-27T17:31:57.985637+00:00",
+  "final": {
+    "test": {
+      "accuracy": 0.25,
+      "correct": 33,
+      "examples": 132,
+      "predictions": [
+        {
+          "answer": "splashed when going through mud",
+          "prediction": 2,
+          "question": "5593 1811 7322 7312 712",
+          "source_id": "5929534589",
+          "target": 3
+        },
+        {
+          "answer": "xtra tyre ",
+          "prediction": 4,
+          "question": "686 5893 4627 7018 911 7322 630 348 7322 7312",
+          "source_id": "5929534589",
+          "target": 3
+        },
+        {
+          "answer": "follow it",
+          "prediction": 0,
+          "question": "1533 853 7322 6759 5920 7847 7322 7312 1436 7322 7312 2790 4837 911 3156 487 348 7322 7939",
+          "source_id": "5929534589",
+          "target": 2
+        },
+        {
+          "answer": "drive",
+          "prediction": 2,
+          "question": "686 3340 348 550 5977 5393 3449 498",
+          "source_id": "5929534589",
+          "target": 4
+        },
+        {
+          "answer": "slowly",
+          "prediction": 4,
+          "question": "5593 853 7322 7312 2993 4093 7527 7322 7789",
+          "source_id": "5929534589",
+          "target": 4
+        },
+        {
+          "answer": "footprints",
+          "prediction": 1,
+          "question": "1533 5893 5661 1460 4017 7322 7939",
+          "source_id": "5929534589",
+          "target": 1
+        },
+        {
+          "answer": "clicks picture",
+          "prediction": 4,
+          "question": "686 853 7322 6759 4253 7600 6553 4093 7322 7312 124 7322 7789",
+          "source_id": "5929534589",
+          "target": 0
+        },
+        {
+          "answer": "take a footage of the car",
+          "prediction": 0,
+          "question": "686 853 7322 6759 6553 5669 7322 7312 3515 4491 7322 5724 348 6212",
+          "source_id": "5929534589",
+          "target": 1
+        },
+        {
+          "answer": "no proper path",
+          "prediction": 1,
+          "question": "5593 3560 5021 3352 4140 5893 7626 1563 1829 7957",
+          "source_id": "5929534589",
+          "target": 3
+        },
+        {
+          "answer": "cross slowly",
+          "prediction": 2,
+          "question": "5593 853 7322 3622 5121 7673 7322 7312 5977 7816 526 55 4253 7322 6212",
+          "source_id": "5929534589",
+          "target": 2
+        }
+      ]
+    },
+    "train": {
+      "accuracy": 0.9922928709055877,
+      "correct": 515,
+      "examples": 519,
+      "predictions": [
+        {
+          "answer": "keep the mouth up",
+          "prediction": 2,
+          "question": "1533 853 7322 6759 5811 3390 6323 7591 1927 7322 761 4093 327 5393",
+          "source_id": "2592909699",
+          "target": 2
+        },
+        {
+          "answer": "feeding stingray",
+          "prediction": 3,
+          "question": "686 550 5893 4627 977 437",
+          "source_id": "2592909699",
+          "target": 3
+        },
+        {
+          "answer": "put food out",
+          "prediction": 0,
+          "question": "5593 5977 7322 6759 7588 7095 348 7322 2561 761",
+          "source_id": "2592909699",
+          "target": 0
+        },
+        {
+          "answer": "pouch",
+          "prediction": 0,
+          "question": "7185 853 7322 6759 4226 7322 2251 2897 7322 5099 4005",
+          "source_id": "2592909699",
+          "target": 0
+        },
+        {
+          "answer": "feed it",
+          "prediction": 3,
+          "question": "686 5977 7322 6759 6553 1436 5484 7322 761 4797 1868 3167",
+          "source_id": "2592909699",
+          "target": 3
+        },
+        {
+          "answer": "yellow",
+          "prediction": 1,
+          "question": "686 1453 4704 3406 7322 8102 348 7532 4253 1161 348 7322 7248 5811 4093 7522",
+          "source_id": "5170075281",
+          "target": 1
+        },
+        {
+          "answer": "green vest",
+          "prediction": 2,
+          "question": "686 5893 7322 6759 5533 7113 5811 4837 3156 6928",
+          "source_id": "5170075281",
+          "target": 2
+        },
+        {
+          "answer": "hat",
+          "prediction": 3,
+          "question": "686 5893 7322 6759 5533 7113 5811 4017 3156 7912",
+          "source_id": "5170075281",
+          "target": 3
+        },
+        {
+          "answer": "raise hand",
+          "prediction": 2,
+          "question": "686 5977 7322 6759 4253 5766 6553 1436 7322 6759 4253 7312 5502 3409",
+          "source_id": "5170075281",
+          "target": 2
+        },
+        {
+          "answer": "carpark",
+          "prediction": 0,
+          "question": "7185 5893 4140 6438 7178",
+          "source_id": "5170075281",
+          "target": 0
+        }
+      ]
+    },
+    "validation": {
+      "accuracy": 0.2426470588235294,
+      "correct": 33,
+      "examples": 136,
+      "predictions": [
+        {
+          "answer": "pick another smaller rock",
+          "prediction": 0,
+          "question": "1533 853 7322 5299 3549 4084 7493 1436 3539 3167 7626 6583 4947",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "walk away",
+          "prediction": 4,
+          "question": "686 5977 7322 5501 6553 1436 3539 3167 7322 6473",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "shifted forward",
+          "prediction": 3,
+          "question": "686 7455 911 7322 6886 1436 7322 5501 5196 3167",
+          "source_id": "5667931404",
+          "target": 4
+        },
+        {
+          "answer": "pick up the stone",
+          "prediction": 1,
+          "question": "1533 853 7322 5299 3549 4084 7847 7322 2280 6886 4005 7322 1279",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "transfer the stone somewhere else",
+          "prediction": 2,
+          "question": "1533 853 7322 5299 4599 3167 7322 1055 1470 7322 2280 6886",
+          "source_id": "5667931404",
+          "target": 2
+        },
+        {
+          "answer": "along a pathway",
+          "prediction": 2,
+          "question": "7185 5893 7322 5299 620 437",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "tiger",
+          "prediction": 2,
+          "question": "686 5893 7322 1554 1879 4017 7322 5299 4797 2116",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "want to pass quickly",
+          "prediction": 1,
+          "question": "1533 3406 7322 1870 6276",
+          "source_id": "4984331176",
+          "target": 3
+        },
+        {
+          "answer": "skip together",
+          "prediction": 3,
+          "question": "1533 853 7322 6759 4253 7312 2907 7566 4253 1689 2139 3045 3172 6453",
+          "source_id": "4984331176",
+          "target": 0
+        },
+        {
+          "answer": "playing group games",
+          "prediction": 1,
+          "question": "1533 853 7322 6759 4253 7312 2139 2907 7262 7626 4164",
+          "source_id": "4984331176",
+          "target": 2
+        }
+      ]
+    }
+  },
+  "initial": {
+    "test": {
+      "accuracy": 0.24242424242424243,
+      "correct": 32,
+      "examples": 132,
+      "predictions": [
+        {
+          "answer": "splashed when going through mud",
+          "prediction": 4,
+          "question": "5593 1811 7322 7312 712",
+          "source_id": "5929534589",
+          "target": 3
+        },
+        {
+          "answer": "xtra tyre ",
+          "prediction": 4,
+          "question": "686 5893 4627 7018 911 7322 630 348 7322 7312",
+          "source_id": "5929534589",
+          "target": 3
+        },
+        {
+          "answer": "follow it",
+          "prediction": 0,
+          "question": "1533 853 7322 6759 5920 7847 7322 7312 1436 7322 7312 2790 4837 911 3156 487 348 7322 7939",
+          "source_id": "5929534589",
+          "target": 2
+        },
+        {
+          "answer": "drive",
+          "prediction": 2,
+          "question": "686 3340 348 550 5977 5393 3449 498",
+          "source_id": "5929534589",
+          "target": 4
+        },
+        {
+          "answer": "slowly",
+          "prediction": 4,
+          "question": "5593 853 7322 7312 2993 4093 7527 7322 7789",
+          "source_id": "5929534589",
+          "target": 4
+        },
+        {
+          "answer": "footprints",
+          "prediction": 2,
+          "question": "1533 5893 5661 1460 4017 7322 7939",
+          "source_id": "5929534589",
+          "target": 1
+        },
+        {
+          "answer": "clicks picture",
+          "prediction": 4,
+          "question": "686 853 7322 6759 4253 7600 6553 4093 7322 7312 124 7322 7789",
+          "source_id": "5929534589",
+          "target": 0
+        },
+        {
+          "answer": "take a footage of the car",
+          "prediction": 0,
+          "question": "686 853 7322 6759 6553 5669 7322 7312 3515 4491 7322 5724 348 6212",
+          "source_id": "5929534589",
+          "target": 1
+        },
+        {
+          "answer": "no proper path",
+          "prediction": 1,
+          "question": "5593 3560 5021 3352 4140 5893 7626 1563 1829 7957",
+          "source_id": "5929534589",
+          "target": 3
+        },
+        {
+          "answer": "cross slowly",
+          "prediction": 2,
+          "question": "5593 853 7322 3622 5121 7673 7322 7312 5977 7816 526 55 4253 7322 6212",
+          "source_id": "5929534589",
+          "target": 2
+        }
+      ]
+    },
+    "train": {
+      "accuracy": 0.20809248554913296,
+      "correct": 108,
+      "examples": 519,
+      "predictions": [
+        {
+          "answer": "keep the mouth up",
+          "prediction": 4,
+          "question": "1533 853 7322 6759 5811 3390 6323 7591 1927 7322 761 4093 327 5393",
+          "source_id": "2592909699",
+          "target": 2
+        },
+        {
+          "answer": "feeding stingray",
+          "prediction": 4,
+          "question": "686 550 5893 4627 977 437",
+          "source_id": "2592909699",
+          "target": 3
+        },
+        {
+          "answer": "put food out",
+          "prediction": 3,
+          "question": "5593 5977 7322 6759 7588 7095 348 7322 2561 761",
+          "source_id": "2592909699",
+          "target": 0
+        },
+        {
+          "answer": "pouch",
+          "prediction": 3,
+          "question": "7185 853 7322 6759 4226 7322 2251 2897 7322 5099 4005",
+          "source_id": "2592909699",
+          "target": 0
+        },
+        {
+          "answer": "feed it",
+          "prediction": 0,
+          "question": "686 5977 7322 6759 6553 1436 5484 7322 761 4797 1868 3167",
+          "source_id": "2592909699",
+          "target": 3
+        },
+        {
+          "answer": "yellow",
+          "prediction": 4,
+          "question": "686 1453 4704 3406 7322 8102 348 7532 4253 1161 348 7322 7248 5811 4093 7522",
+          "source_id": "5170075281",
+          "target": 1
+        },
+        {
+          "answer": "green vest",
+          "prediction": 1,
+          "question": "686 5893 7322 6759 5533 7113 5811 4837 3156 6928",
+          "source_id": "5170075281",
+          "target": 2
+        },
+        {
+          "answer": "hat",
+          "prediction": 3,
+          "question": "686 5893 7322 6759 5533 7113 5811 4017 3156 7912",
+          "source_id": "5170075281",
+          "target": 3
+        },
+        {
+          "answer": "raise hand",
+          "prediction": 3,
+          "question": "686 5977 7322 6759 4253 5766 6553 1436 7322 6759 4253 7312 5502 3409",
+          "source_id": "5170075281",
+          "target": 2
+        },
+        {
+          "answer": "carpark",
+          "prediction": 3,
+          "question": "7185 5893 4140 6438 7178",
+          "source_id": "5170075281",
+          "target": 0
+        }
+      ]
+    },
+    "validation": {
+      "accuracy": 0.21323529411764705,
+      "correct": 29,
+      "examples": 136,
+      "predictions": [
+        {
+          "answer": "pick another smaller rock",
+          "prediction": 4,
+          "question": "1533 853 7322 5299 3549 4084 7493 1436 3539 3167 7626 6583 4947",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "walk away",
+          "prediction": 3,
+          "question": "686 5977 7322 5501 6553 1436 3539 3167 7322 6473",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "shifted forward",
+          "prediction": 4,
+          "question": "686 7455 911 7322 6886 1436 7322 5501 5196 3167",
+          "source_id": "5667931404",
+          "target": 4
+        },
+        {
+          "answer": "pick up the stone",
+          "prediction": 0,
+          "question": "1533 853 7322 5299 3549 4084 7847 7322 2280 6886 4005 7322 1279",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "transfer the stone somewhere else",
+          "prediction": 2,
+          "question": "1533 853 7322 5299 4599 3167 7322 1055 1470 7322 2280 6886",
+          "source_id": "5667931404",
+          "target": 2
+        },
+        {
+          "answer": "along a pathway",
+          "prediction": 2,
+          "question": "7185 5893 7322 5299 620 437",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "tiger",
+          "prediction": 2,
+          "question": "686 5893 7322 1554 1879 4017 7322 5299 4797 2116",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "want to pass quickly",
+          "prediction": 1,
+          "question": "1533 3406 7322 1870 6276",
+          "source_id": "4984331176",
+          "target": 3
+        },
+        {
+          "answer": "skip together",
+          "prediction": 3,
+          "question": "1533 853 7322 6759 4253 7312 2907 7566 4253 1689 2139 3045 3172 6453",
+          "source_id": "4984331176",
+          "target": 0
+        },
+        {
+          "answer": "playing group games",
+          "prediction": 2,
+          "question": "1533 853 7322 6759 4253 7312 2139 2907 7262 7626 4164",
+          "source_id": "4984331176",
+          "target": 2
+        }
+      ]
+    }
+  },
+  "passed": true,
+  "run_id": "nextqa-joint-poc-main",
+  "schema": "deltaomni.nextqa_joint_head_poc.v1",
+  "training_seconds": 18.085424467921257,
+  "validation_controls": {
+    "audio_zero": {
+      "accuracy": 0.20588235294117646,
+      "correct": 28,
+      "examples": 136,
+      "predictions": [
+        {
+          "answer": "pick another smaller rock",
+          "prediction": 0,
+          "question": "1533 853 7322 5299 3549 4084 7493 1436 3539 3167 7626 6583 4947",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "walk away",
+          "prediction": 4,
+          "question": "686 5977 7322 5501 6553 1436 3539 3167 7322 6473",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "shifted forward",
+          "prediction": 3,
+          "question": "686 7455 911 7322 6886 1436 7322 5501 5196 3167",
+          "source_id": "5667931404",
+          "target": 4
+        },
+        {
+          "answer": "pick up the stone",
+          "prediction": 1,
+          "question": "1533 853 7322 5299 3549 4084 7847 7322 2280 6886 4005 7322 1279",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "transfer the stone somewhere else",
+          "prediction": 2,
+          "question": "1533 853 7322 5299 4599 3167 7322 1055 1470 7322 2280 6886",
+          "source_id": "5667931404",
+          "target": 2
+        },
+        {
+          "answer": "along a pathway",
+          "prediction": 2,
+          "question": "7185 5893 7322 5299 620 437",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "tiger",
+          "prediction": 2,
+          "question": "686 5893 7322 1554 1879 4017 7322 5299 4797 2116",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "want to pass quickly",
+          "prediction": 1,
+          "question": "1533 3406 7322 1870 6276",
+          "source_id": "4984331176",
+          "target": 3
+        },
+        {
+          "answer": "skip together",
+          "prediction": 3,
+          "question": "1533 853 7322 6759 4253 7312 2907 7566 4253 1689 2139 3045 3172 6453",
+          "source_id": "4984331176",
+          "target": 0
+        },
+        {
+          "answer": "playing group games",
+          "prediction": 1,
+          "question": "1533 853 7322 6759 4253 7312 2139 2907 7262 7626 4164",
+          "source_id": "4984331176",
+          "target": 2
+        }
+      ]
+    },
+    "delta_shuffled": {
+      "accuracy": 0.23529411764705882,
+      "correct": 32,
+      "examples": 136,
+      "predictions": [
+        {
+          "answer": "pick another smaller rock",
+          "prediction": 0,
+          "question": "1533 853 7322 5299 3549 4084 7493 1436 3539 3167 7626 6583 4947",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "walk away",
+          "prediction": 4,
+          "question": "686 5977 7322 5501 6553 1436 3539 3167 7322 6473",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "shifted forward",
+          "prediction": 3,
+          "question": "686 7455 911 7322 6886 1436 7322 5501 5196 3167",
+          "source_id": "5667931404",
+          "target": 4
+        },
+        {
+          "answer": "pick up the stone",
+          "prediction": 1,
+          "question": "1533 853 7322 5299 3549 4084 7847 7322 2280 6886 4005 7322 1279",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "transfer the stone somewhere else",
+          "prediction": 2,
+          "question": "1533 853 7322 5299 4599 3167 7322 1055 1470 7322 2280 6886",
+          "source_id": "5667931404",
+          "target": 2
+        },
+        {
+          "answer": "along a pathway",
+          "prediction": 2,
+          "question": "7185 5893 7322 5299 620 437",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "tiger",
+          "prediction": 2,
+          "question": "686 5893 7322 1554 1879 4017 7322 5299 4797 2116",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "want to pass quickly",
+          "prediction": 0,
+          "question": "1533 3406 7322 1870 6276",
+          "source_id": "4984331176",
+          "target": 3
+        },
+        {
+          "answer": "skip together",
+          "prediction": 3,
+          "question": "1533 853 7322 6759 4253 7312 2907 7566 4253 1689 2139 3045 3172 6453",
+          "source_id": "4984331176",
+          "target": 0
+        },
+        {
+          "answer": "playing group games",
+          "prediction": 1,
+          "question": "1533 853 7322 6759 4253 7312 2139 2907 7262 7626 4164",
+          "source_id": "4984331176",
+          "target": 2
+        }
+      ]
+    },
+    "delta_zero": {
+      "accuracy": 0.15441176470588236,
+      "correct": 21,
+      "examples": 136,
+      "predictions": [
+        {
+          "answer": "pick another smaller rock",
+          "prediction": 2,
+          "question": "1533 853 7322 5299 3549 4084 7493 1436 3539 3167 7626 6583 4947",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "walk away",
+          "prediction": 3,
+          "question": "686 5977 7322 5501 6553 1436 3539 3167 7322 6473",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "shifted forward",
+          "prediction": 4,
+          "question": "686 7455 911 7322 6886 1436 7322 5501 5196 3167",
+          "source_id": "5667931404",
+          "target": 4
+        },
+        {
+          "answer": "pick up the stone",
+          "prediction": 4,
+          "question": "1533 853 7322 5299 3549 4084 7847 7322 2280 6886 4005 7322 1279",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "transfer the stone somewhere else",
+          "prediction": 0,
+          "question": "1533 853 7322 5299 4599 3167 7322 1055 1470 7322 2280 6886",
+          "source_id": "5667931404",
+          "target": 2
+        },
+        {
+          "answer": "along a pathway",
+          "prediction": 2,
+          "question": "7185 5893 7322 5299 620 437",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "tiger",
+          "prediction": 0,
+          "question": "686 5893 7322 1554 1879 4017 7322 5299 4797 2116",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "want to pass quickly",
+          "prediction": 0,
+          "question": "1533 3406 7322 1870 6276",
+          "source_id": "4984331176",
+          "target": 3
+        },
+        {
+          "answer": "skip together",
+          "prediction": 3,
+          "question": "1533 853 7322 6759 4253 7312 2907 7566 4253 1689 2139 3045 3172 6453",
+          "source_id": "4984331176",
+          "target": 0
+        },
+        {
+          "answer": "playing group games",
+          "prediction": 1,
+          "question": "1533 853 7322 6759 4253 7312 2139 2907 7262 7626 4164",
+          "source_id": "4984331176",
+          "target": 2
+        }
+      ]
+    },
+    "video_zero": {
+      "accuracy": 0.19852941176470587,
+      "correct": 27,
+      "examples": 136,
+      "predictions": [
+        {
+          "answer": "pick another smaller rock",
+          "prediction": 0,
+          "question": "1533 853 7322 5299 3549 4084 7493 1436 3539 3167 7626 6583 4947",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "walk away",
+          "prediction": 1,
+          "question": "686 5977 7322 5501 6553 1436 3539 3167 7322 6473",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "shifted forward",
+          "prediction": 4,
+          "question": "686 7455 911 7322 6886 1436 7322 5501 5196 3167",
+          "source_id": "5667931404",
+          "target": 4
+        },
+        {
+          "answer": "pick up the stone",
+          "prediction": 1,
+          "question": "1533 853 7322 5299 3549 4084 7847 7322 2280 6886 4005 7322 1279",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "transfer the stone somewhere else",
+          "prediction": 3,
+          "question": "1533 853 7322 5299 4599 3167 7322 1055 1470 7322 2280 6886",
+          "source_id": "5667931404",
+          "target": 2
+        },
+        {
+          "answer": "along a pathway",
+          "prediction": 3,
+          "question": "7185 5893 7322 5299 620 437",
+          "source_id": "5667931404",
+          "target": 0
+        },
+        {
+          "answer": "tiger",
+          "prediction": 0,
+          "question": "686 5893 7322 1554 1879 4017 7322 5299 4797 2116",
+          "source_id": "5667931404",
+          "target": 1
+        },
+        {
+          "answer": "want to pass quickly",
+          "prediction": 0,
+          "question": "1533 3406 7322 1870 6276",
+          "source_id": "4984331176",
+          "target": 3
+        },
+        {
+          "answer": "skip together",
+          "prediction": 3,
+          "question": "1533 853 7322 6759 4253 7312 2907 7566 4253 1689 2139 3045 3172 6453",
+          "source_id": "4984331176",
+          "target": 0
+        },
+        {
+          "answer": "playing group games",
+          "prediction": 3,
+          "question": "1533 853 7322 6759 4253 7312 2139 2907 7262 7626 4164",
+          "source_id": "4984331176",
+          "target": 2
+        }
+      ]
+    }
+  }
+}

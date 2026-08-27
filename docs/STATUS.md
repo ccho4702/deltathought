@@ -188,6 +188,30 @@ the main remaining S1 limitation. Audio/video checkpoint SHA-256 values are resp
 `f0706270d06b66821b18e2ed40513917caea1e6852de757ae0f66330985d7b38` and
 `2d46816bc45b4dda9b4ef27c4372b5b956cff4b34a0b7a999d94bd295918a4e5`.
 
+## Rapid multi-commit and Stage 3 diagnostic
+
+A deliberately small one-second PoC now exercises repeated streaming mechanics rather than one
+caption per record. It concatenates three source-disjoint AudioCaps sections into the sequence
+`FULL→9 DELTA→CAPTION→FULL→9 DELTA→CAPTION→FULL→9 DELTA→CAPTION`. A recurrent CommitHead trained
+with timing BCE reached precision/recall/F1 `1.0/1.0/1.0` on 42 validation sequences, predicting
+all 126 fixed-period commits. Eight test sequences generated 24 actual captions; normal/zero/shuffle
+word-F1 was `0.399/0.367/0.365`. This proves repeated caption/full reset mechanics but not natural
+event-boundary timing because every synthetic section is nine seconds.
+
+The first Stage 3 diagnostic uses actual synchronized NExT-QA video, audio, questions, and five-way
+answers from 64/16/16 complete clips (519/136/132 QA). A lightweight joint head was chosen to get a
+performance answer before building the expensive Qwen QA LoRA. Accuracy changed as follows:
+
+- Train: `20.8% → 99.2%`.
+- Validation: `21.3% → 24.3%`.
+- Test: `24.2% → 25.0%` (chance 20%).
+- Validation normal/video-zero/audio-zero/delta-zero/shuffled-delta:
+  `24.3/19.9/20.6/15.4/23.5%`.
+
+The representation is sufficient to overfit real QA and both modalities plus delta content affect
+held-out predictions, but generalization is weak at this scale. The current result is a Stage 3
+feasibility diagnostic, not final Qwen QA LoRA evidence.
+
 Last updated: 2026-08-27
 
 ## Completed

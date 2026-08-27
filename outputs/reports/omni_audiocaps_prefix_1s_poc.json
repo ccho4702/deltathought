@@ -1,0 +1,15 @@
+{
+  "code_revision": "5879605d1f58a1b876072896d1216cbb90990e0c",
+  "completed_at_utc": "2026-08-27T17:14:22.227035+00:00",
+  "elapsed_seconds": 1.586431346833706,
+  "encoder_batch_size": 10,
+  "peak_reserved_bytes_per_rank_max": 19025362944,
+  "schema": "deltaomni.omni_audiocaps_prefix_summary.v1",
+  "splits": {
+    "test": 128,
+    "train": 1024,
+    "validation": 128
+  },
+  "total_bytes": 250776950,
+  "world_size": 4
+}

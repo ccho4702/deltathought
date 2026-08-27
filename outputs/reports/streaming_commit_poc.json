@@ -1,0 +1,27 @@
+{
+  "completed_at_utc": "2026-08-27T17:19:54.805129+00:00",
+  "discarded_sections": {
+    "test": 2,
+    "train": 1,
+    "validation": 2
+  },
+  "metrics": {
+    "accuracy": 1.0,
+    "f1": 1.0,
+    "loss": 9.326385770691559e-05,
+    "precision": 1.0,
+    "predicted_commits": 126.0,
+    "recall": 1.0,
+    "target_commits": 126.0
+  },
+  "passed": true,
+  "run_id": "streaming-commit-poc-main",
+  "schema": "deltaomni.streaming_commit_poc.v1",
+  "sequences": {
+    "test": 42,
+    "train": 341,
+    "validation": 42
+  },
+  "status": "complete",
+  "training_seconds": 19.11028416082263
+}
