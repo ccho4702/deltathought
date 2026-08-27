@@ -1,0 +1,23 @@
+seed: 42
+canonical_manifest: intermediates/canonical/something_something_v2/official-v2-ann-b24e4609-schema-v2/manifest.json
+omni_config: configs/qwen2_5_omni.yaml
+classes:
+  - Moving [something] down
+  - Moving [something] up
+  - Pushing [something] from left to right
+  - Pushing [something] from right to left
+train_per_class: 512
+validation_per_class: 64
+test_per_class: 64
+sample_fps: 2.0
+block_seconds: 2.0
+frame_width: 224
+frame_height: 224
+expected_tokens_per_block: 128
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 4
+cache_root: intermediates/cache/omni_ssv2_s1_2s_224
+report_path: outputs/reports/omni_ssv2_s1_cache.json
