@@ -138,6 +138,24 @@ greedy generation smokes. It trains only PEFT adapters in the 28 Thinker text la
 validation NLL from 3.105 to 2.705 and generated recognizable free-form captions, but correctly
 failed the eight-example shuffled-delta word-F1 gate. The exposure-matched full run is next.
 
+Audio Caption LoRA S2 is now proven on the untouched AudioCaps test split. Validation selected the
+200-step checkpoint over the 1,000-step run: the latter improved generation controls but worsened
+NLL from 2.958 to 3.326, so it is retained as an overfit negative result and never evaluated on
+test. The selected rank-8 LoRA trained at global batch 32 and peaked at 34.04 GiB/rank. On all 943
+test clips for NLL and a fixed 64-clip greedy-generation subset:
+
+- NLL normal/zero/cross-clip-shuffled was `2.5523 / 2.8004 / 2.8342`.
+- Word-F1 was `0.4072 / 0.3587 / 0.3386`.
+- ROUGE-L was `0.3819 / 0.3332 / 0.3021`.
+- Normal captions beat zero by 4.85 word-F1 points and shuffled by 6.87 points.
+
+The model generates free-form captions rather than class labels; for example, a door clip produced
+`A man speaks and slams a door` under normal delta, while zero and shuffled controls hallucinated a
+horse and a clock. This is direct bounded evidence that the Qwen2.5-Omni Thinker LoRA understands a
+native audio anchor plus four projected one-token deltas. It does not yet establish longer memory,
+video caption transfer, or QA. Selected checkpoint SHA-256 is
+`c00e3e4d6466becccbed2616f50b7fa210bafb4e68227b71266ae68d0d9cf872`.
+
 Last updated: 2026-08-27
 
 ## Completed

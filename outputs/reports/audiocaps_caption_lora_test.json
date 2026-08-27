@@ -1,0 +1,176 @@
+{
+  "checkpoint": "outputs/real_pilots/audiocaps_caption_lora_earlystop/audiocaps-caption-20260827T135758Z-e5b7ade2/checkpoints/step-000200.pt",
+  "checkpoint_sha256": "c00e3e4d6466becccbed2616f50b7fa210bafb4e68227b71266ae68d0d9cf872",
+  "checks": {
+    "normal_nll_beats_shuffled": true,
+    "normal_nll_beats_zero": true,
+    "word_f1_beats_shuffled": true,
+    "word_f1_beats_zero": true
+  },
+  "completed_at_utc": "2026-08-27T14:08:04.070040+00:00",
+  "evaluation_code_revision": "5563deef1faa90ae06b4bc0cae567f33c568955a",
+  "metrics": {
+    "examples": [
+      {
+        "normal": "Water flushing down a toilet",
+        "references": [
+          "Chewing as liquid is poured and some light banging on a hard surface",
+          "Some light banging and rattling with liquid pouring and faint chewing",
+          "A person gulping followed by glass tapping then liquid shaking in a container proceeded by liquid pouring before plastic thumps on paper",
+          "Glass placed on table, a container with liquid is shaken and then poured into the glass",
+          "Glass clanking followed by liquid shaking in a plastic container then liquid pouring and filling a container proceeded by plastic rattling as someone chews a loud"
+        ],
+        "shuffled": "A man is speaking and water is trickling",
+        "source_id": "gW7s3YAthpI_430000_440000",
+        "zero": "Some object is hit while a liquid flows"
+      },
+      {
+        "normal": "A man speaks over an engine loudly running",
+        "references": [
+          "Vibrations of an idling engine with a man speaking",
+          "A vehicle engine running idle as a man is talking",
+          "An engine is idling followed by a male speaking",
+          "An idle vehicle engine running as a man is talking",
+          "Ticking and humming from an idling engine followed by a man speaking"
+        ],
+        "shuffled": "A truck engine is running and people are talking",
+        "source_id": "BL8ksJ0sTXk_260000_270000",
+        "zero": "A vehicle engine is idling"
+      },
+      {
+        "normal": "People are talking and laughing and water is splashing",
+        "references": [
+          "Human voices followed by the movement of a vehicle",
+          "A radio playing in the background followed by a vehicle engine accelerating",
+          "Distant murmuring and distant engine revving",
+          "People are communicating followed by a dog barking and a vehicle moving",
+          "People are talking while a motor vehicle engine is revving"
+        ],
+        "shuffled": "People are talking in the background, and a loud beeping sound is going off",
+        "source_id": "e4ph6bIC5zc_170000_180000",
+        "zero": "Distant murmuring and music"
+      },
+      {
+        "normal": "Multiple emergency vehicles are going fast and the sirens are blaring",
+        "references": [
+          "A motorbike engine running while a series of vehicle horns sound and a car alarm goes off in the background",
+          "Road traffic with engines followed by a shrill car alarm then whistles and several loud car horns blaring",
+          "A motorcycle engine running as several vehicle horns honk while a car alarm rings in the distance",
+          "A motorbike engine running as multiple car horns honk and a car alarm rings in the distance",
+          "A car horn honks once shortly and then two long honks while another car honks"
+        ],
+        "shuffled": "A siren sounds off as a motorcycle engine accelerates followed by a man speaking and a door slamming",
+        "source_id": "i2yhbckq3p0_110000_120000",
+        "zero": "Multiple sirens going off"
+      },
+      {
+        "normal": "A man speaks and slams a door",
+        "references": [
+          "Rustling and then male speech and then creaking",
+          "Footsteps followed by creaking and a man speaking",
+          "Footsteps and scuffing occur, after which a door grinds, squeaks and clicks, an adult male speaks, and the door grinds, squeaks and clicks shut with a thump",
+          "Footsteps walking on a hard surface followed by a door sliding open then a man talking before a door creaks and closes shut",
+          "Footsteps walking on a hard surface before a door slides open followed by a door creaking then a door slamming shut"
+        ],
+        "shuffled": "A woman speaks and a clock ticks",
+        "source_id": "U5ij0M7T-hk_140000_150000",
+        "zero": "A horse is slowly walking"
+      },
+      {
+        "normal": "A woman is speaking",
+        "references": [
+          "A woman speaking",
+          "A woman delivering a speech",
+          "A woman speaking",
+          "Adult female speaking",
+          "A woman speaks continuously"
+        ],
+        "shuffled": "A woman speaks followed by a man speaking as glass clanks",
+        "source_id": "7WkB6pflr6o_30000_40000",
+        "zero": "A woman is speaking"
+      },
+      {
+        "normal": "A man speaks and then a door creaks open",
+        "references": [
+          "Plastic cranking followed by metal rattling then a series of metal falling in the background as a man is talking",
+          "A man speaking as metal clanks and gears crank followed by pots and pans falling onto a hard surface",
+          "A male speech and metal clanging.",
+          "Male speech and metal clanking",
+          "A man talking as metal rattles then clanks followed by several metal objects falling over onto a hard surface"
+        ],
+        "shuffled": "A man speaks and a door creaks open",
+        "source_id": "T32kii824pA_240000_250000",
+        "zero": "A man speaks and a drawer is opened"
+      },
+      {
+        "normal": "A clanking sound",
+        "references": [
+          "Bird tweeting then flapping wings",
+          "Metal clanging as a construction vehicle operates in the background followed by bird wings flapping and pigeons cooing",
+          "Pigeons cooing and bird wings flapping during light scrapping on a metal surface while a construction machine operates in the background",
+          "Pigeons make sounds and flapping noises",
+          "Rattling is followed by pigeon wing flapping and vocalization"
+        ],
+        "shuffled": "Clanking followed by a horn and squealing tires",
+        "source_id": "MjSegUnQXr4_2000_12000",
+        "zero": "A sewing machine actuates multiple times close by"
+      },
+      {
+        "normal": "A man speaks and a motorized object speeds by",
+        "references": [
+          "Vehicle approaching while downshifting and passing by",
+          "Brief murmuring followed by a vehicle passing by",
+          "Motor vehicle traffic is ongoing, and a motorcycle engine accelerates and then decelerates in the foreground",
+          "A man laughing with music playing in the background as a motorcycle engine drives by and becomes louder",
+          "A man laughing as a motorcycle is accelerating followed by a person chuckling while music plays in the background"
+        ],
+        "shuffled": "A man is speaking and a bus engine is running in the background",
+        "source_id": "BA-lFjpzad4_30000_40000",
+        "zero": "A man speaks as an engine hums in the distance"
+      },
+      {
+        "normal": "A woman is giving a speech",
+        "references": [
+          "A woman is speaking over a microphone",
+          "An adult female speaks in a quiet environment, and her voice is electronically amplified",
+          "A woman delivers a speech",
+          "A woman speaking",
+          "A woman talking in an auditorium"
+        ],
+        "shuffled": "A woman speaks and wind blows as people clap",
+        "source_id": "2a6GNu6uCDE_30000_40000",
+        "zero": "A woman is giving a speech"
+      }
+    ],
+    "generation": {
+      "normal": {
+        "exact_match": 0.015625,
+        "examples": 64.0,
+        "rouge_l": 0.381900920824491,
+        "word_f1": 0.4072290240371093
+      },
+      "shuffled": {
+        "exact_match": 0.0,
+        "examples": 64.0,
+        "rouge_l": 0.3021059128720077,
+        "word_f1": 0.338564974488609
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 64.0,
+        "rouge_l": 0.33317674121578034,
+        "word_f1": 0.35872842013382356
+      }
+    },
+    "nll": {
+      "normal": 2.5523365278697034,
+      "shuffled": 2.8341872414831837,
+      "zero": 2.8003524712174763
+    }
+  },
+  "passed": true,
+  "prefix_manifest_sha256": "84f388807195616e43b5214e1ba154b5d030a92f5b571053cbd58a79efa0b2de",
+  "schema": "deltaomni.audiocaps_caption_evaluation.v1",
+  "split": "test",
+  "training_code_revision": "98a4c6302d917ded8561bd4ee96efff18eb8344b"
+}
