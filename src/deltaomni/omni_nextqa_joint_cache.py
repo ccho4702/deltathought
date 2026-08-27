@@ -32,7 +32,8 @@ from deltaomni.omni_backbones import (
 from deltaomni.provenance import audit as audit_provenance
 from deltaomni.run_integrity import (
     git_revision,
-    require_verified_resource,
+    git_worktree_is_clean,
+    require_media_policy,
     resolved_input_signature,
     sha256_file,
 )
@@ -53,7 +54,7 @@ class RuntimeConfig:
 class JointCacheConfig:
     seed: int
     dataset_resource_name: str
-    media_license_record: Path
+    media_policy: Path
     canonical_manifest: Path
     omni_config: Path
     video_deltatok_config: Path
@@ -97,7 +98,7 @@ def load_config(path: Path) -> JointCacheConfig:
                 if key
                 not in {
                     "runtime",
-                    "media_license_record",
+                    "media_policy",
                     "canonical_manifest",
                     "omni_config",
                     "video_deltatok_config",
@@ -108,7 +109,7 @@ def load_config(path: Path) -> JointCacheConfig:
                     "report_path",
                 }
             },
-            "media_license_record": resolve(raw["media_license_record"]),
+            "media_policy": resolve(raw["media_policy"]),
             "canonical_manifest": resolve(raw["canonical_manifest"]),
             "omni_config": resolve(raw["omni_config"]),
             "video_deltatok_config": resolve(raw["video_deltatok_config"]),
@@ -339,13 +340,16 @@ def _valid_cache(
 @torch.no_grad()
 def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
     config = load_config(config_path)
+    project_root = config_path.resolve().parent.parent
+    if not git_worktree_is_clean(project_root):
+        raise RuntimeError("NExT-QA cache generation requires a clean Git worktree")
     transformers_logging.set_verbosity_error()
     torch.set_num_threads(config.runtime.cpu_threads)
     provenance = audit_provenance(provenance_path)
-    media_license_sha256 = require_verified_resource(
+    media_policy_sha256 = require_media_policy(
         provenance,
         config.dataset_resource_name,
-        config.media_license_record,
+        config.media_policy,
     )
     for path, expected in (
         (config.video_deltatok_checkpoint, config.video_deltatok_sha256),
@@ -369,7 +373,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
             "video_deltatok_checkpoint": config.video_deltatok_checkpoint,
             "audio_deltatok_config": config.audio_deltatok_config,
             "audio_deltatok_checkpoint": config.audio_deltatok_checkpoint,
-            "media_license_record": config.media_license_record,
+            "media_policy": config.media_policy,
             "provenance": provenance_path,
         },
     )
@@ -502,13 +506,13 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                             "qa": len(payload["qa"]),
                         }
                     )
-            revision = git_revision(config_path.resolve().parent.parent)
+            revision = git_revision(project_root)
             manifest = {
                 "schema": "deltaomni.omni_nextqa_joint_manifest.v2",
                 "code_revision": revision,
                 "cache_signature": cache_signature,
                 "canonical_manifest_sha256": sha256_file(config.canonical_manifest),
-                "media_license_record_sha256": media_license_sha256,
+                "media_policy_sha256": media_policy_sha256,
                 "omni_revision": omni_config.revision,
                 "video_deltatok_sha256": config.video_deltatok_sha256,
                 "audio_deltatok_sha256": config.audio_deltatok_sha256,

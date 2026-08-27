@@ -28,7 +28,11 @@ from deltaomni.distributed import distributed_context
 from deltaomni.omni_backbones import load_omni_backbone_config
 from deltaomni.provenance import audit as audit_provenance
 from deltaomni.provenance import require_approved
-from deltaomni.run_integrity import require_verified_resource, resolved_input_signature
+from deltaomni.run_integrity import (
+    git_worktree_is_clean,
+    require_media_policy,
+    resolved_input_signature,
+)
 
 REPORT_SCHEMA = "deltaomni.qwen2_5_omni_vanilla_baseline.v2"
 
@@ -45,7 +49,7 @@ class RuntimeConfig:
 class BaselineConfig:
     seed: int
     dataset_resource_name: str
-    media_license_record: Path
+    media_policy: Path
     provenance_config: Path
     omni_config: Path
     nextqa_manifest: Path
@@ -80,7 +84,7 @@ def load_config(path: Path) -> BaselineConfig:
 
     path_fields = {
         "omni_config",
-        "media_license_record",
+        "media_policy",
         "provenance_config",
         "nextqa_manifest",
         "nextqa_selection_manifest",
@@ -121,7 +125,7 @@ def run_signature(config: BaselineConfig) -> str:
     return resolved_input_signature(
         config,
         {
-            "media_license_record": config.media_license_record,
+            "media_policy": config.media_policy,
             "provenance": config.provenance_config,
             "omni_config": config.omni_config,
             "nextqa_manifest": config.nextqa_manifest,
@@ -479,7 +483,7 @@ def _consolidate(
         "inputs": {
             "omni_config_sha256": _sha256(config.omni_config),
             "provenance_sha256": _sha256(config.provenance_config),
-            "media_license_record_sha256": _sha256(config.media_license_record),
+            "media_policy_sha256": _sha256(config.media_policy),
             "nextqa_manifest_sha256": _sha256(config.nextqa_manifest),
             "nextqa_selection_manifest_sha256": _sha256(config.nextqa_selection_manifest),
             "msrvtt_metadata_sha256": _sha256(config.msrvtt_metadata),
@@ -528,12 +532,15 @@ def _consolidate(
 
 def run(config_path: Path) -> dict[str, Any]:
     config = load_config(config_path)
+    project_root = config_path.resolve().parent.parent
+    if not git_worktree_is_clean(project_root):
+        raise RuntimeError("Vanilla baseline runs require a clean Git worktree")
     provenance = audit_provenance(config.provenance_config)
     require_approved(provenance, [load_omni_backbone_config(config.omni_config).resource_name])
-    require_verified_resource(
+    require_media_policy(
         provenance,
         config.dataset_resource_name,
-        config.media_license_record,
+        config.media_policy,
     )
     signature = run_signature(config)
     if config.report_path.exists():

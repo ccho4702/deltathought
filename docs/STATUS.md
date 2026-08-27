@@ -11,9 +11,10 @@ lightweight head into Stage 3 evidence. The tracked v1 report is retained with `
 
 Future NExT-QA caches use a content-signed v2 manifest. Cache reuse now requires matching canonical
 manifest, model/config revisions, audio/video DeltaTok checkpoint hashes, media hashes, tensor
-shapes, finiteness, and a user-provided media-license record. The annotations and all 5,440 media
-files are present, but `inputs/licenses/nextqa_media.accepted.json` is absent, so new NExT-QA cache,
-vanilla controls, and training are intentionally blocked.
+shapes, finiteness, and the versioned NExT-QA/VidOR/YFCC100M media policy. The official sources do
+not expose a click-through acceptance flow. Internal non-commercial research may proceed, while raw
+media and recoverable embeddings remain non-publishable and external release requires a per-item
+YFCC100M Creative Commons metadata audit.
 
 The fixed-period multi-commit aggregate has no tracked producer and its cross-sequence shuffled
 timing F1 remains `1.0`. It is now classified as a legacy mechanics artifact, not research evidence.
@@ -49,8 +50,8 @@ atomic split JSONL files with a checksummed manifest.
 The corrected full conversion, NExT-QA `official-2021-ann-1955d89e-schema-v2-r2`, contains
 5,440 episodes and 47,692 QA items, with official train/validation/test counts and no cross-split
 source-group overlap. All 5,440 video files were present; 5,406 contain audio streams and 34 record
-audio as null. The missing local media-license record is explicitly null and blocks training until
-resolved. Manifest SHA-256 is
+audio as null. Canonical provenance records the absent click-through license field as null; the
+separate versioned media policy governs research use and redistribution. Manifest SHA-256 is
 `06abface4a7ca438e9cffbfc0d63fc182c253ce845be5c8f08f278d86368f00a`.
 
 SSV2 `official-v2-ann-b24e4609-schema-v2` is also fully canonicalized: 168,913 train, 24,777
@@ -256,9 +257,9 @@ only 64 videos/519 QA; it does not run the Qwen Thinker and does not consume cap
 test score improved only `24.24% → 25.0%` while train reached `99.23%`. The diagnostic head should
 not be scaled further. The next Stage 3 experiment must train and evaluate an actual Qwen Thinker
 LoRA using typed video/audio anchor-plus-delta prefixes and prior committed captions. Before that
-run, the local media-license gate must pass and the prepared multimodal/text-only/video-only/
-audio-only vanilla controls must be measured. The repeatedly inspected 16-video subset remains a
-development diagnostic and cannot serve as the final untouched test.
+run, the versioned media-policy gate and the prepared multimodal/text-only/video-only/audio-only
+vanilla controls must pass. The repeatedly inspected 16-video subset remains a development
+diagnostic and cannot serve as the final untouched test.
 
 Last updated: 2026-08-28
 

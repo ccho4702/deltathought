@@ -1,0 +1,19 @@
+schema: deltaomni.media_policy.v1
+dataset: nextqa
+resource_name: nextqa_annotations
+media_origin: YFCC100M via VidOR and the official NExT-QA NExTVideo release
+official_sources:
+  nextqa: https://github.com/doc-doc/NExT-QA
+  vidor: https://xdshang.github.io/docs/vidor.html
+  yfcc100m: https://multimediacommons.wordpress.com/yfcc100m-core-dataset/
+rights_basis:
+  media_license_scope: per-item Creative Commons license selected by each Flickr uploader
+  license_metadata_source: YFCC100M per-item metadata
+project_policy:
+  use_scope: internal non-commercial research
+  raw_media_redistribution: prohibited
+  recoverable_embedding_redistribution: prohibited
+  publication_requires_per_item_license_audit: true
+  allowed_public_outputs: [source_code, aggregate_metrics, non_recoverable_summaries]
+required_citations: [NExT-QA, VidOR, YFCC100M]
+reviewed_at: 2026-08-28

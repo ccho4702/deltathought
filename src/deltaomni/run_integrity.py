@@ -8,6 +8,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
@@ -60,20 +62,54 @@ def git_worktree_is_clean(project_root: Path) -> bool:
     return not status.strip()
 
 
-def require_verified_resource(
+def require_media_policy(
     provenance_report: dict[str, Any],
     resource_name: str,
-    license_record: Path,
+    media_policy: Path,
 ) -> str:
     if resource_name not in provenance_report.get("approved", []):
         raise RuntimeError(f"Dataset failed provenance gate: {resource_name}")
     try:
-        validate_license_record(license_record)
+        validate_media_policy(media_policy, resource_name)
     except (FileNotFoundError, ValueError) as error:
         raise RuntimeError(
-            f"Dataset media license record is required before cache or training: {license_record}"
+            f"Dataset media policy is required before cache or training: {media_policy}"
         ) from error
-    return sha256_file(license_record)
+    return sha256_file(media_policy)
+
+
+def validate_media_policy(path: Path, resource_name: str) -> dict[str, Any]:
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    try:
+        value = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except yaml.YAMLError as error:
+        raise ValueError(f"Invalid media policy YAML: {path}") from error
+    if not isinstance(value, dict) or value.get("schema") != "deltaomni.media_policy.v1":
+        raise ValueError(f"Unsupported media policy: {path}")
+    if value.get("resource_name") != resource_name:
+        raise ValueError(f"Media policy resource mismatch: {path}")
+    sources = value.get("official_sources")
+    required_sources = {"nextqa", "vidor", "yfcc100m"}
+    if not isinstance(sources, dict) or set(sources) != required_sources:
+        raise ValueError(f"Media policy official sources are incomplete: {path}")
+    if any(
+        not isinstance(url, str) or not url.startswith(("https://", "http://"))
+        for url in sources.values()
+    ):
+        raise ValueError(f"Media policy contains an invalid official URL: {path}")
+    policy = value.get("project_policy")
+    required_policy = {
+        "use_scope": "internal non-commercial research",
+        "raw_media_redistribution": "prohibited",
+        "recoverable_embedding_redistribution": "prohibited",
+        "publication_requires_per_item_license_audit": True,
+    }
+    if not isinstance(policy, dict) or any(
+        policy.get(key) != expected for key, expected in required_policy.items()
+    ):
+        raise ValueError(f"Media policy is weaker than the required project policy: {path}")
+    return value
 
 
 def validate_license_record(path: Path) -> dict[str, str]:

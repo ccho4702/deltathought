@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from deltaomni.run_integrity import require_verified_resource, resolved_input_signature
+from deltaomni.run_integrity import require_media_policy, resolved_input_signature
 
 
 @dataclass(frozen=True)
@@ -24,16 +24,15 @@ def test_signature_changes_when_referenced_input_content_changes(tmp_path: Path)
     assert first != second
 
 
-def test_verified_resource_requires_local_license_record(tmp_path: Path) -> None:
-    report = {"approved": ["fixture_dataset"]}
-    license_record = tmp_path / "accepted.json"
+def test_media_policy_requires_an_approved_resource() -> None:
+    policy = Path("configs/nextqa_media_policy.yaml")
 
-    with pytest.raises(RuntimeError, match="license record"):
-        require_verified_resource(report, "fixture_dataset", license_record)
+    with pytest.raises(RuntimeError, match="provenance gate"):
+        require_media_policy({"approved": []}, "nextqa_annotations", policy)
 
-    license_record.write_text(
-        '{"dataset":"Fixture","terms_url":"https://example.test/terms",'
-        '"accepted_at_utc":"2026-08-28T00:00:00Z","accepted_by":"tester"}',
-        encoding="utf-8",
+    digest = require_media_policy(
+        {"approved": ["nextqa_annotations"]},
+        "nextqa_annotations",
+        policy,
     )
-    assert len(require_verified_resource(report, "fixture_dataset", license_record)) == 64
+    assert len(digest) == 64

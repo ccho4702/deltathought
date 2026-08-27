@@ -95,8 +95,8 @@
   <p class="callout">
     2026-08-28 integrity audit: 기존 Stage 3의 QA-row <code>roll(1)</code> shuffle은 validation의
     87.5%에서 동일 video delta를 재사용했다. 기존 23.5% shuffle 수치는 무효이며, source-group-disjoint
-    post-hoc 값은 19.1%다. 또한 NExT-QA media license record가 없어 새 cache/train/baseline은 코드에서
-    차단된다. 아래의 과거 실행 순서는 이 두 correction보다 우선하지 않는다.
+    post-hoc 값은 19.1%다. 공식 NExT-QA/VidOR에는 click-through acceptance가 없으며, YFCC100M
+    per-item CC 조건을 반영한 versioned internal-research media policy로 gate를 교체했다.
   </p>
 
   <h2>1. 고정된 연구 목표</h2>
@@ -241,16 +241,16 @@
     <li><strong>Video rollout drift:</strong> 9초에서 teacher-forcing 대비 약 54.8% drift. 우선 4–5초 FULL refresh 또는 reconstructed-previous/scheduled rollout 학습이 필요하다.</li>
     <li><strong>Natural commit:</strong> 고정 9초 label F1 100%는 의미 없다. 가변 event boundary와 no-event negative가 필요하다.</li>
     <li><strong>1초 caption scale:</strong> 1K는 overfit. 최소 8K–10K caption으로 동일 granularity에서 다시 확인해야 한다.</li>
-    <li><strong>Baseline controls:</strong> vanilla 77.3%에 text-only, video-only, audio-only control이 아직 없다. v2 실행 코드는 준비됐지만 license gate 때문에 미실행이다.</li>
-    <li><strong>Data gate:</strong> NExT-QA media 5,440개는 존재하지만 local media-license acceptance record가 없다.</li>
+    <li><strong>Baseline controls:</strong> vanilla 77.3%에 text-only, video-only, audio-only control이 아직 없다. v2 실행 코드는 준비됐다.</li>
+    <li><strong>Media policy:</strong> internal non-commercial research만 허용하며 raw media/recoverable embedding 공개는 금지한다. 외부 release 전 per-item YFCC100M license metadata audit가 필요하다.</li>
     <li><strong>표준 생성 metric:</strong> MSR-VTT에 COCO CIDEr/METEOR/BLEU suite와 충분한 test 규모가 필요하다.</li>
   </ol>
 
   <h2>7. 다음 세션 실행 순서</h2>
   <ol>
     <li>
-      <strong>License gate 해결:</strong> 사용자가 NExT-QA/VidOR media terms를 확인하고
-      <code>inputs/licenses/nextqa_media.accepted.json</code>을 로컬에 제공하기 전에는 실행하지 않는다.
+      <strong>Media-policy gate 확인:</strong> <code>configs/nextqa_media_policy.yaml</code>과 실제
+      media inventory/checksum을 검증한다. 개인 acceptance record를 만들지 않는다.
     </li>
     <li>
       <strong>Baseline control 고정:</strong> 동일 132 QA에서 vanilla text-only/video-only/audio-only를 먼저 측정한다.
@@ -289,7 +289,7 @@ uv run pytest -q
 # historical multimodal-only vanilla baseline 결과
 uv run python -m json.tool outputs/reports/qwen2_5_omni_vanilla_baseline_poc.json
 
-# v2 modality controls 실행. NExT-QA media license gate가 먼저 통과해야 한다.
+# v2 modality controls 실행. versioned media-policy/readiness gate가 먼저 통과해야 한다.
 CUDA_VISIBLE_DEVICES=0,1,2,3 uv run torchrun --standalone --nproc-per-node=4 \
   -m deltaomni.omni_vanilla_baseline \
   --config configs/qwen2_5_omni_vanilla_baseline_poc.yaml</pre>

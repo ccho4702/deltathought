@@ -41,4 +41,4 @@ sources:
     media_dirs:
       - /mnt/nfs_shared_data/dataset/NExT-QA/processed_for_gcg/NExTVideo
     media_extensions: [.mp4, .webm]
-    license_record: inputs/licenses/nextqa_media.accepted.json
+    media_policy: configs/nextqa_media_policy.yaml

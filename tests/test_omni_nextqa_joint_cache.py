@@ -13,7 +13,7 @@ def test_nextqa_joint_poc_uses_short_complete_audio_video_clips() -> None:
     assert config.minimum_seconds == 5.0
     assert config.maximum_seconds == 12.0
     assert config.dataset_resource_name == "nextqa_annotations"
-    assert config.media_license_record.name == "nextqa_media.accepted.json"
+    assert config.media_policy.name == "nextqa_media_policy.yaml"
 
 
 def test_joint_cache_rejects_missing_or_changed_signature(tmp_path: Path) -> None:

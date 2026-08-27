@@ -316,8 +316,8 @@ def run(config_path: Path, run_id: str | None, stop_after_step: int | None):
     manifest = json.loads(config.joint_manifest.read_text())
     if manifest.get("schema") != "deltaomni.omni_nextqa_joint_manifest.v2":
         raise ValueError("Joint QA training requires a content-signed v2 cache manifest")
-    if not manifest.get("media_license_record_sha256"):
-        raise ValueError("Joint QA training requires a verified media license record")
+    if not manifest.get("media_policy_sha256"):
+        raise ValueError("Joint QA training requires a verified media policy")
     train, validation, test = (
         JointQADataset(manifest, split, config.text_buckets)
         for split in ("train", "validation", "test")

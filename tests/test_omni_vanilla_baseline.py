@@ -35,7 +35,7 @@ def test_config_rejects_invalid_duration_range(tmp_path: Path) -> None:
     config = {
         "seed": 1,
         "dataset_resource_name": "nextqa_annotations",
-        "media_license_record": "accepted.json",
+        "media_policy": "media_policy.yaml",
         "provenance_config": "provenance.yaml",
         "omni_config": "omni.yaml",
         "nextqa_manifest": "nextqa.json",

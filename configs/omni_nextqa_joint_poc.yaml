@@ -1,6 +1,6 @@
 seed: 42
 dataset_resource_name: nextqa_annotations
-media_license_record: inputs/licenses/nextqa_media.accepted.json
+media_policy: configs/nextqa_media_policy.yaml
 canonical_manifest: intermediates/canonical/nextqa/official-2021-ann-1955d89e-schema-v2-r2/manifest.json
 omni_config: configs/qwen2_5_omni.yaml
 video_deltatok_config: configs/deltatok_vggsound_video_1s.yaml

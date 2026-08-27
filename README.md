@@ -101,6 +101,16 @@ uv run python -m deltaomni.ssv2_generated_caption_eval \
 uv run deltaomni-report
 ```
 
+The current NExT-QA Stage 3 preflight uses content-signed caches and four matched vanilla controls.
+Run it only from a clean, pushed commit:
+
+```bash
+make nextqa-stage3-preflight GPU_IDS=0,1,2,3 NPROC_PER_NODE=4
+```
+
+This runs the NExT-QA readiness audit, regenerates the v2 native-Omni joint cache, and evaluates
+multimodal, text-only, video-only, and audio-only Qwen baselines sequentially.
+
 Configuration is centralized in `configs/`. Retained runs are stored under unique IDs in
 `outputs/sanity/` and `logs/experiments/`.
 

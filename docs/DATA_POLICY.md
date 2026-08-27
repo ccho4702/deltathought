@@ -65,12 +65,15 @@ Recent CodecCap/CodecVDC and OmniDiff artifacts remain literature references unt
 and adoption meet the same gate.
 
 Official approval in the provenance file does not mean media is ready. `deltaomni-data-audit`
-additionally requires local official files, a user-created license acceptance record, checksums, and
-a non-empty media inventory.
+additionally requires local official files, checksums, a non-empty media inventory, and either a
+user-created acceptance record when upstream terms have an acceptance flow or a versioned project
+media policy when no such flow exists.
 
-As of 2026-08-28, NExT-QA annotations and all 5,440 media files are present and provenance-approved,
-but the local media-license acceptance record is absent. New NExT-QA cache generation, baselines,
-and training are therefore blocked in code until that record is supplied by the user.
+NExT-QA and VidOR provide direct downloads and citation requirements rather than click-through
+acceptance. Their videos originate from YFCC100M and retain uploader-selected per-item Creative
+Commons licenses. `configs/nextqa_media_policy.yaml` therefore limits use to internal non-commercial
+research, prohibits media/recoverable-embedding redistribution, and requires a per-item license
+metadata audit before external release.
 
 ## Role separation
 

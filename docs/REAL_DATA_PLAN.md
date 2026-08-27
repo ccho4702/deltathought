@@ -53,10 +53,13 @@ Matched evaluation arms:
 The claim requires arm 3 to preserve full-input accuracy and beat arms 2 and 4 on the untouched test
 split. Caption concatenation, answer-string overlap, or QA built from caption text is invalid.
 
-Current gate: blocked. NExT-QA annotations and media are present, but the required local media-license
-record is absent. The historical lightweight QA diagnostic also used an invalid QA-row `roll(1)`
-shuffle: 87.5% of validation rows retained the same source delta. Source-group-disjoint controls are
-now required. Running final QA before both gates pass would not provide valid evidence.
+NExT-QA annotations and all 5,440 media files are present. The official NExT-QA and VidOR pages do
+not provide a click-through acceptance mechanism; the media originate from YFCC100M and retain
+uploader-selected per-item Creative Commons licenses. The project policy permits internal
+non-commercial research, prohibits raw-media and recoverable-embedding redistribution, and requires
+a per-item metadata audit before external release. The historical lightweight QA diagnostic also
+used an invalid QA-row `roll(1)` shuffle: 87.5% of validation rows retained the same source delta.
+Source-group-disjoint controls are now required.
 
 The change-aware resampler and text-alignment pretraining also failed zero/shuffle ablations. Do not
 try larger caption runs with the same representation objective. Add semantic/action supervision to

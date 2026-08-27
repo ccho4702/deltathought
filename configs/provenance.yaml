@@ -229,7 +229,10 @@ resources:
     evidence_urls:
       github: https://api.github.com/repos/doc-doc/NExT-QA
       citations: https://api.crossref.org/works/10.1109/CVPR46437.2021.00965
-    restriction: VidOR-derived media terms and availability require a separate audit.
+    restriction: >-
+      VidOR media originate from YFCC100M and retain uploader-selected per-item Creative Commons
+      licenses. Internal research follows configs/nextqa_media_policy.yaml; raw media and recoverable
+      embeddings are not publishable, and external release requires a per-item metadata audit.
 
   activitynet_captions:
     kind: dataset

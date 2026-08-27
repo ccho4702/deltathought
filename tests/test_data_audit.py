@@ -32,7 +32,7 @@ def test_data_audit_stays_blocked_without_user_license_record(tmp_path: Path) ->
     )
 
     assert report["status"] == "blocked"
-    assert not report["prerequisites"]["license_record_present"]
+    assert not report["prerequisites"]["usage_authorization_valid"]
     assert not report["prerequisites"]["annotations_complete"]
     assert not report["prerequisites"]["media_present"]
 
@@ -116,3 +116,35 @@ def test_data_audit_accepts_explicit_shared_paths(tmp_path: Path) -> None:
 
     assert report["status"] == "ready"
     assert report["media_count"] == 2
+
+
+def test_data_audit_accepts_versioned_media_policy(tmp_path: Path) -> None:
+    annotation = tmp_path / "nextqa/train.csv"
+    media_dir = tmp_path / "nextqa/videos"
+    annotation.parent.mkdir(parents=True)
+    media_dir.mkdir(parents=True)
+    annotation.write_text("header\n", encoding="utf-8")
+    (media_dir / "one.mp4").write_bytes(b"fixture")
+    config = {
+        "raw_root": str(tmp_path),
+        "sources": {
+            "nextqa": {
+                "enabled": True,
+                "resource_name": "nextqa_annotations",
+                "annotation_files": [str(annotation)],
+                "media_dirs": [str(media_dir)],
+                "media_extensions": [".mp4"],
+                "media_policy": str(Path("configs/nextqa_media_policy.yaml").resolve()),
+            }
+        },
+    }
+
+    report = audit_source(
+        tmp_path,
+        config,
+        audit(Path("configs/provenance.yaml")),
+        "nextqa",
+    )
+
+    assert report["status"] == "ready"
+    assert report["authorization_kind"] == "media_policy"
