@@ -1,0 +1,40 @@
+seed: 42
+joint_manifest: intermediates/cache/omni_nextqa_joint_poc/manifest.json
+omni_config: configs/qwen2_5_omni.yaml
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  precision: bfloat16
+  cpu_threads: 4
+  per_device_batch_size: 1
+  gradient_accumulation_steps: 2
+  cache_entries: 256
+interface:
+  delta_width: 768
+  hidden_width: 3584
+  max_delta_updates: 11
+  max_prompt_tokens: 128
+  max_new_tokens: 4
+  system_prompt: You are an accurate video question answering assistant.
+training:
+  lora_rank: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+  target_modules_regex: '^model\.layers\.\d+\.(self_attn\.(q_proj|k_proj|v_proj|o_proj)|mlp\.(gate_proj|up_proj|down_proj))$'
+  lora_learning_rate: 0.0002
+  interface_learning_rate: 0.001
+  weight_decay: 0.0001
+  warmup_steps: 10
+  max_steps: 20
+  checkpoint_interval_steps: 10
+  keep_last_checkpoints: 2
+  gradient_clip_norm: 1.0
+  resume: auto
+evaluation:
+  validation_examples: 32
+  train_examples: 32
+  controls: [normal, delta_zero, last_only, reversed, cross_source]
+output_root: outputs/real_pilots/nextqa_video_lora_smoke
+log_root: logs/experiments
+report_path: outputs/reports/nextqa_video_lora_smoke.json
