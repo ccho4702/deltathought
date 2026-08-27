@@ -166,6 +166,28 @@ preserving test first. Durations span 15–30s and yield 7–15 complete two-sec
 delta updates. Manifest SHA-256 is
 `e973b72444ade41582249fcd7bfb63d02a6ebbd3225be376c4bfb7a758e32bd4`.
 
+The final streaming granularity is now one second. Direct pinned-Qwen measurements produce 64×3584
+video tokens and 25×3584 audio tokens per block; Qwen's internal position rate remains 25 audio
+tokens/s even though its configured positional chunk is two seconds. The source-disjoint VGGSound
+cache contains 45,643 one-second blocks per modality. Video/audio manifest SHA-256 values are
+`3a7f8977d869ac8efae3c925e89769593c2ee7718e035245c3061d3e76e5166d` and
+`91fd431d633df34f00e53ca8821db88cd8f53a186856a7ed1df408d313f637cc`.
+
+Exposure-matched one-token DeltaTok runs pass every untouched-test content control through nine
+one-second updates:
+
+- Audio teacher MSE is `0.2366` versus copy `0.8294` and zero-delta `0.5936`. Final nine-delta
+  rollout is `0.2637` versus anchor `0.9028`, zero `0.6606`, reversed `0.7768`, and cross-clip
+  shuffled `0.9402`; retrieval is 96.88% versus shuffled 1.17%.
+- Video teacher MSE is `0.2938` versus copy `0.3741` and zero-delta `0.3268`. Final nine-delta
+  rollout is `0.4415` versus anchor `0.5346`, zero `0.4782`, reversed `0.4554`, and cross-clip
+  shuffled `0.4951`; retrieval is 86.33% versus shuffled 41.80%.
+
+Audio horizon-nine drift is 11.6%, while video drift is 54.8%; long visual autoregressive drift is
+the main remaining S1 limitation. Audio/video checkpoint SHA-256 values are respectively
+`f0706270d06b66821b18e2ed40513917caea1e6852de757ae0f66330985d7b38` and
+`2d46816bc45b4dda9b4ef27c4372b5b956cff4b34a0b7a999d94bd295918a4e5`.
+
 Last updated: 2026-08-27
 
 ## Completed

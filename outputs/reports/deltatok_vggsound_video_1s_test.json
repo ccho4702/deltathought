@@ -1,0 +1,90 @@
+{
+  "autoregressive_rollout": {
+    "anchor_final_mse": 0.5345723225109396,
+    "anchor_final_retrieval_r1": 0.80859375,
+    "by_horizon": {
+      "1": {
+        "examples": 256,
+        "rollout_mse": 0.2910336613913387,
+        "teacher_forced_mse": 0.2910336613913387
+      },
+      "2": {
+        "examples": 256,
+        "rollout_mse": 0.3216372679817141,
+        "teacher_forced_mse": 0.2834134727372657
+      },
+      "3": {
+        "examples": 256,
+        "rollout_mse": 0.34520986521965824,
+        "teacher_forced_mse": 0.2865291842044826
+      },
+      "4": {
+        "examples": 256,
+        "rollout_mse": 0.3671306349133374,
+        "teacher_forced_mse": 0.2995976835663896
+      },
+      "5": {
+        "examples": 256,
+        "rollout_mse": 0.3906787592859473,
+        "teacher_forced_mse": 0.3029857379005989
+      },
+      "6": {
+        "examples": 255,
+        "rollout_mse": 0.4038910714726822,
+        "teacher_forced_mse": 0.3036178939154043
+      },
+      "7": {
+        "examples": 254,
+        "rollout_mse": 0.4205648702547306,
+        "teacher_forced_mse": 0.29349859062523587
+      },
+      "8": {
+        "examples": 251,
+        "rollout_mse": 0.4336794176365275,
+        "teacher_forced_mse": 0.2968326417313688
+      },
+      "9": {
+        "examples": 225,
+        "rollout_mse": 0.43963318275080787,
+        "teacher_forced_mse": 0.2851186871114704
+      }
+    },
+    "clips": 256,
+    "cross_clip_shuffled_delta_final_mse": 0.49510608066339046,
+    "cross_clip_shuffled_delta_final_retrieval_r1": 0.41796875,
+    "final_mse": 0.4415249757003039,
+    "final_retrieval_r1": 0.86328125,
+    "retrieval_candidates": 256,
+    "reversed_delta_final_mse": 0.45536802359856665,
+    "reversed_delta_final_retrieval_r1": 0.73828125,
+    "zero_delta_final_mse": 0.4782328490400687,
+    "zero_delta_final_retrieval_r1": 0.62890625
+  },
+  "cache_manifest_sha256": "3a7f8977d869ac8efae3c925e89769593c2ee7718e035245c3061d3e76e5166d",
+  "checkpoint": "outputs/real_pilots/deltatok_vggsound_video_1s/deltatok-video-1s-main/checkpoints/step-002000.pt",
+  "checkpoint_sha256": "2d46816bc45b4dda9b4ef27c4372b5b956cff4b34a0b7a999d94bd295918a4e5",
+  "checks": {
+    "rollout_beats_anchor_final": true,
+    "rollout_beats_cross_clip_shuffled_delta": true,
+    "rollout_beats_zero_delta": true,
+    "rollout_retrieval_beats_cross_clip_shuffled_delta": true,
+    "teacher_beats_copy_previous": true,
+    "teacher_beats_zero_delta": true
+  },
+  "completed_at_utc": "2026-08-27T16:48:48.066035+00:00",
+  "evaluation_code_revision": "ef31f7566396f9166858ddc5fadcbcb4579bc88c",
+  "modality": "video",
+  "passed": true,
+  "schema": "deltaomni.deltatok_scale_evaluation.v1",
+  "split": "test",
+  "teacher_forced": {
+    "copy_previous_mse": 0.37411671351912795,
+    "cosine": 0.7283433007088718,
+    "mse": 0.29375538024023407,
+    "pairs": 2265,
+    "retrieval_candidates": 1024,
+    "retrieval_r1": 0.0966796875,
+    "zero_delta_mse": 0.32678459007087396
+  },
+  "training_code_revision": "ef31f7566396f9166858ddc5fadcbcb4579bc88c"
+}
