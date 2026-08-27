@@ -43,6 +43,13 @@ AudioCaps annotations are pinned at
 - validation: `dab1c96641d5f3053ddb99dca3949450da9a75737bda53e11cc0aa8b102be0c3`
 - test: `b91c4b7ded2f4f6e7db5b9c4983dc1e1dca3d556f505b61e3fd65cac7e1c638a`
 
+Clotho v2.1 is retained under `/mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1` from
+official Zenodo record `4783391`. The original archives and verified MD5 values are:
+
+- development: `c8b05bc7acdb13895bb3c6a29608667e`
+- validation: `7dba730be08bada48bd15dc4e668df59`
+- evaluation: `4569624ccadf96223f19cb59fe4f849f`
+
 ## Selected generated-state backup
 
 Location:

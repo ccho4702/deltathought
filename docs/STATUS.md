@@ -156,6 +156,16 @@ native audio anchor plus four projected one-token deltas. It does not yet establ
 video caption transfer, or QA. Selected checkpoint SHA-256 is
 `c00e3e4d6466becccbed2616f50b7fa210bafb4e68227b71266ae68d0d9cf872`.
 
+Clotho v2.1 is now the license-clean long-horizon audio-caption extension. All three official Zenodo
+archives were range-downloaded, verified against record `4783391` MD5 values, and retained with the
+caption license and per-file Freesound license metadata. Canonical revision
+`official-zenodo-4783391-v2.1-schema-v2` contains 3,828 train, 1,037 validation, and 1,045 untouched
+test episodes, each with five captions. No media are missing or decoder-invalid. Nineteen records
+were quarantined to remove official-split overlap at the underlying Freesound `sound_id` level,
+preserving test first. Durations span 15–30s and yield 7–15 complete two-second blocks, i.e. 6–14
+delta updates. Manifest SHA-256 is
+`e973b72444ade41582249fcd7bfb63d02a6ebbd3225be376c4bfb7a758e32bd4`.
+
 Last updated: 2026-08-27
 
 ## Completed

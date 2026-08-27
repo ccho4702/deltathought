@@ -1,0 +1,35 @@
+{
+  "caption_items": {
+    "test": 5225,
+    "train": 19140,
+    "validation": 5185
+  },
+  "code_revision": "1c79c21221193ae92199c1a4edb626cd998318f5",
+  "completed_at_utc": "2026-08-27T15:26:49.681814+00:00",
+  "cross_split_source_overlap": {
+    "test": 0,
+    "train": 11,
+    "validation": 8
+  },
+  "dataset": "clotho",
+  "dataset_revision": "official-zenodo-4783391-v2.1-schema-v2",
+  "elapsed_seconds": 87.3614848703146,
+  "episodes": {
+    "test": 1045,
+    "train": 3828,
+    "validation": 1037
+  },
+  "invalid_media": {
+    "test": 0,
+    "train": 0,
+    "validation": 0
+  },
+  "manifest": "/home/changho.choi/deltathought/intermediates/canonical/clotho/official-zenodo-4783391-v2.1-schema-v2/manifest.json",
+  "missing_media": {
+    "test": 0,
+    "train": 0,
+    "validation": 0
+  },
+  "schema": "deltaomni.canonical_preprocessing_summary.v1",
+  "status": "complete"
+}
