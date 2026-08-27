@@ -15,7 +15,7 @@ def test_scaled_configs_use_one_seed_and_variable_horizons() -> None:
     full = load_config(Path("configs/nextqa_video_lora.yaml"))
 
     assert smoke.seed == full.seed == 42
-    assert smoke.interface.max_delta_updates == full.interface.max_delta_updates == 11
+    assert smoke.interface.max_delta_updates == full.interface.max_delta_updates == 29
     assert smoke.training.max_steps == 20
     assert full.training.max_steps == 1000
     assert full.evaluation.validation_examples == 1024
@@ -69,6 +69,9 @@ def test_cross_source_control_matches_horizon(tmp_path: Path) -> None:
 
     donors = data.cross_source_donors(2)
 
-    assert donors.tolist() == [1, 0]
-    assert data.item(0, delta_index=int(donors[0]))["video_deltas"].mean() == 1
-    assert data.item(1, delta_index=int(donors[1]))["video_deltas"].mean() == 0
+    for index, donor in enumerate(donors.tolist()):
+        assert data.item(index)["source_id"] != data.item(donor)["source_id"]
+        assert (
+            data.item(index, delta_index=donor)["video_deltas"].shape
+            == data.item(index)["video_deltas"].shape
+        )

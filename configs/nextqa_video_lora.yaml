@@ -13,7 +13,7 @@ runtime:
 interface:
   delta_width: 768
   hidden_width: 3584
-  max_delta_updates: 11
+  max_delta_updates: 29
   max_prompt_tokens: 128
   max_new_tokens: 4
   system_prompt: You are an accurate video question answering assistant.

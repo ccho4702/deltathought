@@ -7,7 +7,7 @@ import os
 import re
 import time
 import uuid
-from collections import OrderedDict, defaultdict
+from collections import OrderedDict
 from contextlib import nullcontext
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
@@ -197,6 +197,11 @@ class VideoQADataset:
         payload = self._load_path(str(self.records[record_index]["cache_path"]))
         delta_payload = self._load_path(str(self.records[delta_record_index]["cache_path"]))
         qa = payload["qa"][qa_index]
+        video_deltas = delta_payload["video_deltas"].float()
+        target_updates = int(payload["video_deltas"].shape[0])
+        if video_deltas.shape[0] != target_updates:
+            positions = torch.linspace(0, video_deltas.shape[0] - 1, target_updates).round().long()
+            video_deltas = video_deltas[positions]
         return {
             "source_id": str(payload["source_id"]),
             "question_id": str(qa["question_id"]),
@@ -205,7 +210,7 @@ class VideoQADataset:
             "choices": tuple(str(value) for value in qa["choices"]),
             "answer_index": int(qa["answer_index"]),
             "video_first": payload["video_first"].float(),
-            "video_deltas": delta_payload["video_deltas"].float(),
+            "video_deltas": video_deltas,
         }
 
     def batch(self, indices: Tensor) -> list[dict[str, Any]]:
@@ -213,21 +218,16 @@ class VideoQADataset:
 
     def cross_source_donors(self, count: int) -> Tensor:
         selected = list(range(min(count, len(self))))
-        by_horizon: dict[int, list[int]] = defaultdict(list)
-        for index in range(len(self)):
-            item = self.item(index)
-            by_horizon[item["video_deltas"].shape[0]].append(index)
         donors = []
         for index in selected:
             item = self.item(index)
-            candidates = by_horizon[item["video_deltas"].shape[0]]
             distinct = [
                 candidate
-                for candidate in candidates
+                for candidate in range(len(self))
                 if self.item(candidate)["source_id"] != item["source_id"]
             ]
             if not distinct:
-                raise ValueError("Cross-source control requires a matched-horizon donor")
+                raise ValueError("Cross-source control requires another source")
             rank = int(
                 hashlib.sha256(
                     f"{item['source_id']}:{self.examples[index][1]}".encode()

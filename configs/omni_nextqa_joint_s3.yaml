@@ -13,7 +13,7 @@ train_count: 1000
 validation_count: 128
 test_count: 128
 minimum_seconds: 5.0
-maximum_seconds: 12.0
+maximum_seconds: 30.0
 block_seconds: 1.0
 sample_fps: 2.0
 frame_width: 224
