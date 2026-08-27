@@ -20,6 +20,7 @@ def test_audiocaps_prefix_config_uses_four_one_token_deltas() -> None:
     assert one_second.blocks_per_clip == 10
     assert one_second.expected_audio_tokens == 25
     assert one_second.encoder_batch_size == 10
+    assert one_second.runtime.cpu_threads == 16
 
 
 def test_audio_blocks_resample_stereo_to_exact_independent_chunks(tmp_path: Path) -> None:

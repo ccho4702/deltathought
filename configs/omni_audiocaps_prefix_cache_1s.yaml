@@ -15,6 +15,6 @@ runtime:
   device: cuda
   backend: nccl
   nccl_compatibility_mode: true
-  cpu_threads: 4
+  cpu_threads: 16
 cache_root: intermediates/cache/omni_audiocaps_prefix_1s_8k_b10
 report_path: outputs/reports/omni_audiocaps_prefix_1s_8k.json
