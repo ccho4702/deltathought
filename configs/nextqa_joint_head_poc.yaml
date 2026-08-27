@@ -1,0 +1,16 @@
+seed: 42
+joint_manifest: intermediates/cache/omni_nextqa_joint_poc/manifest.json
+device: cuda:0
+cpu_threads: 4
+text_buckets: 8192
+hidden_width: 256
+batch_size: 64
+learning_rate: 0.001
+weight_decay: 0.0001
+max_steps: 500
+checkpoint_interval_steps: 100
+keep_last_checkpoints: 2
+resume: auto
+output_root: outputs/real_pilots/nextqa_joint_head_poc
+log_root: logs/experiments
+report_path: outputs/reports/nextqa_joint_head_poc.json
