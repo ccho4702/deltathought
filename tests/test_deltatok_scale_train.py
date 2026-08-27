@@ -17,7 +17,7 @@ def test_scale_config_uses_one_delta_token_and_distributed_effective_batch() -> 
     assert config.modality == "video"
     assert config.model.delta_tokens == 1
     assert config.model.depth == 12
-    assert config.training.max_steps == 50_000
+    assert config.training.max_steps == 2_000
     effective_batch = (
         config.runtime.per_device_batch_size * 4 * config.runtime.gradient_accumulation_steps
     )

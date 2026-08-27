@@ -20,9 +20,11 @@ model:
 training:
   learning_rate: 0.001
   weight_decay: 0.0001
-  warmup_steps: 5000
-  max_steps: 50000
-  checkpoint_interval_steps: 1000
+  # 2,000 x global batch 128 / 18,067 train pairs = 14.2 passes, close to the
+  # paper's 50,000 x 1,024 / roughly 4M samples = 12.8 passes.
+  warmup_steps: 200
+  max_steps: 2000
+  checkpoint_interval_steps: 200
   keep_last_checkpoints: 2
   gradient_clip_norm: 0.01
   resume: auto
