@@ -1,0 +1,11 @@
+{
+  "completed_at_utc": "2026-08-27T00:41:23.039733+00:00",
+  "elapsed_seconds": 5.581123128533363,
+  "model_revision": "ae9e1690543ffd5c0221dc27f79834d0294cba00",
+  "schema": "deltaomni.omni_ssv2_cache_summary.v1",
+  "splits": {
+    "test": 256,
+    "train": 2048,
+    "validation": 256
+  }
+}

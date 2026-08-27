@@ -41,6 +41,14 @@ and 17.06 GiB peak reserved per rank; batch 2/4/8 fell to 80.4/64.4/46.7 blocks/
 to 17.39/18.40/22.32 GiB. Cache generation therefore uses one independently encoded causal block
 per rank, preserving the bitwise-repeatable execution shape measured by the native encoder smoke.
 
+The first native-Omni S1 cache is complete for four direction-sensitive SSV2 classes: 2,048 train,
+256 validation, and 256 untouched-test clips, balanced by class with no source overlap. Clips with
+fewer than two canonical blocks are excluded and deterministically replaced, so every record has at
+least one actual delta. Each independently encoded two-second block is exactly 128×3584 after
+aspect-preserving 224×224 letterboxing; clips contain two to four blocks. Four-GPU cache generation
+took 95.1s initially and 5.6s for the eligibility-corrected incremental pass. Manifest SHA-256 is
+`24239ece81b38eb34a0ff99112fafc3a3beaa8202bc93d2715a3f9e28df10012`.
+
 Last updated: 2026-08-26
 
 ## Completed
