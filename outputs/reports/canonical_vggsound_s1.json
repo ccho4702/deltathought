@@ -1,0 +1,20 @@
+{
+  "code_revision": "a9ce96a30761789a1fe4f19c2f3bc3b7c9d5b9f3",
+  "completed_at_utc": "2026-08-27T02:10:09.598776+00:00",
+  "dataset": "vggsound",
+  "dataset_revision": "official-2020-s1-subset4608-schema-v2",
+  "elapsed_seconds": 112.24916112050414,
+  "episodes": {
+    "test": 256,
+    "train": 4096,
+    "validation": 256
+  },
+  "manifest": "/home/changho.choi/deltathought/intermediates/canonical/vggsound/official-2020-s1-subset4608-schema-v2/manifest.json",
+  "schema": "deltaomni.canonical_preprocessing_summary.v1",
+  "status": "complete",
+  "unavailable_pairs_encountered": {
+    "test": 0,
+    "train": 0,
+    "validation": 0
+  }
+}

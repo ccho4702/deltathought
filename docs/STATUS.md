@@ -56,7 +56,16 @@ feature (27.0% lower), cosine similarity was 0.6177, and 389-way feature retriev
 (chance 0.26%). No SSV2 labels were loaded by the trainer. This is an implementation gate, not the
 general-video result; the next run uses existing VGGSound media with the paper-scale tokenizer.
 
-Last updated: 2026-08-26
+The deterministic VGGSound S1 subset is now canonicalized from the existing read-only distribution:
+4,096 train, 256 validation, and 256 untouched-test paired clips. Every episode contains both video
+and audio, all weak class labels are explicitly excluded from S1, and YouTube source groups have
+zero cross-split overlap. Processing and verified reload took 112.2s; no requested pair was missing.
+Canonical manifest SHA-256 is
+`b86ed3e33e513ce739278abee13fbb0fe44e3b94949cf944f0d19e6f87ff7103`.
+The official dataset license is recorded as CC-BY-4.0 while original-video copyright remains with
+the source owner, so media and recoverable embeddings are not publication artifacts.
+
+Last updated: 2026-08-27
 
 ## Completed
 
@@ -89,6 +98,7 @@ These are synthetic functional metrics and are not real-media research results.
 - DeltaOmni-owned official annotations: `/mnt/nfs_shared_data/dataset/deltaomni`
 - Existing shared SSV2 official media: `/mnt/nfs_shared_data/dataset/ssv2`
 - Existing shared NExT-QA media: `/mnt/nfs_shared_data/dataset/NExT-QA`
+- Existing shared VGGSound media: `/mnt/nfs_shared_data/dataset/omniembed/vggsound`
 
 All paths are read-only inputs. Derived manifests, decoded subsets, embeddings, checkpoints, and
 reports remain under `/home/changho.choi/deltaomni`.
