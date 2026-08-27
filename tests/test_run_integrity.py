@@ -3,7 +3,11 @@ from pathlib import Path
 
 import pytest
 
-from deltaomni.run_integrity import require_media_policy, resolved_input_signature
+from deltaomni.run_integrity import (
+    require_media_policy,
+    resolved_input_signature,
+    source_changes_from_porcelain,
+)
 
 
 @dataclass(frozen=True)
@@ -36,3 +40,9 @@ def test_media_policy_requires_an_approved_resource() -> None:
         policy,
     )
     assert len(digest) == 64
+
+
+def test_clean_source_check_ignores_only_generated_artifact_roots() -> None:
+    status = " M outputs/reports/result.json\n M src/deltaomni/model.py\n?? temp/debug.txt\n"
+
+    assert source_changes_from_porcelain(status) == ["src/deltaomni/model.py"]

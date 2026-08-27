@@ -59,7 +59,19 @@ def git_worktree_is_clean(project_root: Path) -> bool:
         capture_output=True,
         text=True,
     ).stdout
-    return not status.strip()
+    return not source_changes_from_porcelain(status)
+
+
+def source_changes_from_porcelain(status: str) -> list[str]:
+    generated_prefixes = ("outputs/", "logs/", "intermediates/", "temp/")
+    changed = []
+    for line in status.splitlines():
+        path = line[3:]
+        if " -> " in path:
+            path = path.split(" -> ", 1)[1]
+        if not path.startswith(generated_prefixes):
+            changed.append(path)
+    return changed
 
 
 def require_media_policy(
