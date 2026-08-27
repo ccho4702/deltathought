@@ -1,0 +1,15 @@
+canonical_manifest: intermediates/canonical/vggsound/official-2020-s1-subset4608-schema-v2-r2/manifest.json
+omni_config: configs/qwen2_5_omni.yaml
+sample_fps: 2.0
+block_seconds: 1.0
+frame_width: 224
+frame_height: 224
+expected_video_tokens: 64
+expected_audio_tokens: 25
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 4
+cache_root: intermediates/cache/omni_vggsound_s1_1s_224
+report_path: outputs/reports/omni_vggsound_s1_cache_1s.json

@@ -13,6 +13,11 @@ def test_omni_vggsound_cache_covers_both_native_modalities() -> None:
     assert config.block_seconds == 2.0
     assert config.runtime.nccl_compatibility_mode
 
+    one_second = load_config(Path("configs/omni_vggsound_s1_cache_1s.yaml"))
+    assert one_second.block_seconds == 1.0
+    assert one_second.expected_video_tokens == 64
+    assert one_second.expected_audio_tokens == 25
+
 
 def test_cache_validation_rejects_wrong_shape_and_accepts_complete_payload(
     tmp_path: Path,
