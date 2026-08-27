@@ -35,6 +35,12 @@ stream/hash caching 432.8s, and the complete conversion plus reload verification
 SHA-256 is `25b8fb4b524a32be41aece867e439c136f4943a01a96189c7d958d6230cd7459`.
 The absent local SSV2 media-license record is explicitly null and remains a training gate.
 
+Native Qwen2.5-Omni video embedding was profiled on four A6000s using canonical SSV2. Two-second
+blocks produced 100–120 tokens of width 3584. Batch one per rank was fastest at 87.2 blocks/s total
+and 17.06 GiB peak reserved per rank; batch 2/4/8 fell to 80.4/64.4/46.7 blocks/s while memory rose
+to 17.39/18.40/22.32 GiB. Cache generation therefore uses one independently encoded causal block
+per rank, preserving the bitwise-repeatable execution shape measured by the native encoder smoke.
+
 Last updated: 2026-08-26
 
 ## Completed

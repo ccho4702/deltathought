@@ -552,7 +552,8 @@
     <div class="callout warn">
       공식 checkpoint와 project-local <code>torchvision</code> 의존성을 고정했고 native encoder smoke가
       통과했다. 현재 설정의 독립 2초 block은 video 100 tokens, audio 50 tokens, width 3584이며 batch-one
-      반복은 bitwise exact였다. 다음 단계는 dataset credibility/license/source-overlap audit이다.
+      반복은 bitwise exact였다. 4GPU profile에서도 batch one/rank가 87.2 blocks/s로 가장 빨랐고 peak
+      memory는 17.06 GiB/rank였다. 다음 단계는 variable native-token mask를 보존한 cache와 S1 delta 학습이다.
     </div>
   </section>
 

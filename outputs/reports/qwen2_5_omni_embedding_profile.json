@@ -1,0 +1,45 @@
+{
+  "canonical_manifest": "/home/changho.choi/deltathought/intermediates/canonical/something_something_v2/official-v2-ann-b24e4609-schema-v2/manifest.json",
+  "model_revision": "ae9e1690543ffd5c0221dc27f79834d0294cba00",
+  "results": [
+    {
+      "batch_size_per_rank": 1,
+      "clips": 124,
+      "clips_per_second": 87.24142614391342,
+      "elapsed_seconds": 1.4213431105017662,
+      "peak_reserved_gib_per_rank": 17.0625,
+      "tokens_per_block_max": 120,
+      "tokens_per_block_min": 100
+    },
+    {
+      "batch_size_per_rank": 2,
+      "clips": 120,
+      "clips_per_second": 80.43067594731916,
+      "elapsed_seconds": 1.4919680655002594,
+      "peak_reserved_gib_per_rank": 17.39453125,
+      "tokens_per_block_max": 120,
+      "tokens_per_block_min": 100
+    },
+    {
+      "batch_size_per_rank": 4,
+      "clips": 112,
+      "clips_per_second": 64.3987475030462,
+      "elapsed_seconds": 1.7391642592847347,
+      "peak_reserved_gib_per_rank": 18.3984375,
+      "tokens_per_block_max": 120,
+      "tokens_per_block_min": 100
+    },
+    {
+      "batch_size_per_rank": 8,
+      "clips": 96,
+      "clips_per_second": 46.65919574769657,
+      "elapsed_seconds": 2.057472240179777,
+      "peak_reserved_gib_per_rank": 22.318359375,
+      "tokens_per_block_max": 120,
+      "tokens_per_block_min": 100
+    }
+  ],
+  "samples": 128,
+  "schema": "deltaomni.qwen2_5_omni_embedding_profile.v1",
+  "world_size": 4
+}
