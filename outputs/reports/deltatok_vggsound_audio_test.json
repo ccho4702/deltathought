@@ -1,0 +1,65 @@
+{
+  "autoregressive_rollout": {
+    "anchor_final_mse": 1.285578592622187,
+    "anchor_final_retrieval_r1": 0.44140625,
+    "by_horizon": {
+      "1": {
+        "examples": 256,
+        "rollout_mse": 0.6827052131702658,
+        "teacher_forced_mse": 0.6827052131702658
+      },
+      "2": {
+        "examples": 256,
+        "rollout_mse": 0.7006756437476724,
+        "teacher_forced_mse": 0.7013635417388286
+      },
+      "3": {
+        "examples": 254,
+        "rollout_mse": 0.7121585435050679,
+        "teacher_forced_mse": 0.6765457736254912
+      },
+      "4": {
+        "examples": 225,
+        "rollout_mse": 0.7429455235269334,
+        "teacher_forced_mse": 0.6873058333579037
+      }
+    },
+    "clips": 256,
+    "cross_clip_shuffled_delta_final_mse": 1.063217896327842,
+    "cross_clip_shuffled_delta_final_retrieval_r1": 0.00390625,
+    "final_mse": 0.743545503471978,
+    "final_retrieval_r1": 0.9296875,
+    "retrieval_candidates": 256,
+    "reversed_delta_final_mse": 0.9177070489968173,
+    "reversed_delta_final_retrieval_r1": 0.38671875,
+    "zero_delta_final_mse": 0.9844742582645267,
+    "zero_delta_final_retrieval_r1": 0.0078125
+  },
+  "cache_manifest_sha256": "6e90c8dd1e767d8cfb5b6ce1b0d0ace67a7ff3b4934cc69e4c180b30a3ddfc12",
+  "checkpoint": "outputs/real_pilots/deltatok_vggsound_audio/deltatok-audio-20260827T032453Z-1156e221/checkpoints/step-001000.pt",
+  "checkpoint_sha256": "8c64d86088180e045b75720d1e0270ced413043683914fb17dbbd60328c15796",
+  "checks": {
+    "rollout_beats_anchor_final": true,
+    "rollout_beats_cross_clip_shuffled_delta": true,
+    "rollout_beats_zero_delta": true,
+    "rollout_retrieval_beats_cross_clip_shuffled_delta": true,
+    "teacher_beats_copy_previous": true,
+    "teacher_beats_zero_delta": true
+  },
+  "completed_at_utc": "2026-08-27T03:33:57.098762+00:00",
+  "evaluation_code_revision": "9ea8df7332baaa4b5911e5d9137446c3f580b098",
+  "modality": "audio",
+  "passed": true,
+  "schema": "deltaomni.deltatok_scale_evaluation.v1",
+  "split": "test",
+  "teacher_forced": {
+    "copy_previous_mse": 1.1967679189986105,
+    "cosine": 0.4787722159586809,
+    "mse": 0.6869248045320828,
+    "pairs": 991,
+    "retrieval_candidates": 991,
+    "retrieval_r1": 0.6770938634872437,
+    "zero_delta_mse": 0.7980806976707143
+  },
+  "training_code_revision": "9ea8df7332baaa4b5911e5d9137446c3f580b098"
+}

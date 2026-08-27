@@ -95,6 +95,22 @@ through four ordered updates. It is not evidence for longer horizons or Thinker 
 understanding. Checkpoint SHA-256 is
 `0933e2d29b2cc0b8bbe20959250ef52feb16b87a5b0c5464996f042c6672b0ae`.
 
+The exposure-matched native-Omni audio DeltaTok run is also complete. The same 12-layer,
+width-768, one-token architecture trained for 1,000 four-GPU steps at global batch 256, again 14.2
+passes over the train pairs. Training plus validation took 479.8s and peak reserved memory was 4.72
+GiB/rank. On the once-evaluated untouched 256-clip test split:
+
+- Teacher-forced MSE was 0.68692 versus copy-previous 1.19677 and zero-delta 0.79808.
+- Final autoregressive rollout MSE was 0.74355 versus anchor-only 1.28558, zero-delta 0.98447,
+  reversed-delta 0.91771, and cross-clip shuffled delta 1.06322.
+- Final retrieval R@1 was 92.97% versus anchor 44.14%, reversed 38.67%, zero 0.78%, and cross-clip
+  shuffled 0.39%.
+- Horizon-four rollout MSE was 0.74295 versus teacher-forced 0.68731, an 8.1% drift penalty.
+
+All predeclared controls passed. Native Qwen2.5-Omni audio delta content and order therefore remain
+strongly useful through four updates on this distribution. Checkpoint SHA-256 is
+`8c64d86088180e045b75720d1e0270ced413043683914fb17dbbd60328c15796`.
+
 Last updated: 2026-08-27
 
 ## Completed
