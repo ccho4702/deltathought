@@ -1,0 +1,42 @@
+seed: 42
+prefix_manifest: intermediates/cache/omni_audiocaps_prefix_1s_8k_b10/manifest.json
+omni_config: configs/qwen2_5_omni.yaml
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  precision: bfloat16
+  cpu_threads: 4
+  per_device_batch_size: 2
+  gradient_accumulation_steps: 4
+  cache_entries: 256
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.05
+  target_modules_regex: '^model\.layers\.\d+\.(self_attn\.(q_proj|k_proj|v_proj|o_proj)|mlp\.(gate_proj|up_proj|down_proj))$'
+interface:
+  delta_width: 768
+  hidden_width: 3584
+  delta_updates: 9
+  max_target_tokens: 48
+  system_prompt: You are an accurate audio captioning assistant.
+  user_prompt: Describe all audible events in one concise sentence.
+training:
+  lora_learning_rate: 0.0002
+  interface_learning_rate: 0.001
+  weight_decay: 0.0001
+  warmup_steps: 100
+  max_steps: 200
+  checkpoint_interval_steps: 100
+  keep_last_checkpoints: 2
+  gradient_clip_norm: 1.0
+  resume: auto
+evaluation:
+  nll_batch_size: 2
+  nll_examples: 483
+  generation_examples: 64
+  max_new_tokens: 32
+  minimum_control_gap: 0.01
+output_root: outputs/real_pilots/audiocaps_caption_lora_1s
+log_root: logs/experiments

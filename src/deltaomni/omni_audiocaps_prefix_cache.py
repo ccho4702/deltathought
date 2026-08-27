@@ -56,6 +56,7 @@ class AudioCapsPrefixConfig:
     block_seconds: float
     blocks_per_clip: int
     expected_audio_tokens: int
+    encoder_batch_size: int
     runtime: CacheRuntime
     cache_root: Path
     report_path: Path
@@ -83,6 +84,7 @@ def load_config(path: Path) -> AudioCapsPrefixConfig:
         block_seconds=float(raw["block_seconds"]),
         blocks_per_clip=int(raw["blocks_per_clip"]),
         expected_audio_tokens=int(raw["expected_audio_tokens"]),
+        encoder_batch_size=int(raw.get("encoder_batch_size", 1)),
         runtime=CacheRuntime(
             device=str(runtime["device"]),
             backend=str(runtime["backend"]),
@@ -99,6 +101,7 @@ def load_config(path: Path) -> AudioCapsPrefixConfig:
         config.block_seconds,
         config.blocks_per_clip,
         config.expected_audio_tokens,
+        config.encoder_batch_size,
         config.runtime.cpu_threads,
     )
     if min(positive) <= 0 or len(config.deltatok_checkpoint_sha256) != 64:
@@ -277,12 +280,18 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
             )
             features = []
             metadata = []
-            for block in blocks:
-                encoded, block_metadata = backend.encode_audio_chunks([block])
-                if encoded[0].shape != (config.expected_audio_tokens, backend.output_dim):
-                    raise ValueError(f"Unexpected Omni audio shape: {tuple(encoded[0].shape)}")
-                features.append(encoded[0])
-                metadata.append(block_metadata[0])
+            for start in range(0, len(blocks), config.encoder_batch_size):
+                batch = blocks[start : start + config.encoder_batch_size]
+                retained = len(batch)
+                batch = batch + [batch[-1]] * (config.encoder_batch_size - retained)
+                encoded, block_metadata = backend.encode_audio_chunks(batch)
+                for feature, item_metadata in zip(
+                    encoded[:retained], block_metadata[:retained], strict=True
+                ):
+                    if feature.shape != (config.expected_audio_tokens, backend.output_dim):
+                        raise ValueError(f"Unexpected Omni audio shape: {tuple(feature.shape)}")
+                    features.append(feature)
+                    metadata.append(item_metadata)
             deltas = []
             with torch.autocast(device_type=context.device.type, dtype=torch.bfloat16):
                 for step in range(1, len(features)):
@@ -383,6 +392,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                 "splits": {split: len(values) for split, values in episodes.items()},
                 "total_bytes": total_bytes,
                 "world_size": context.world_size,
+                "encoder_batch_size": config.encoder_batch_size,
                 "peak_reserved_bytes_per_rank_max": int(local_peak.item()),
                 "elapsed_seconds": time.perf_counter() - started,
                 "completed_at_utc": datetime.now(UTC).isoformat(),
