@@ -20,6 +20,7 @@ import soundfile as sf
 import torch
 import yaml
 from PIL import Image, ImageOps
+from transformers.utils import logging as transformers_logging
 
 from deltaomni.data.schema import CanonicalEpisode, iter_jsonl
 from deltaomni.distributed import distributed_context
@@ -390,6 +391,7 @@ def _write_manifests(
 @torch.no_grad()
 def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
     config = load_config(config_path)
+    transformers_logging.set_verbosity_error()
     torch.set_num_threads(config.runtime.cpu_threads)
     with distributed_context(
         config.runtime.device,
