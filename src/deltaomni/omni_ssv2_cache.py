@@ -116,7 +116,11 @@ def _select(
     selected = []
     for label, template in enumerate(classes):
         candidates = [
-            episode for episode in episodes if episode.metadata.get("template") == template
+            episode
+            for episode in episodes
+            if episode.metadata.get("template") == template
+            and episode.temporal_blocks is not None
+            and len(episode.temporal_blocks) >= 2
         ]
         candidates.sort(key=lambda episode: _hash(seed, episode.source_id))
         if len(candidates) < count:
