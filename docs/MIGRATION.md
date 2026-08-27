@@ -1,6 +1,6 @@
 # Server migration handoff
 
-Prepared: 2026-08-26
+Prepared: 2026-08-27
 
 ## Source repository
 
@@ -8,6 +8,8 @@ Prepared: 2026-08-26
 - Branch: `main`
 - Base experiment commit: `10c09d6de6a12d548610cc5f6d244f48f58d8bc5`
 - Layout-aware delta milestone: `1a79f7b2fb91798603246086c872879cc7cdb9bf`
+- Native-Omni video S1 result: `71f5116`
+- Native-Omni audio S1 result: `73f9969`
 - Migration handoff tag: `migration-20260826-v2`
 
 Clone and recreate the locked environment:
@@ -26,6 +28,8 @@ uv run pytest -q
 - Existing shared SSV2: `/mnt/nfs_shared_data/dataset/ssv2`
 - Existing shared NExT-QA: `/mnt/nfs_shared_data/dataset/NExT-QA`
 - Existing shared AudioSet media: `/mnt/nfs_shared_data/dataset/omniembed/audioset`
+- Existing shared VGGSound media: `/mnt/nfs_shared_data/dataset/omniembed/vggsound`
+- Existing shared Ego4D media/annotations: `/mnt/nfs_shared_data/dataset/ego4d_540`
 
 Raw files are not stored in Git and were never modified by DeltaOmni.
 
@@ -99,6 +103,28 @@ sha256sum -c SHA256SUMS
 
 The 483 MB eight-frame DINO embedding cache is intentionally omitted because it is reproducible
 from the immutable shared SSV2 raw media and pinned model revision.
+
+## Native Qwen2.5-Omni S1 checkpoints
+
+The final one-token native-Omni DeltaTok checkpoints are retained in separate checksummed backups:
+
+- Video: `/mnt/nfs_shared_data/project_backups/deltathought/71f5116/`
+  - `checkpoints/step-002000.pt`
+  - SHA-256 `0933e2d29b2cc0b8bbe20959250ef52feb16b87a5b0c5464996f042c6672b0ae`
+- Audio: `/mnt/nfs_shared_data/project_backups/deltathought/73f9969/`
+  - `checkpoints/step-001000.pt`
+  - SHA-256 `8c64d86088180e045b75720d1e0270ced413043683914fb17dbbd60328c15796`
+
+Each directory contains its own `SHA256SUMS` and short provenance README. Verify with:
+
+```bash
+cd /mnt/nfs_shared_data/project_backups/deltathought/71f5116 && sha256sum -c SHA256SUMS
+cd /mnt/nfs_shared_data/project_backups/deltathought/73f9969 && sha256sum -c SHA256SUMS
+```
+
+The corresponding untouched-test reports are tracked in Git under `outputs/reports/`. Native Omni
+embedding caches are intentionally omitted from NAS backup because they are checksummed but
+regenerable from pinned Qwen2.5-Omni and immutable VGGSound media.
 
 Synthetic checkpoints now record `PairDeltaEncoder.ALGORITHM_VERSION`. Automatic verification and
 resume reject unversioned or incompatible checkpoints rather than partially loading them. After
