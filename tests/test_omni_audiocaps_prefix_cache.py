@@ -22,6 +22,10 @@ def test_audiocaps_prefix_config_uses_four_one_token_deltas() -> None:
     assert one_second.encoder_batch_size == 10
     assert one_second.runtime.cpu_threads == 16
 
+    poc = load_config(Path("configs/omni_audiocaps_prefix_cache_1s_poc.yaml"))
+    assert (poc.train_count, poc.validation_count, poc.test_count) == (1024, 128, 128)
+    assert poc.cache_root == one_second.cache_root
+
 
 def test_audio_blocks_resample_stereo_to_exact_independent_chunks(tmp_path: Path) -> None:
     source_rate = 48_000
