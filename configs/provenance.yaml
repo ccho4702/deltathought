@@ -151,6 +151,30 @@ resources:
       The official README limits dataset use to academic purposes. AudioSet-derived YouTube media
       remains subject to original-owner rights and must not be redistributed.
 
+  clotho_v2_1:
+    kind: dataset
+    role: long_horizon_audio_caption_training_and_evaluation
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    benchmark_adoption: true
+    license_status: verified
+    license: Tampere-experimental-noncommercial-captions-and-per-file-Creative-Commons-audio
+    source_url: https://zenodo.org/records/4783391
+    revision: "2.1"
+    evidence:
+      github_stars: 85
+      huggingface_downloads: null
+      paper_citations: null
+    evidence_urls:
+      github: https://api.github.com/repos/audio-captioning/clotho-dataset
+      paper: https://doi.org/10.1109/ICASSP40776.2020.9052990
+      benchmark: https://dcase.community/challenge2021/task-automatic-audio-captioning
+    restriction: >-
+      Captions are experimental non-commercial use only. Each Freesound-derived audio file retains
+      the Creative Commons license recorded in the official metadata CSV and may not be
+      redistributed without preserving its per-file terms.
+
   vggsound:
     kind: dataset
     role: paired_audio_video_self_supervised_delta_training

@@ -1,0 +1,21 @@
+dataset: clotho
+dataset_revision: official-zenodo-4783391-v2.1-schema-v2
+resource_name: clotho_v2_1
+chunk_seconds: 2.0
+cpu_workers: 8
+annotations:
+  train: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/annotations/clotho_captions_development.csv
+  validation: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/annotations/clotho_captions_validation.csv
+  test: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/annotations/clotho_captions_evaluation.csv
+metadata:
+  train: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/annotations/clotho_metadata_development.csv
+  validation: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/annotations/clotho_metadata_validation.csv
+  test: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/annotations/clotho_metadata_evaluation.csv
+media_roots:
+  train: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/audio/development
+  validation: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/audio/validation
+  test: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/audio/evaluation
+license_record: /mnt/nfs_shared_data/dataset/deltathought/raw/clotho_v2.1/annotations/LICENSE
+cache_root: intermediates/cache/canonical_clotho/official-zenodo-4783391-v2.1-schema-v2
+output_root: intermediates/canonical
+report_path: outputs/reports/canonical_clotho_v2_1.json

@@ -17,8 +17,10 @@ def test_provenance_gate_approves_established_models_and_blocks_watchlists() -> 
         "nextqa_annotations",
         "vggsound",
         "audiocaps_original",
+        "clotho_v2_1",
     } <= set(report["approved"])
     assert report["resources"]["qwen2_5_omni_7b"]["peer_review_exception"]
+    assert report["resources"]["clotho_v2_1"]["adoption_signals"]["benchmark_adoption"]
     assert {"kinetics_geb_plus", "clevr_change", "desed"} <= set(report["blocked"])
 
 

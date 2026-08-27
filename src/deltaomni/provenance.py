@@ -50,6 +50,7 @@ def audit_resource(name: str, resource: dict[str, Any], policy: ProvenancePolicy
     evidence = resource.get("evidence", {})
     signals = {
         "recognized_standard": resource.get("recognized_standard") is True,
+        "benchmark_adoption": resource.get("benchmark_adoption") is True,
         "github_stars": _meets(evidence.get("github_stars"), policy.minimum_github_stars),
         "huggingface_downloads": _meets(
             evidence.get("huggingface_downloads"),
