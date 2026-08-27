@@ -35,6 +35,7 @@ class VGGSoundS1Config:
     dataset_revision: str
     resource_name: str
     seed: int
+    excluded_source_ids: frozenset[str]
     train_count: int
     validation_count: int
     test_count: int
@@ -62,6 +63,7 @@ def load_config(path: Path) -> VGGSoundS1Config:
         dataset_revision=str(raw["dataset_revision"]),
         resource_name=str(raw["resource_name"]),
         seed=int(raw["seed"]),
+        excluded_source_ids=frozenset(str(value) for value in raw.get("excluded_source_ids", [])),
         train_count=int(raw["train_count"]),
         validation_count=int(raw["validation_count"]),
         test_count=int(raw["test_count"]),
@@ -128,11 +130,14 @@ def _select_available(
     video_root: Path,
     audio_root: Path,
     excluded_groups: set[str] | None = None,
+    excluded_source_ids: frozenset[str] = frozenset(),
 ) -> tuple[list[str], set[str], int]:
     selected = []
     groups = set(excluded_groups or ())
     unavailable = 0
     for name in _rank(names, seed):
+        if Path(name).stem in excluded_source_ids:
+            continue
         group = _source_group(name)
         if group in groups:
             continue
@@ -160,6 +165,7 @@ def _select_splits(config: VGGSoundS1Config) -> tuple[dict[str, list[str]], dict
         seed=config.seed,
         video_root=config.video_root,
         audio_root=config.audio_root,
+        excluded_source_ids=config.excluded_source_ids,
     )
     validation, used_groups, unavailable_validation = _select_available(
         test_names,
@@ -168,6 +174,7 @@ def _select_splits(config: VGGSoundS1Config) -> tuple[dict[str, list[str]], dict
         video_root=config.video_root,
         audio_root=config.audio_root,
         excluded_groups=used_groups,
+        excluded_source_ids=config.excluded_source_ids,
     )
     test, _, unavailable_test = _select_available(
         test_names,
@@ -176,6 +183,7 @@ def _select_splits(config: VGGSoundS1Config) -> tuple[dict[str, list[str]], dict
         video_root=config.video_root,
         audio_root=config.audio_root,
         excluded_groups=used_groups,
+        excluded_source_ids=config.excluded_source_ids,
     )
     return (
         {"train": train, "validation": validation, "test": test},
@@ -355,6 +363,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
         ],
         exclusions={
             "unavailable_pairs_encountered_during_selection": unavailable,
+            "decode_audit_excluded_source_ids": sorted(config.excluded_source_ids),
             "weak_class_labels": "intentionally_ignored_for_self_supervised_s1",
         },
     )

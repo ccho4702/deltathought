@@ -13,6 +13,7 @@ def test_vggsound_s1_config_uses_paired_official_splits() -> None:
     assert config.train_count == 4096
     assert config.validation_count == config.test_count == 256
     assert "schema-v2" in config.dataset_revision
+    assert config.excluded_source_ids == {"53UdZyM9MyE_000252"}
 
 
 def test_vggsound_selection_skips_missing_and_excluded_sources(tmp_path: Path) -> None:
@@ -32,6 +33,7 @@ def test_vggsound_selection_skips_missing_and_excluded_sources(tmp_path: Path) -
         video_root=video_root,
         audio_root=audio_root,
         excluded_groups={"youtube:source-one"},
+        excluded_source_ids=frozenset({"missing_000001"}),
     )
 
     assert selected == ["source-two_000001.mp4"]

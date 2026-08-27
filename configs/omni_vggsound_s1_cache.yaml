@@ -1,4 +1,4 @@
-canonical_manifest: intermediates/canonical/vggsound/official-2020-s1-subset4608-schema-v2/manifest.json
+canonical_manifest: intermediates/canonical/vggsound/official-2020-s1-subset4608-schema-v2-r2/manifest.json
 omni_config: configs/qwen2_5_omni.yaml
 sample_fps: 2.0
 block_seconds: 2.0

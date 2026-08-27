@@ -1,7 +1,10 @@
 dataset: vggsound
-dataset_revision: official-2020-s1-subset4608-schema-v2
+dataset_revision: official-2020-s1-subset4608-schema-v2-r2
 resource_name: vggsound
 seed: 42
+excluded_source_ids:
+  # Full PyAV and FFmpeg decode audits both reproduce H.264 macroblock errors.
+  - 53UdZyM9MyE_000252
 train_count: 4096
 validation_count: 256
 test_count: 256
@@ -13,4 +16,4 @@ video_root: /mnt/nfs_shared_data/dataset/omniembed/vggsound/video
 audio_root: /mnt/nfs_shared_data/dataset/omniembed/vggsound/audio
 cache_root: intermediates/cache/canonical_vggsound_s1
 output_root: intermediates/canonical
-report_path: outputs/reports/canonical_vggsound_s1.json
+report_path: outputs/reports/canonical_vggsound_s1_r2.json
