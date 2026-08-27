@@ -29,5 +29,7 @@ training:
 evaluation:
   batch_size: 8
   retrieval_limit: 1024
+  minimum_mse_relative_improvement: 0.01
+  minimum_retrieval_absolute_improvement: 0.01
 output_root: outputs/real_pilots/deltatok_vggsound_video
 log_root: logs/experiments

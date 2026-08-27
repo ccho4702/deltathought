@@ -65,6 +65,8 @@ class TrainingConfig:
 class EvaluationConfig:
     batch_size: int
     retrieval_limit: int
+    minimum_mse_relative_improvement: float
+    minimum_retrieval_absolute_improvement: float
 
 
 @dataclass(frozen=True)
@@ -126,6 +128,8 @@ def load_config(path: Path) -> ScaleConfig:
         config.training.gradient_clip_norm,
         config.evaluation.batch_size,
         config.evaluation.retrieval_limit,
+        config.evaluation.minimum_mse_relative_improvement,
+        config.evaluation.minimum_retrieval_absolute_improvement,
     )
     if min(positive) <= 0:
         raise ValueError("Scale DeltaTok controls must be positive")
@@ -339,6 +343,8 @@ def _evaluate_rollout(
     by_horizon: dict[int, dict[str, float]] = {}
     final_reconstructed = []
     final_targets = []
+    final_anchors = []
+    final_reversed = []
     normal_final = anchor_final = reversed_final = 0.0
     for record_index in range(len(data.records)):
         actual = data.load_record(record_index).to(device)
@@ -369,10 +375,17 @@ def _evaluate_rollout(
         reversed_final += float((reverse.float() - final_target).square().mean())
         final_reconstructed.append(reconstructed.mean(1).float().cpu())
         final_targets.append(final_target.mean(1).float().cpu())
+        final_anchors.append(anchor.mean(1).float().cpu())
+        final_reversed.append(reverse.mean(1).float().cpu())
     rec = torch.cat(final_reconstructed)
     target = torch.cat(final_targets)
-    similarity = F.normalize(rec) @ F.normalize(target).T
-    retrieval = float(similarity.argmax(1).eq(torch.arange(len(rec))).float().mean())
+    anchor = torch.cat(final_anchors)
+    reverse = torch.cat(final_reversed)
+
+    def retrieval(values: Tensor) -> float:
+        similarity = F.normalize(values) @ F.normalize(target).T
+        return float(similarity.argmax(1).eq(torch.arange(len(values))).float().mean())
+
     count = len(data.records)
     return {
         "by_horizon": {
@@ -386,7 +399,9 @@ def _evaluate_rollout(
         "final_mse": normal_final / count,
         "anchor_final_mse": anchor_final / count,
         "reversed_delta_final_mse": reversed_final / count,
-        "final_retrieval_r1": retrieval,
+        "final_retrieval_r1": retrieval(rec),
+        "anchor_final_retrieval_r1": retrieval(anchor),
+        "reversed_delta_final_retrieval_r1": retrieval(reverse),
         "retrieval_candidates": count,
         "clips": count,
     }
@@ -580,14 +595,24 @@ def run(
         elif context.is_primary:
             teacher = _evaluate_pairs(unwrap(model), validation, config, context.device)
             rollout = _evaluate_rollout(unwrap(model), validation, context.device)
+            minimum_relative = config.evaluation.minimum_mse_relative_improvement
+            minimum_retrieval = config.evaluation.minimum_retrieval_absolute_improvement
             checks = {
-                "teacher_beats_copy_previous": teacher["mse"] < teacher["copy_previous_mse"],
-                "rollout_beats_anchor_final": rollout["final_mse"] < rollout["anchor_final_mse"],
+                "teacher_beats_copy_previous": teacher["mse"]
+                <= teacher["copy_previous_mse"] * (1 - minimum_relative),
+                "rollout_beats_anchor_final": rollout["final_mse"]
+                <= rollout["anchor_final_mse"] * (1 - minimum_relative),
                 "rollout_beats_reversed_delta": (
-                    rollout["final_mse"] < rollout["reversed_delta_final_mse"]
+                    rollout["final_mse"]
+                    <= rollout["reversed_delta_final_mse"] * (1 - minimum_relative)
                 ),
-                "rollout_retrieval_above_chance": (
-                    rollout["final_retrieval_r1"] > 1 / rollout["retrieval_candidates"]
+                "rollout_retrieval_beats_anchor": (
+                    rollout["final_retrieval_r1"]
+                    >= rollout["anchor_final_retrieval_r1"] + minimum_retrieval
+                ),
+                "rollout_retrieval_beats_reversed_delta": (
+                    rollout["final_retrieval_r1"]
+                    >= rollout["reversed_delta_final_retrieval_r1"] + minimum_retrieval
                 ),
             }
             result = {
