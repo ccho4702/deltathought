@@ -52,6 +52,16 @@ msrvtt-video-cache:
 		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.omni_msrvtt_video_cache \
 		--config configs/omni_msrvtt_video_cache.yaml
 
+msrvtt-video-caption-smoke:
+	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \
+		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.audiocaps_caption_lora \
+		--config configs/msrvtt_video_caption_smoke.yaml
+
+msrvtt-video-caption:
+	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \
+		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.audiocaps_caption_lora \
+		--config configs/msrvtt_video_caption.yaml
+
 backbone-smoke:
 	uv run deltaomni-backbone-smoke
 

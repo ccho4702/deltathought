@@ -53,7 +53,9 @@ def run(
         raise FileExistsError(f"Caption evaluation output already exists: {output_path}")
     config = load_config(config_path)
     signature = run_signature(config)
-    legacy_signature = json.dumps(asdict(config), sort_keys=True, default=str)
+    legacy_config = asdict(config)
+    legacy_config.pop("modality", None)
+    legacy_signature = json.dumps(legacy_config, sort_keys=True, default=str)
     payload = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     if payload.get("signature") not in {signature, legacy_signature}:
         raise ValueError("Caption evaluation checkpoint/configuration mismatch")

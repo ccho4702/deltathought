@@ -25,6 +25,9 @@ def test_caption_lora_targets_only_thinker_text_layers() -> None:
     one_second = load_config(Path("configs/audiocaps_caption_lora_1s.yaml"))
     assert one_second.interface.delta_updates == 9
     assert one_second.training.max_steps == 200
+    video = load_config(Path("configs/msrvtt_video_caption_smoke.yaml"))
+    assert video.modality == "video"
+    assert video.interface.delta_updates == 40
 
 
 def test_delta_prefix_adapter_emits_one_soft_token_per_update() -> None:

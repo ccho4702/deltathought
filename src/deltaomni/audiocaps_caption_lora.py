@@ -94,6 +94,7 @@ class EvaluationConfig:
 @dataclass(frozen=True)
 class CaptionConfig:
     seed: int
+    modality: str
     prefix_manifest: Path
     omni_config: Path
     runtime: RuntimeConfig
@@ -125,6 +126,7 @@ def load_config(path: Path) -> CaptionConfig:
 
     config = CaptionConfig(
         seed=int(raw["seed"]),
+        modality=str(raw.get("modality", "audio")),
         prefix_manifest=resolve(raw["prefix_manifest"]),
         omni_config=resolve(raw["omni_config"]),
         runtime=RuntimeConfig(**raw["runtime"]),
@@ -139,6 +141,8 @@ def load_config(path: Path) -> CaptionConfig:
         raise ValueError("AudioCaps Caption LoRA requires bfloat16")
     if config.training.resume not in {"auto", "never"}:
         raise ValueError("Invalid Caption LoRA resume mode")
+    if config.modality not in {"audio", "video"}:
+        raise ValueError("Caption prefix modality must be audio or video")
     if re.fullmatch(config.lora.target_modules_regex, "model.layers.0.self_attn.q_proj") is None:
         raise ValueError("Caption LoRA regex does not target Thinker text attention")
     if re.fullmatch(config.lora.target_modules_regex, "audio_tower.layers.0.self_attn.q_proj"):
@@ -201,15 +205,27 @@ class PrefixDataset:
         indices: Tensor,
         *,
         delta_indices: Tensor | None = None,
+        caption_indices: Tensor | None = None,
     ) -> tuple[Tensor, Tensor, list[str], list[tuple[str, ...]], list[str]]:
         selected = indices.cpu().tolist()
         delta_selected = selected if delta_indices is None else delta_indices.cpu().tolist()
         payloads = [self.load(index) for index in selected]
         delta_payloads = [self.load(index) for index in delta_selected]
+        caption_selected = (
+            [0] * len(payloads) if caption_indices is None else caption_indices.cpu().tolist()
+        )
+        if any(
+            index < 0 or index >= len(payload["captions"])
+            for index, payload in zip(caption_selected, payloads, strict=True)
+        ):
+            raise ValueError("Caption reference index is out of range")
         return (
             torch.stack([payload["first_full"].float() for payload in payloads]),
             torch.stack([payload["deltas"].float() for payload in delta_payloads]),
-            [payload["captions"][0] for payload in payloads],
+            [
+                payload["captions"][index]
+                for payload, index in zip(payloads, caption_selected, strict=True)
+            ],
             [tuple(payload["captions"]) for payload in payloads],
             [str(payload["source_id"]) for payload in payloads],
         )
@@ -511,12 +527,18 @@ def _load_model(config: CaptionConfig, device: torch.device):
         ),
     ).to(device)
     interface = CaptionInterface(processor, config.interface)
+    if config.modality == "audio":
+        start_token_id = int(base.config.audio_start_token_id)
+        end_token_id = int(base.config.audio_end_token_id)
+    else:
+        start_token_id = int(base.config.vision_start_token_id)
+        end_token_id = int(base.config.vision_end_token_id)
     model = AudioCaptionModel(
         thinker,
         DeltaPrefixAdapter(config.interface).to(device),
         interface,
-        audio_start_token_id=int(base.config.audio_start_token_id),
-        audio_end_token_id=int(base.config.audio_end_token_id),
+        audio_start_token_id=start_token_id,
+        audio_end_token_id=end_token_id,
     ).to(device)
     return model, processor
 
@@ -801,7 +823,19 @@ def run(
                 global_batch = config.runtime.per_device_batch_size * context.world_size
                 indices = torch.randint(0, len(train), (global_batch,), generator=generator)
                 local = indices.reshape(context.world_size, -1)[context.rank]
-                first, deltas, captions, _, _ = train.batch(local)
+                reference_counts = torch.tensor(
+                    [len(train.load(index)["captions"]) for index in local.tolist()]
+                )
+                caption_indices = torch.tensor(
+                    [
+                        int(torch.randint(0, int(count), (), generator=generator))
+                        for count in reference_counts
+                    ]
+                )
+                first, deltas, captions, _, _ = train.batch(
+                    local,
+                    caption_indices=caption_indices,
+                )
                 first, deltas = first.to(context.device), deltas.to(context.device)
                 target_ids, target_mask = core.interface.targets(captions, context.device)
                 synchronize = accumulation == config.runtime.gradient_accumulation_steps - 1
@@ -882,7 +916,7 @@ def run(
                 ),
             }
             result = {
-                "schema": "deltaomni.audiocaps_caption_lora.v1",
+                "schema": f"deltaomni.{config.modality}_caption_lora.v1",
                 "run_id": run_id,
                 "status": "complete",
                 "initial": initial,
