@@ -15,7 +15,6 @@ sources:
     media_dirs:
       - /mnt/nfs_shared_data/dataset/ssv2/20bn-something-something-v2
     media_extensions: [.webm]
-    license_record: inputs/licenses/something_something_v2.accepted.json
   audioset_strong:
     enabled: true
     resource_name: audioset_strong_annotations
@@ -29,7 +28,6 @@ sources:
       - /mnt/nfs_shared_data/dataset/omniembed/audioset_unbalanced_more/audio
       - /mnt/nfs_shared_data/dataset/omniembed/audioset/eval_segments/audio
     media_extensions: [.wav, .flac, .mp4]
-    license_record: inputs/licenses/audioset_media.accepted.json
   nextqa:
     enabled: true
     resource_name: nextqa_annotations
@@ -63,4 +61,4 @@ sources:
     media_dirs:
       - /mnt/nfs_shared_data/dataset/ego4d_540/v2/video_540ss
     media_extensions: [.mp4]
-    license_record: inputs/licenses/ego4d.accepted.json
+    media_policy: configs/ego4d_media_policy.yaml

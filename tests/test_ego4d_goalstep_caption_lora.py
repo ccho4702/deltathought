@@ -14,7 +14,6 @@ def test_goalstep_caption_configs_require_natural_memory_and_delta_gates() -> No
     assert full.evaluation.windows == 128
     assert full.evaluation.minimum_delta_gap == 0.01
     assert full.evaluation.minimum_memory_gap == 0.005
-    assert full.license_record.name == "ego4d.accepted.json"
     assert smoke.input_mode == full.input_mode == "delta"
 
     full_smoke = load_config(Path("configs/ego4d_goalstep_full_caption_smoke.yaml"))

@@ -32,13 +32,12 @@ from deltaomni.ego4d_dynamic_commits import (
 from deltaomni.omni_backbones import QwenOmniThinkerEmbeddingBackend, load_omni_backbone_config
 from deltaomni.omni_nextqa_joint_cache import _encode_batches
 from deltaomni.provenance import audit as audit_provenance
-from deltaomni.provenance import require_approved
 from deltaomni.run_integrity import (
     git_revision,
     git_worktree_is_clean,
+    require_media_policy,
     resolved_input_signature,
     sha256_file,
-    validate_license_record,
 )
 from deltaomni.train_sanity import _atomic_json
 
@@ -59,7 +58,7 @@ class CacheConfig:
     seed: int
     dataset_resource_name: str
     canonical_manifest: Path
-    license_record: Path
+    media_policy: Path
     dynamic_commit_config: Path
     omni_config: Path
     deltatok_config: Path
@@ -72,6 +71,7 @@ class CacheConfig:
     expected_video_tokens: int
     encoder_batch_size: int
     minimum_windows: dict[str, int]
+    maximum_windows: dict[str, int] | None
     runtime: RuntimeConfig
     cache_root: Path
     report_path: Path
@@ -87,7 +87,7 @@ def load_config(path: Path) -> CacheConfig:
 
     paths = {
         "canonical_manifest",
-        "license_record",
+        "media_policy",
         "dynamic_commit_config",
         "omni_config",
         "deltatok_config",
@@ -100,6 +100,11 @@ def load_config(path: Path) -> CacheConfig:
     config = CacheConfig(**values)
     if set(config.minimum_windows) != {"train", "validation"}:
         raise ValueError("Ego4D GoalStep cache thresholds require train and validation")
+    if config.maximum_windows is not None and set(config.maximum_windows) != {
+        "train",
+        "validation",
+    }:
+        raise ValueError("Ego4D GoalStep cache maximums require train and validation")
     positive = (
         config.block_seconds,
         config.sample_fps,
@@ -109,6 +114,7 @@ def load_config(path: Path) -> CacheConfig:
         config.encoder_batch_size,
         config.runtime.cpu_threads,
         *config.minimum_windows.values(),
+        *(config.maximum_windows or {}).values(),
     )
     if min(positive) <= 0 or len(config.deltatok_sha256) != 64:
         raise ValueError("Invalid Ego4D GoalStep cache controls")
@@ -134,6 +140,8 @@ def _windows(
             if window.delta_updates > 0
         ]
         values.sort(key=lambda value: value[1].window_id)
+        if config.maximum_windows is not None:
+            values = values[: config.maximum_windows[split]]
         if len(values) < config.minimum_windows[split]:
             raise ValueError(
                 f"Found {len(values)}/{config.minimum_windows[split]} Ego4D {split} windows"
@@ -295,13 +303,12 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
     root = config_path.resolve().parent.parent
     if not git_worktree_is_clean(root):
         raise RuntimeError("Ego4D GoalStep cache requires a clean Git worktree")
-    license_record = validate_license_record(config.license_record)
-    if license_record["dataset"] != "Ego4D":
-        raise ValueError("Ego4D cache requires an Ego4D acceptance record")
     if sha256_file(config.deltatok_checkpoint) != config.deltatok_sha256:
         raise ValueError("Ego4D video DeltaTok checksum mismatch")
     provenance = audit_provenance(provenance_path)
-    require_approved(provenance, [config.dataset_resource_name])
+    media_policy_sha256 = require_media_policy(
+        provenance, config.dataset_resource_name, config.media_policy
+    )
     dynamic = load_dynamic_config(config.dynamic_commit_config)
     if dynamic.block_seconds != config.block_seconds:
         raise ValueError("Ego4D dynamic commit/cache block duration mismatch")
@@ -310,7 +317,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
         config,
         {
             "canonical_manifest": config.canonical_manifest,
-            "license_record": config.license_record,
+            "media_policy": config.media_policy,
             "dynamic_commit_config": config.dynamic_commit_config,
             "omni_config": config.omni_config,
             "deltatok_config": config.deltatok_config,
@@ -447,7 +454,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                 "cache_signature": signature,
                 "canonical_manifest": str(config.canonical_manifest),
                 "canonical_manifest_sha256": sha256_file(config.canonical_manifest),
-                "license_record_sha256": sha256_file(config.license_record),
+                "media_policy_sha256": media_policy_sha256,
                 "omni_revision": backend.config.revision,
                 "deltatok_sha256": config.deltatok_sha256,
                 "full_tokens": config.expected_video_tokens,

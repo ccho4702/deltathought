@@ -27,8 +27,7 @@ from deltaomni.data.schema import (
     temporal_grid,
 )
 from deltaomni.provenance import audit as audit_provenance
-from deltaomni.provenance import require_approved
-from deltaomni.run_integrity import validate_license_record
+from deltaomni.run_integrity import require_media_policy
 from deltaomni.train_sanity import _atomic_json
 
 
@@ -42,10 +41,11 @@ class GoalStepConfig:
     minimum_commits_per_video: int
     cpu_workers: int
     minimum_available_videos: dict[str, int]
+    maximum_videos: dict[str, int] | None
     annotations: dict[str, Path]
     metadata: Path
     media_root: Path
-    license_record: Path
+    media_policy: Path
     cache_root: Path
     output_root: Path
     report_path: Path
@@ -70,10 +70,15 @@ def load_config(path: Path) -> GoalStepConfig:
         minimum_available_videos={
             split: int(value) for split, value in raw["minimum_available_videos"].items()
         },
+        maximum_videos=(
+            None
+            if raw.get("maximum_videos") is None
+            else {split: int(value) for split, value in raw["maximum_videos"].items()}
+        ),
         annotations={split: resolve(value) for split, value in raw["annotations"].items()},
         metadata=resolve(raw["metadata"]),
         media_root=resolve(raw["media_root"]),
-        license_record=resolve(raw["license_record"]),
+        media_policy=resolve(raw["media_policy"]),
         cache_root=resolve(raw["cache_root"]),
         output_root=resolve(raw["output_root"]),
         report_path=resolve(raw["report_path"]),
@@ -85,12 +90,15 @@ def load_config(path: Path) -> GoalStepConfig:
         raise ValueError("Ego4D GoalStep requires official train and validation splits")
     if set(config.minimum_available_videos) != set(config.annotations):
         raise ValueError("Ego4D GoalStep availability thresholds must cover both splits")
+    if config.maximum_videos is not None and set(config.maximum_videos) != set(config.annotations):
+        raise ValueError("Ego4D GoalStep maximum counts must cover both splits")
     if min(
         config.chunk_seconds,
         config.minimum_segment_seconds,
         config.minimum_commits_per_video,
         config.cpu_workers,
         *config.minimum_available_videos.values(),
+        *(config.maximum_videos or {}).values(),
     ) <= 0:
         raise ValueError("Ego4D GoalStep preprocessing controls must be positive")
     return config
@@ -188,11 +196,10 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
         loaded = read_canonical_dataset(final)
         return {"status": "already_complete", "episodes": {k: len(v) for k, v in loaded.items()}}
 
-    license_record = validate_license_record(config.license_record)
-    if license_record["dataset"] != "Ego4D":
-        raise ValueError("Ego4D preprocessing requires an Ego4D acceptance record")
     provenance = audit_provenance(provenance_path)
-    require_approved(provenance, [config.resource_name])
+    media_policy_sha256 = require_media_policy(
+        provenance, config.resource_name, config.media_policy
+    )
     revision = subprocess.run(
         ["git", "rev-parse", "HEAD"],
         cwd=root,
@@ -228,6 +235,9 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                 missing_media[split].append(uid)
                 continue
             selected[split].append((video, segments))
+        selected[split].sort(key=lambda value: str(value[0]["video_uid"]))
+        if config.maximum_videos is not None:
+            selected[split] = selected[split][: config.maximum_videos[split]]
         if len(selected[split]) < config.minimum_available_videos[split]:
             raise ValueError(
                 f"Ego4D local media coverage fell below the pinned {split} minimum: "
@@ -336,7 +346,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                     "goal_category": video.get("goal_category"),
                     "goal_description": video.get("goal_description"),
                     "metadata_sha256": metadata_sha,
-                    "license_terms_url": license_record["terms_url"],
+                    "media_policy_sha256": media_policy_sha256,
                     "dynamic_commit_boundaries": True,
                     "hierarchy_policy": "deepest_non_irrelevant_segments",
                     "source_video_codec": video_metadata.get("video_codec"),
@@ -358,7 +368,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                 "bytes": path.stat().st_size,
                 "sha256": _sha256(path),
             }
-            for path in (*config.annotations.values(), config.metadata)
+            for path in (*config.annotations.values(), config.metadata, config.media_policy)
         ],
     )
     loaded = read_canonical_dataset(manifest)

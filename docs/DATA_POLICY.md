@@ -21,7 +21,7 @@ GitHub `ccho4702/deltathought` is the authoritative copy of code, configs, lockf
 compact result documentation. Selected large checkpoints are preserved only in the checksummed NAS
 project-backup tree. The detailed mandatory workflow is in `AGENTS.md` and `docs/MIGRATION.md`.
 
-## Acceptance gate
+## Resource gate
 
 A core resource requires:
 
@@ -65,9 +65,9 @@ Recent CodecCap/CodecVDC and OmniDiff artifacts remain literature references unt
 and adoption meet the same gate.
 
 Official approval in the provenance file does not mean media is ready. `deltaomni-data-audit`
-additionally requires local official files, checksums, a non-empty media inventory, and either a
-user-created acceptance record when upstream terms have an acceptance flow or a versioned project
-media policy when no such flow exists.
+additionally requires local official files, checksums, and a non-empty media inventory. Existing
+shared copies are consumed read-only; versioned media policies record internal-use and publication
+boundaries without a separate personal-acceptance-file gate.
 
 NExT-QA and VidOR provide direct downloads and citation requirements rather than click-through
 acceptance. Their videos originate from YFCC100M and retain uploader-selected per-item Creative

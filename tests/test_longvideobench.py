@@ -108,4 +108,4 @@ def test_longvideobench_config_pins_official_release_and_all_validation() -> Non
     assert config.expected_test_questions == 5341
     assert config.expected_archive_videos == 3991
     assert config.expected_annotated_videos == 3761
-    assert config.license_acceptance.name == "longvideobench.accepted.json"
+    assert config.media_policy.name == "longvideobench_media_policy.yaml"

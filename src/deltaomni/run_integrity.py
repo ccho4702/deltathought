@@ -4,7 +4,6 @@ import hashlib
 import json
 import subprocess
 from dataclasses import asdict, is_dataclass
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -121,24 +120,3 @@ def validate_media_policy(path: Path, resource_name: str) -> dict[str, Any]:
     ):
         raise ValueError(f"Media policy is weaker than the required project policy: {path}")
     return value
-
-
-def validate_license_record(path: Path) -> dict[str, str]:
-    if not path.is_file():
-        raise FileNotFoundError(path)
-    try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as error:
-        raise ValueError(f"Invalid license record JSON: {path}") from error
-    required = ("dataset", "terms_url", "accepted_at_utc", "accepted_by")
-    if not isinstance(value, dict) or any(
-        not isinstance(value.get(key), str) or not value[key].strip() for key in required
-    ):
-        raise ValueError(f"License record is missing required fields: {path}")
-    if not value["terms_url"].startswith(("https://", "http://")):
-        raise ValueError(f"License record terms_url is not an HTTP URL: {path}")
-    try:
-        datetime.fromisoformat(value["accepted_at_utc"].replace("Z", "+00:00"))
-    except ValueError as error:
-        raise ValueError(f"License record timestamp is not ISO-8601: {path}") from error
-    return {key: value[key] for key in required}

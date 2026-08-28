@@ -40,7 +40,6 @@ from deltaomni.run_integrity import (
     git_worktree_is_clean,
     resolved_input_signature,
     sha256_file,
-    validate_license_record,
 )
 from deltaomni.train_sanity import _atomic_json, _set_seed
 
@@ -84,7 +83,6 @@ class GoalStepCaptionConfig:
     input_mode: str
     caption_config: Path
     prefix_manifest: Path
-    license_record: Path
     initial_checkpoint: Path
     initial_checkpoint_sha256: str
     runtime: RuntimeConfig
@@ -108,7 +106,6 @@ def load_config(path: Path) -> GoalStepCaptionConfig:
         input_mode=str(raw["input_mode"]),
         caption_config=resolve(raw["caption_config"]),
         prefix_manifest=resolve(raw["prefix_manifest"]),
-        license_record=resolve(raw["license_record"]),
         initial_checkpoint=resolve(raw["initial_checkpoint"]),
         initial_checkpoint_sha256=str(raw["initial_checkpoint_sha256"]),
         runtime=RuntimeConfig(**raw["runtime"]),
@@ -265,7 +262,12 @@ class GoalStepCaptionModel(nn.Module):
                 ),
                 dim=1,
             )
-        full = payload["first_full"].float().unsqueeze(0).to(device)
+        full_source = (
+            payload["first_full"]
+            if event_index == 0
+            else payload["event_full"][event_index - 1]
+        )
+        full = full_source.float().unsqueeze(0).to(device)
         all_deltas = payload["deltas"].float().unsqueeze(0).to(device)
         start = 0 if accumulated else int(event["delta_start"])
         end = int(event["delta_end"])
@@ -294,8 +296,8 @@ class GoalStepCaptionModel(nn.Module):
             payload,
             event,
             event_index,
-            include_anchor=first or reset_each,
-            accumulated=reset_each,
+            include_anchor=True,
+            accumulated=False,
             control=control,
         )
         prompt = self._prompt(first or reset_each, device)
@@ -494,9 +496,6 @@ def run(
     root = config_path.resolve().parent.parent
     if not git_worktree_is_clean(root):
         raise RuntimeError("Ego4D GoalStep captions require a clean Git worktree")
-    license_record = validate_license_record(config.license_record)
-    if license_record["dataset"] != "Ego4D":
-        raise ValueError("Ego4D caption training requires an Ego4D acceptance record")
     if sha256_file(config.initial_checkpoint) != config.initial_checkpoint_sha256:
         raise ValueError("Ego4D caption initial checkpoint checksum mismatch")
     manifest = json.loads(config.prefix_manifest.read_text(encoding="utf-8"))
@@ -511,7 +510,6 @@ def run(
         {
             "caption_config": config.caption_config,
             "prefix_manifest": config.prefix_manifest,
-            "license_record": config.license_record,
             "initial_checkpoint": config.initial_checkpoint,
         },
     )

@@ -11,7 +11,7 @@
 
 Each modality owns an independent `anchor`, `previous`, `delta_slots`, evidence `load`, and section
 age. `previous` is the immediately preceding embedding; `anchor` is the full embedding at the last
-explicit FULL refresh. Caption generation and language memory are separate from this representation
+caption commit/FULL refresh. Caption generation and language memory are separate from this representation
 state: emitting a caption never clears the Thinker's autoregressive context.
 
 ```text
@@ -41,12 +41,12 @@ reached, its load reaches capacity, or its maximum age is reached. At commit it:
 
 1. emits `<CAPTION_D_m> ... </CAPTION_D_m>` from anchor and accumulated delta;
 2. retains the emitted caption tokens and all earlier captions in the same Thinker KV cache;
-3. closes or resets only the modality-local accumulation range when required by its policy;
-4. continues consecutive deltas from the current modality state without an automatic FULL refresh.
+3. refreshes the video anchor with the current full embedding and resets the visual accumulation;
+4. continues consecutive deltas from that refreshed visual state.
 
-An explicit `<FULL_m>` refresh is allowed at a declared context boundary, such as a long
-unannotated gap or maximum window length. It does not erase caption tokens from the Thinker KV
-cache. Evaluation must distinguish modality-state refresh from language-context reset; treating
+The `<FULL_m>` refresh after a caption does not erase caption tokens from the Thinker KV cache.
+Additional refreshes are allowed at declared context boundaries such as a long unannotated gap.
+Evaluation must distinguish modality-state refresh from language-context reset; treating
 independent `generate()` calls as continuous memory is invalid.
 
 ## Loss

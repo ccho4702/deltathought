@@ -1,0 +1,20 @@
+schema: deltaomni.media_policy.v1
+dataset: longvideobench
+resource_name: longvideobench
+media_origin: Official LongVideoBench release already present on the shared NAS
+official_sources:
+  dataset: https://huggingface.co/datasets/longvideobench/LongVideoBench
+  code: https://github.com/longvideobench/LongVideoBench
+  paper: https://proceedings.neurips.cc/paper_files/paper/2024/hash/329ad516cf7a6ac306f29882e9c77558-Abstract-Datasets_and_Benchmarks_Track.html
+local_root: /mnt/nfs_shared_data/dataset/LongVideoBench
+rights_basis:
+  usage_condition: user explicitly authorized internal research use of the existing shared copy
+  media_scope: official split-tar videos, subtitles, and validation/test annotations
+project_policy:
+  use_scope: internal non-commercial research
+  raw_media_redistribution: prohibited
+  recoverable_embedding_redistribution: prohibited
+  publication_requires_per_item_license_audit: true
+  allowed_public_outputs: [source_code, aggregate_metrics, non_recoverable_summaries]
+required_citations: [LongVideoBench-NeurIPS-2024]
+reviewed_at: 2026-08-29

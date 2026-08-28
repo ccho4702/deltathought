@@ -26,18 +26,18 @@ S_t^m = Accumulate_m(S_(t-1)^m, d_t^m)
 z_hat_t^m = Reconstruct_m(A_k^m, S_t^m)
 ```
 
-`A_k` is the full embedding at the last explicit refresh. Each delta compares immediately
+`A_k` is the full embedding at the last caption commit/refresh. Each delta compares immediately
 consecutive embeddings. A caption commit does not clear the Thinker context: its generated tokens
 remain in the same autoregressive KV cache and later delta chunks continue from that state. A FULL
-refresh is reserved for a declared context/window boundary, not forced after every caption.
+refreshes the visual anchor after every caption while retaining the caption in language memory.
 
 ```text
 <FULL_A> <FULL_V>
 <DELTA_A> <DELTA_V>
 ...
-<CAPTION_D_V>video change caption</CAPTION_D_V>
+<CAPTION_D_V>video change caption</CAPTION_D_V> <FULL_V>
 <DELTA_V> ... <CAPTION_D_V>later caption with prior caption still in KV</CAPTION_D_V>
-... <FULL_V>  # explicit long-gap/window refresh only
+<FULL_V> ...
 ```
 
 Audio and video may commit at the same timestamp or at different timestamps.

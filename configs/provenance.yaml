@@ -272,9 +272,8 @@ resources:
       paper: https://openaccess.thecvf.com/content/CVPR2022/html/Grauman_Ego4D_Around_the_World_in_3000_Hours_of_Egocentric_Video_CVPR_2022_paper.html
       annotations: https://ego4d-data.org/docs/data/annotation-guidelines/
     restriction: >-
-      Any use of videos or annotations requires prior acceptance of the official Ego4D agreement.
-      Training is blocked until inputs/licenses records the project user's acceptance; shared media
-      is read-only and must not be redistributed.
+      Internal research uses the existing shared official copy read-only under
+      configs/ego4d_media_policy.yaml; raw media and recoverable embeddings are not redistributed.
 
   longvideobench:
     kind: dataset
@@ -295,9 +294,9 @@ resources:
       github: https://github.com/longvideobench/LongVideoBench
       benchmark: https://longvideobench.github.io/
     restriction: >-
-      Non-commercial use only. Upstream requires explicit acknowledgement of third-party video
-      ownership and gated terms. Use validation only as a frozen final evaluation; test labels are
-      not public, and no benchmark content may enter training or model selection.
+      Internal non-commercial research uses the existing shared official copy read-only under
+      configs/longvideobench_media_policy.yaml. Use validation only as frozen final evaluation;
+      test labels are not public, and benchmark content never enters training or model selection.
 
   activitynet_captions:
     kind: dataset

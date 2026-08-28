@@ -39,17 +39,15 @@ validation, and 1,000 test episodes with 47,692 human QA items. All split files 
 checksum, count, round-trip, and source-group disjointness checks. Of 5,440 video containers, 5,406
 contain an audio stream and 34 correctly serialize `media.audio` as null. The retained compact
 summary is `outputs/reports/canonical_nextqa_v2.json`; generated canonical records remain under
-`intermediates/canonical/` and are reproducible from the immutable shared media. The media license
-acceptance record is not present locally and therefore serializes as null; training remains gated on
-resolving that record. The earlier non-r2 revision is deprecated because it recorded a nonexistent
-license-record path rather than null.
+`intermediates/canonical/` and are reproducible from the immutable shared media. The earlier non-r2
+revision is deprecated because it recorded a nonexistent license-record path rather than null.
 
 Completed SSV2 revision `official-v2-ann-b24e4609-schema-v2` contains 168,913 train, 24,777
 validation, and 27,157 test episodes. Every episode has one official video action caption, no QA,
 and no audio stream. All 220,847 media files were present and every split passed schema, checksum,
 count, round-trip, and source-group disjointness checks. The manifest SHA-256 is
 `25b8fb4b524a32be41aece867e439c136f4943a01a96189c7d958d6230cd7459`. The local media-license
-record is absent and explicitly null, so training remains gated on resolving it.
+record is absent and explicitly null; the existing shared copy is used read-only.
 
 ## Null semantics
 

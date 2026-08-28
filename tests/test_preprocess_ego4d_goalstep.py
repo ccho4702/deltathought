@@ -56,4 +56,8 @@ def test_goalstep_config_defines_variable_commit_training_source() -> None:
     assert config.chunk_seconds == 1.0
     assert config.minimum_commits_per_video == 2
     assert config.minimum_available_videos == {"train": 275, "validation": 69}
-    assert config.license_record.name == "ego4d.accepted.json"
+    assert config.maximum_videos is None
+
+    smoke = load_config(Path("configs/canonical/ego4d_goalstep_smoke.yaml"))
+    assert smoke.maximum_videos == {"train": 8, "validation": 4}
+    assert config.media_policy.name == "ego4d_media_policy.yaml"

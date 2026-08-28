@@ -16,9 +16,13 @@ def test_ego4d_cache_pins_dynamic_one_second_video_windows() -> None:
     assert config.sample_fps == 2.0
     assert config.expected_video_tokens == 64
     assert config.minimum_windows == {"train": 1700, "validation": 470}
-    assert config.license_record.name == "ego4d.accepted.json"
+    assert config.maximum_windows is None
+    assert config.media_policy.name == "ego4d_media_policy.yaml"
     assert CACHE_SCHEMA.endswith(".v2")
     assert MANIFEST_SCHEMA.endswith(".v2")
+
+    smoke = load_config(Path("configs/omni_ego4d_goalstep_cache_smoke.yaml"))
+    assert smoke.maximum_windows == {"train": 8, "validation": 4}
 
 
 def test_ego4d_cache_records_exact_commit_delta_ranges() -> None:

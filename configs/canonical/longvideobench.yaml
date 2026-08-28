@@ -5,7 +5,7 @@ validation_annotations: /mnt/nfs_shared_data/dataset/LongVideoBench/lvb_val.json
 test_annotations: /mnt/nfs_shared_data/dataset/LongVideoBench/lvb_test_wo_gt.json
 video_parts_glob: videos.tar.part.*
 subtitles_archive: /mnt/nfs_shared_data/dataset/LongVideoBench/subtitles.tar
-license_acceptance: inputs/licenses/longvideobench.accepted.json
+media_policy: configs/longvideobench_media_policy.yaml
 expected_validation_questions: 1337
 expected_test_questions: 5341
 expected_question_categories: 17

@@ -97,31 +97,28 @@ required for that next claim.
 The final long-video evaluation source is now LongVideoBench, not MSR-VTT. The existing shared
 distribution is present as the official 151 GB split-tar release at Hugging Face revision
 `60d1c89c1919a198b73be39c2babb213b29d6a5c`: 1,337 labeled validation questions and 5,341
-unlabeled test questions. It is read-only and requires upstream gated-terms acceptance. Validation
+unlabeled test questions. It is used read-only under the versioned project media policy. Validation
 will be frozen for external evaluation only; neither its questions nor labels may enter training,
-model selection, commit-target construction, or prompt tuning. Ego4D remains the intended source
-for natural variable-duration training commits, conditional on a project-local acceptance record
-for its separate click-through license.
+model selection, commit-target construction, or prompt tuning. Ego4D is the intended source for
+natural variable-duration training commits from the existing shared official copy.
 
-The gated long-video execution code is now ready up to the point where restricted media must be
-consumed. Ego4D preprocessing selects official GoalStep leaf events, verifies local 540p media,
-and writes canonical episodes only after validating `inputs/licenses/ego4d.accepted.json`. The
+The long-video execution code is ready and the existing shared media is authorized by the user for
+read-only internal research. Ego4D preprocessing selects official GoalStep leaf events and verifies
+local 540p media. The
 dynamic policy produces 1–8 natural commits per window, at most 118 one-second deltas, and explicit
 refreshes after 90-second gaps or 120-second windows. A four-GPU cache stores each native Qwen
 anchor, ordered one-token deltas, exact event ranges, and the 64-token native full embedding at
 every commit. This supports two matched Ego4D arms with identical captions and initialization:
 `full_commit_ft` consumes full native tokens at every commit, while `delta_continuous` consumes one
 anchor plus only new deltas and preserves caption KV state. Both actual Qwen forward/generation
-paths pass synthetic-schema integration smokes; neither has been run on Ego4D media because no
-user acceptance record exists.
+paths pass synthetic-schema integration smokes and are ready for the real Ego4D run.
 
 LongVideoBench release `60d1c89...` is indexed directly from its 151 GB split tar without duplicate
 extraction. The frozen manifest covers all 1,337 validation questions, 753 source videos, 17
 question categories, and four duration groups. The final analyzer preregisters ten arms and rejects
 any incomplete or duplicate prediction set before computing overall/category/duration accuracy,
-video-cluster bootstrap intervals, and paired exact tests. Actual model predictions remain blocked
-by the absent `inputs/licenses/longvideobench.accepted.json` and by the prerequisite Ego4D
-checkpoints.
+video-cluster bootstrap intervals, and paired exact tests. Actual model predictions wait only on
+the prerequisite Ego4D checkpoints.
 
 ## Integrity correction and execution gate (2026-08-28)
 

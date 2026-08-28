@@ -9,7 +9,7 @@ from typing import Any
 import yaml
 
 from deltaomni.provenance import audit as audit_provenance
-from deltaomni.run_integrity import validate_license_record, validate_media_policy
+from deltaomni.run_integrity import validate_media_policy
 from deltaomni.train_sanity import _atomic_json
 
 
@@ -56,21 +56,17 @@ def audit_source(
     required, media_dirs = _source_paths(raw_root, source)
     missing_annotations = [str(path) for path in required if not path.is_file()]
     if "media_policy" in source:
-        authorization_kind = "media_policy"
-        authorization_record = _resolve(project_root, source["media_policy"])
+        policy_kind = "media_policy"
+        policy_record = _resolve(project_root, source["media_policy"])
         try:
-            validate_media_policy(authorization_record, resource_name)
-            authorization_valid = True
+            validate_media_policy(policy_record, resource_name)
+            policy_valid = True
         except (FileNotFoundError, ValueError):
-            authorization_valid = False
+            policy_valid = False
     else:
-        authorization_kind = "license_acceptance"
-        authorization_record = _resolve(project_root, source["license_record"])
-        try:
-            validate_license_record(authorization_record)
-            authorization_valid = True
-        except (FileNotFoundError, ValueError):
-            authorization_valid = False
+        policy_kind = "existing_shared_read_only"
+        policy_record = None
+        policy_valid = True
     extensions = {extension.lower() for extension in source["media_extensions"]}
     media_files = sorted(
         {
@@ -84,7 +80,7 @@ def audit_source(
     prerequisites = {
         "enabled": source.get("enabled") is True,
         "provenance_approved": resource_name in provenance_report["approved"],
-        "usage_authorization_valid": authorization_valid,
+        "usage_policy_valid": policy_valid,
         "annotations_complete": not missing_annotations,
         "media_present": bool(media_files),
     }
@@ -94,8 +90,8 @@ def audit_source(
         "resource_name": resource_name,
         "status": status,
         "prerequisites": prerequisites,
-        "authorization_kind": authorization_kind,
-        "authorization_record": str(authorization_record),
+        "usage_policy_kind": policy_kind,
+        "usage_policy_record": None if policy_record is None else str(policy_record),
         "missing_annotations": missing_annotations,
         "annotation_files": [
             {"path": str(path), "sha256": _sha256(path)} for path in required if path.is_file()

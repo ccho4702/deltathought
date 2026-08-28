@@ -14,7 +14,7 @@ from typing import Any, BinaryIO
 import yaml
 
 from deltaomni.provenance import audit as audit_provenance
-from deltaomni.provenance import require_approved
+from deltaomni.run_integrity import require_media_policy
 from deltaomni.train_sanity import _atomic_json
 
 
@@ -27,7 +27,7 @@ class LongVideoBenchConfig:
     test_annotations: Path
     video_parts_glob: str
     subtitles_archive: Path
-    license_acceptance: Path
+    media_policy: Path
     expected_validation_questions: int
     expected_test_questions: int
     expected_question_categories: int
@@ -61,7 +61,7 @@ def load_config(path: Path) -> LongVideoBenchConfig:
         test_annotations=resolve(raw["test_annotations"]),
         video_parts_glob=str(raw["video_parts_glob"]),
         subtitles_archive=resolve(raw["subtitles_archive"]),
-        license_acceptance=resolve(raw["license_acceptance"]),
+        media_policy=resolve(raw["media_policy"]),
         expected_validation_questions=int(raw["expected_validation_questions"]),
         expected_test_questions=int(raw["expected_test_questions"]),
         expected_question_categories=int(raw["expected_question_categories"]),
@@ -307,22 +307,12 @@ def _annotations(path: Path, *, labeled: bool) -> list[dict[str, Any]]:
     return values
 
 
-def _acceptance(path: Path, dataset_revision: str) -> dict[str, Any] | None:
-    if not path.is_file():
-        return None
-    value = json.loads(path.read_text(encoding="utf-8"))
-    required = {"dataset", "terms_url", "accepted_at_utc", "accepted_by"}
-    if not isinstance(value, dict) or not required <= value.keys():
-        raise ValueError(f"Malformed LongVideoBench acceptance record: {path}")
-    if value["dataset"] != "LongVideoBench":
-        raise ValueError("LongVideoBench acceptance record names another dataset")
-    return {**value, "dataset_revision": dataset_revision}
-
-
 def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
     config = load_config(config_path)
     provenance = audit_provenance(provenance_path)
-    require_approved(provenance, [config.resource_name])
+    media_policy_sha256 = require_media_policy(
+        provenance, config.resource_name, config.media_policy
+    )
     validation = _annotations(config.validation_annotations, labeled=True)
     test = _annotations(config.test_annotations, labeled=False)
     if len(validation) != config.expected_validation_questions:
@@ -364,7 +354,6 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
             f"subtitles={len(missing_subtitle)}"
         )
 
-    acceptance = _acceptance(config.license_acceptance, config.dataset_revision)
     source_metadata = {
         path.name: _huggingface_metadata(config.raw_root, path, config.dataset_revision)
         for path in (
@@ -397,6 +386,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
         "annotation_sha256": annotation_hashes,
         "source_metadata": source_metadata,
         "provenance_sha256": _sha256(provenance_path),
+        "media_policy_sha256": media_policy_sha256,
     }
     frozen = {
         "schema": "deltaomni.longvideobench_frozen_validation.v1",
@@ -415,8 +405,8 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
     }
     report = {
         "schema": "deltaomni.longvideobench_readiness.v1",
-        "status": "ready" if acceptance else "blocked_missing_license_acceptance",
-        "ready": acceptance is not None,
+        "status": "ready",
+        "ready": True,
         "dataset_revision": config.dataset_revision,
         "validation_questions": len(validation),
         "test_questions_without_labels": len(test),
@@ -426,7 +416,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
         "question_categories": sorted(categories),
         "duration_groups": sorted({int(row["duration_group"]) for row in rows}),
         "annotation_sha256": annotation_hashes,
-        "license_acceptance": acceptance,
+        "media_policy_sha256": media_policy_sha256,
         "provenance_approved": True,
         "completed_at_utc": datetime.now(UTC).isoformat(),
     }

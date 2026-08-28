@@ -1,8 +1,7 @@
 seed: 42
 input_mode: full
 caption_config: configs/ego4d_goalstep_caption_base.yaml
-prefix_manifest: intermediates/cache/omni_ego4d_goalstep/manifest.json
-license_record: inputs/licenses/ego4d.accepted.json
+prefix_manifest: intermediates/cache/omni_ego4d_goalstep_smoke/manifest.json
 initial_checkpoint: outputs/real_pilots/msrvtt_continuous_caption/msrvtt-continuous-caption-ranking-400step-main/checkpoints/step-000400.pt
 initial_checkpoint_sha256: 5815a6376f12c471e2c9b96dbb0a4f96d8fb8640e256139d2cd52413da4becef
 runtime:

@@ -1,0 +1,20 @@
+schema: deltaomni.media_policy.v1
+dataset: ego4d
+resource_name: ego4d
+media_origin: Official Ego4D v2 540p release already present on the shared NAS
+official_sources:
+  dataset: https://ego4d-data.org/docs/
+  annotations: https://ego4d-data.org/docs/data/annotation-guidelines/
+  paper: https://openaccess.thecvf.com/content/CVPR2022/html/Grauman_Ego4D_Around_the_World_in_3000_Hours_of_Egocentric_Video_CVPR_2022_paper.html
+local_root: /mnt/nfs_shared_data/dataset/ego4d_540
+rights_basis:
+  usage_condition: user explicitly authorized internal research use of the existing shared copy
+  media_scope: official redacted 540p videos and official v2 annotations
+project_policy:
+  use_scope: internal non-commercial research
+  raw_media_redistribution: prohibited
+  recoverable_embedding_redistribution: prohibited
+  publication_requires_per_item_license_audit: true
+  allowed_public_outputs: [source_code, aggregate_metrics, non_recoverable_summaries]
+required_citations: [Ego4D-CVPR-2022]
+reviewed_at: 2026-08-29

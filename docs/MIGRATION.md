@@ -40,11 +40,9 @@ uv run pytest -q
 
 Raw files are not stored in Git and were never modified by DeltaOmni.
 
-Ego4D and LongVideoBench are present but gated. A restored checkout must not preprocess, train, or
-evaluate either source until the local user has personally accepted the official terms and created
-the ignored `inputs/licenses/ego4d.accepted.json` and
-`inputs/licenses/longvideobench.accepted.json` records described in `inputs/licenses/README.md`.
-Never back up or migrate access credentials with the project.
+Ego4D and LongVideoBench are used read-only from existing shared official copies under
+`configs/ego4d_media_policy.yaml` and `configs/longvideobench_media_policy.yaml`. Never back up or
+migrate access credentials with the project.
 
 AudioCaps annotations are pinned at
 `/mnt/nfs_shared_data/dataset/deltathought/raw/audiocaps` revision

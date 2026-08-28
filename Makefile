@@ -2,7 +2,7 @@ GPU_IDS ?= 0,1,2,3
 NPROC_PER_NODE ?= 4
 EVAL_GPU_ID ?= 0
 
-.PHONY: setup lint test sanity verify provenance data-audit data-audit-report annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong audit-longvideobench analyze-longvideobench-qa preprocess-ego4d-goalstep cache-ego4d-goalstep ego4d-goalstep-caption-smoke ego4d-goalstep-caption ego4d-goalstep-full-caption-smoke ego4d-goalstep-full-caption backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot nextqa-readiness nextqa-joint-cache-v2 nextqa-joint-cache-s3 nextqa-vanilla-controls-v2 nextqa-vanilla-controls-analysis nextqa-video-lora-smoke nextqa-video-lora-train nextqa-stage3-preflight msrvtt-raw-caption-smoke msrvtt-raw-caption msrvtt-raw-caption-overfit msrvtt-raw-caption-compare msrvtt-continuous-caption-smoke msrvtt-continuous-caption report verify-code verify-research verify-all
+.PHONY: setup lint test sanity verify provenance data-audit data-audit-report annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong audit-longvideobench analyze-longvideobench-qa preprocess-ego4d-goalstep-smoke preprocess-ego4d-goalstep cache-ego4d-goalstep-smoke cache-ego4d-goalstep ego4d-goalstep-caption-smoke ego4d-goalstep-caption ego4d-goalstep-full-caption-smoke ego4d-goalstep-full-caption backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot nextqa-readiness nextqa-joint-cache-v2 nextqa-joint-cache-s3 nextqa-vanilla-controls-v2 nextqa-vanilla-controls-analysis nextqa-video-lora-smoke nextqa-video-lora-train nextqa-stage3-preflight msrvtt-raw-caption-smoke msrvtt-raw-caption msrvtt-raw-caption-overfit msrvtt-raw-caption-compare msrvtt-continuous-caption-smoke msrvtt-continuous-caption report verify-code verify-research verify-all
 
 setup:
 	uv sync --frozen --group dev
@@ -53,10 +53,19 @@ analyze-longvideobench-qa:
 preprocess-ego4d-goalstep:
 	uv run --frozen deltaomni-preprocess-ego4d-goalstep
 
+preprocess-ego4d-goalstep-smoke:
+	uv run --frozen deltaomni-preprocess-ego4d-goalstep \
+		--config configs/canonical/ego4d_goalstep_smoke.yaml
+
 cache-ego4d-goalstep:
 	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \
 		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.omni_ego4d_goalstep_cache \
 		--config configs/omni_ego4d_goalstep_cache.yaml
+
+cache-ego4d-goalstep-smoke:
+	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \
+		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.omni_ego4d_goalstep_cache \
+		--config configs/omni_ego4d_goalstep_cache_smoke.yaml
 
 ego4d-goalstep-caption-smoke:
 	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \

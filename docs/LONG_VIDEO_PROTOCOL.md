@@ -14,8 +14,8 @@ only. MSR-VTT remains an engineering and short-caption baseline; it is not long-
 - LongVideoBench questions, answers, subtitles, categories, durations, and media never provide a
   training target, threshold, prompt-development example, checkpoint-selection metric, or commit
   boundary.
-- Both datasets remain blocked until the local user records acceptance of their separate official
-  gated terms under `inputs/licenses/`. Credentials are never recorded.
+- Ego4D and LongVideoBench use their existing shared official copies read-only under versioned
+  project media policies. Credentials are never recorded.
 
 ## Training arms
 
@@ -34,8 +34,8 @@ selection rule.
 
 The dynamic commit policy uses one-second DeltaTok blocks but does not use nine fixed updates.
 Official segment ends determine caption commits. A window contains at most 120 seconds and eight
-commits; a gap above 90 seconds starts an explicit FULL refresh of visual state without clearing
-caption KV memory. The frozen local distribution
+commits; every caption commit refreshes visual FULL state without clearing caption KV memory, and a
+gap above 90 seconds starts a new bounded window. The frozen local distribution
 currently yields train commit spans with median 12, p95 57, and maximum 118 delta updates.
 
 ## LongVideoBench evaluation arms

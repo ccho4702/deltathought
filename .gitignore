@@ -9,4 +9,3 @@ outputs/
 logs/
 inputs/data/raw/
 inputs/models/
-inputs/licenses/*.accepted.json
