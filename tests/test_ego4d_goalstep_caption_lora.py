@@ -15,6 +15,13 @@ def test_goalstep_caption_configs_require_natural_memory_and_delta_gates() -> No
     assert full.evaluation.minimum_delta_gap == 0.01
     assert full.evaluation.minimum_memory_gap == 0.005
     assert full.license_record.name == "ego4d.accepted.json"
+    assert smoke.input_mode == full.input_mode == "delta"
+
+    full_smoke = load_config(Path("configs/ego4d_goalstep_full_caption_smoke.yaml"))
+    full_baseline = load_config(Path("configs/ego4d_goalstep_full_caption.yaml"))
+    assert full_smoke.input_mode == full_baseline.input_mode == "full"
+    assert full_baseline.training.max_steps == full.training.max_steps
+    assert full_baseline.evaluation.windows == full.evaluation.windows
 
 
 def test_goalstep_adapter_expands_learned_msrvtt_positions() -> None:

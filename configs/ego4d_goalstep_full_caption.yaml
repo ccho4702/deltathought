@@ -1,5 +1,5 @@
 seed: 42
-input_mode: delta
+input_mode: full
 caption_config: configs/ego4d_goalstep_caption_base.yaml
 prefix_manifest: intermediates/cache/omni_ego4d_goalstep/manifest.json
 license_record: inputs/licenses/ego4d.accepted.json
@@ -29,6 +29,6 @@ evaluation:
   max_new_tokens: 32
   minimum_delta_gap: 0.01
   minimum_memory_gap: 0.005
-output_root: outputs/real_pilots/ego4d_goalstep_caption
+output_root: outputs/real_pilots/ego4d_goalstep_full_caption
 log_root: logs/experiments
-report_path: outputs/reports/ego4d_goalstep_caption.json
+report_path: outputs/reports/ego4d_goalstep_full_caption.json

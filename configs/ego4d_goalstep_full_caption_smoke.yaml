@@ -1,5 +1,5 @@
 seed: 42
-input_mode: delta
+input_mode: full
 caption_config: configs/ego4d_goalstep_caption_base.yaml
 prefix_manifest: intermediates/cache/omni_ego4d_goalstep/manifest.json
 license_record: inputs/licenses/ego4d.accepted.json
@@ -10,25 +10,25 @@ runtime:
   backend: nccl
   nccl_compatibility_mode: true
   cpu_threads: 4
-  gradient_accumulation_steps: 4
-  cache_entries: 512
+  gradient_accumulation_steps: 2
+  cache_entries: 64
 training:
   learning_rate: 0.00005
   adapter_learning_rate: 0.0002
   weight_decay: 0.0001
-  warmup_steps: 50
-  max_steps: 800
-  checkpoint_interval_steps: 100
-  keep_last_checkpoints: 3
+  warmup_steps: 10
+  max_steps: 40
+  checkpoint_interval_steps: 20
+  keep_last_checkpoints: 2
   gradient_clip_norm: 1.0
   zero_ranking_weight: 1.0
   zero_ranking_margin: 0.1
   resume: auto
 evaluation:
-  windows: 128
+  windows: 8
   max_new_tokens: 32
-  minimum_delta_gap: 0.01
-  minimum_memory_gap: 0.005
-output_root: outputs/real_pilots/ego4d_goalstep_caption
+  minimum_delta_gap: 0.005
+  minimum_memory_gap: 0.001
+output_root: outputs/real_pilots/ego4d_goalstep_full_caption_smoke
 log_root: logs/experiments
-report_path: outputs/reports/ego4d_goalstep_caption.json
+report_path: outputs/reports/ego4d_goalstep_full_caption_smoke.json

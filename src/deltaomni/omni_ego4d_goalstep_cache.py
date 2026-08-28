@@ -42,8 +42,8 @@ from deltaomni.run_integrity import (
 )
 from deltaomni.train_sanity import _atomic_json
 
-CACHE_SCHEMA = "deltaomni.omni_ego4d_goalstep_window.v1"
-MANIFEST_SCHEMA = "deltaomni.omni_ego4d_goalstep_manifest.v1"
+CACHE_SCHEMA = "deltaomni.omni_ego4d_goalstep_window.v2"
+MANIFEST_SCHEMA = "deltaomni.omni_ego4d_goalstep_manifest.v2"
 
 
 @dataclass(frozen=True)
@@ -258,7 +258,11 @@ def _valid(
         value = torch.load(path, map_location="cpu", weights_only=False)
     except (EOFError, OSError, RuntimeError):
         return False
-    first, deltas = value.get("first_full"), value.get("deltas")
+    first, deltas, event_full = (
+        value.get("first_full"),
+        value.get("deltas"),
+        value.get("event_full"),
+    )
     assert episode.media.video is not None
     return bool(
         value.get("schema") == CACHE_SCHEMA
@@ -277,6 +281,11 @@ def _valid(
         and tuple(deltas.shape) == (window.delta_updates, 1, delta_width)
         and deltas.dtype == torch.float16
         and torch.isfinite(deltas).all()
+        and isinstance(event_full, torch.Tensor)
+        and tuple(event_full.shape)
+        == (len(window.commits), config.expected_video_tokens, full_width)
+        and event_full.dtype == torch.float16
+        and torch.isfinite(event_full).all()
     )
 
 
@@ -373,6 +382,14 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
                     "final_block": window.final_block,
                     "first_full": features[0].cpu().to(torch.float16),
                     "deltas": torch.stack(deltas),
+                    "event_full": torch.stack(
+                        [
+                            features[
+                                commit.current_full_block - window.anchor_block
+                            ].cpu().to(torch.float16)
+                            for commit in window.commits
+                        ]
+                    ),
                     "events": _event_records(window),
                     "truncated_precontext": window.truncated_precontext,
                     "media_sha256": episode.media.video.sha256,

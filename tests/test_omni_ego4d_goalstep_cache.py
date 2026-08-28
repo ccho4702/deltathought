@@ -1,7 +1,12 @@
 from pathlib import Path
 
 from deltaomni.ego4d_dynamic_commits import CommitWindow, DynamicCommit
-from deltaomni.omni_ego4d_goalstep_cache import _event_records, load_config
+from deltaomni.omni_ego4d_goalstep_cache import (
+    CACHE_SCHEMA,
+    MANIFEST_SCHEMA,
+    _event_records,
+    load_config,
+)
 
 
 def test_ego4d_cache_pins_dynamic_one_second_video_windows() -> None:
@@ -12,6 +17,8 @@ def test_ego4d_cache_pins_dynamic_one_second_video_windows() -> None:
     assert config.expected_video_tokens == 64
     assert config.minimum_windows == {"train": 1700, "validation": 470}
     assert config.license_record.name == "ego4d.accepted.json"
+    assert CACHE_SCHEMA.endswith(".v2")
+    assert MANIFEST_SCHEMA.endswith(".v2")
 
 
 def test_ego4d_cache_records_exact_commit_delta_ranges() -> None:

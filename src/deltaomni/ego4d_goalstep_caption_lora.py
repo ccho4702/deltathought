@@ -81,6 +81,7 @@ class EvaluationConfig:
 @dataclass(frozen=True)
 class GoalStepCaptionConfig:
     seed: int
+    input_mode: str
     caption_config: Path
     prefix_manifest: Path
     license_record: Path
@@ -104,6 +105,7 @@ def load_config(path: Path) -> GoalStepCaptionConfig:
 
     config = GoalStepCaptionConfig(
         seed=int(raw["seed"]),
+        input_mode=str(raw["input_mode"]),
         caption_config=resolve(raw["caption_config"]),
         prefix_manifest=resolve(raw["prefix_manifest"]),
         license_record=resolve(raw["license_record"]),
@@ -136,6 +138,8 @@ def load_config(path: Path) -> GoalStepCaptionConfig:
     )
     if min(positive) <= 0 or len(config.initial_checkpoint_sha256) != 64:
         raise ValueError("Ego4D GoalStep caption controls must be positive")
+    if config.input_mode not in {"delta", "full"}:
+        raise ValueError("Ego4D GoalStep caption input mode must be delta or full")
     if config.training.resume not in {"auto", "never"}:
         raise ValueError("Invalid Ego4D GoalStep caption resume mode")
     return config
@@ -157,7 +161,14 @@ class WindowCache:
             self.cache.move_to_end(path)
             return cached
         value = torch.load(path, map_location="cpu", weights_only=False)
-        required = {"window_id", "source_id", "first_full", "deltas", "events"}
+        required = {
+            "window_id",
+            "source_id",
+            "first_full",
+            "deltas",
+            "event_full",
+            "events",
+        }
         if not required <= value.keys() or value["window_id"] != self.records[index]["window_id"]:
             raise ValueError(f"Invalid Ego4D GoalStep window cache: {path}")
         if len(value["events"]) < 2:
@@ -189,9 +200,15 @@ def _expanded_adapter_state(
 
 
 class GoalStepCaptionModel(nn.Module):
-    def __init__(self, single: AudioCaptionModel, config: CaptionConfig) -> None:
+    def __init__(
+        self,
+        single: AudioCaptionModel,
+        config: CaptionConfig,
+        input_mode: str,
+    ) -> None:
         super().__init__()
         self.single = single
+        self.input_mode = input_mode
         tokenizer = single.interface.tokenizer
         continuation = tokenizer.apply_chat_template(
             [{"role": "user", "content": config.interface.user_prompt}],
@@ -224,19 +241,13 @@ class GoalStepCaptionModel(nn.Module):
         self,
         payload: dict[str, Any],
         event: dict[str, Any],
+        event_index: int,
         *,
         include_anchor: bool,
         accumulated: bool,
         control: str,
     ) -> Tensor:
         device = next(self.parameters()).device
-        full = payload["first_full"].float().unsqueeze(0).to(device)
-        all_deltas = payload["deltas"].float().unsqueeze(0).to(device)
-        start = 0 if accumulated else int(event["delta_start"])
-        end = int(event["delta_end"])
-        deltas = all_deltas[:, start:end]
-        if control == "zero":
-            deltas = torch.zeros_like(deltas)
         embeddings = self.single.thinker.get_input_embeddings()
         start_ids = torch.full(
             (1, 1), self.single.audio_start_token_id, dtype=torch.long, device=device
@@ -244,6 +255,23 @@ class GoalStepCaptionModel(nn.Module):
         end_ids = torch.full(
             (1, 1), self.single.audio_end_token_id, dtype=torch.long, device=device
         )
+        if self.input_mode == "full":
+            event_full = payload["event_full"][event_index].float().unsqueeze(0).to(device)
+            return torch.cat(
+                (
+                    embeddings(start_ids),
+                    (event_full + self.single.adapter.anchor_type).to(embeddings.weight.dtype),
+                    embeddings(end_ids),
+                ),
+                dim=1,
+            )
+        full = payload["first_full"].float().unsqueeze(0).to(device)
+        all_deltas = payload["deltas"].float().unsqueeze(0).to(device)
+        start = 0 if accumulated else int(event["delta_start"])
+        end = int(event["delta_end"])
+        deltas = all_deltas[:, start:end]
+        if control == "zero":
+            deltas = torch.zeros_like(deltas)
         pieces = [embeddings(start_ids)]
         if include_anchor:
             pieces.append((full + self.single.adapter.anchor_type).to(embeddings.weight.dtype))
@@ -255,6 +283,7 @@ class GoalStepCaptionModel(nn.Module):
         self,
         payload: dict[str, Any],
         event: dict[str, Any],
+        event_index: int,
         *,
         first: bool,
         reset_each: bool,
@@ -264,6 +293,7 @@ class GoalStepCaptionModel(nn.Module):
         visual = self._visual_chunk(
             payload,
             event,
+            event_index,
             include_anchor=first or reset_each,
             accumulated=reset_each,
             control=control,
@@ -281,6 +311,7 @@ class GoalStepCaptionModel(nn.Module):
             chunk = self._event_chunk(
                 payload,
                 event,
+                index,
                 first=index == 0,
                 reset_each=False,
                 control=control,
@@ -312,7 +343,11 @@ class GoalStepCaptionModel(nn.Module):
 
     def forward(self, payload: dict[str, Any]) -> tuple[Tensor, Tensor, Tensor]:
         normal, tokens = self._caption_loss(payload, "normal")
-        zero, _ = self._caption_loss(payload, "zero")
+        zero, _ = (
+            self._caption_loss(payload, "zero")
+            if self.input_mode == "delta"
+            else (normal, tokens)
+        )
         return normal, zero, tokens
 
     @torch.no_grad()
@@ -334,6 +369,7 @@ class GoalStepCaptionModel(nn.Module):
             chunk = self._event_chunk(
                 payload,
                 event,
+                index,
                 first=index == 0,
                 reset_each=reset_each,
                 control=control,
@@ -356,7 +392,7 @@ def _load_goalstep(config: GoalStepCaptionConfig, device: torch.device) -> GoalS
     set_peft_model_state_dict(single.thinker, checkpoint["lora"])
     expanded = _expanded_adapter_state(single.adapter.state_dict(), checkpoint["adapter"])
     single.adapter.load_state_dict(expanded)
-    return GoalStepCaptionModel(single, caption_config).to(device)
+    return GoalStepCaptionModel(single, caption_config, config.input_mode).to(device)
 
 
 @torch.no_grad()
@@ -464,7 +500,7 @@ def run(
     if sha256_file(config.initial_checkpoint) != config.initial_checkpoint_sha256:
         raise ValueError("Ego4D caption initial checkpoint checksum mismatch")
     manifest = json.loads(config.prefix_manifest.read_text(encoding="utf-8"))
-    if manifest.get("schema") != "deltaomni.omni_ego4d_goalstep_manifest.v1":
+    if manifest.get("schema") != "deltaomni.omni_ego4d_goalstep_manifest.v2":
         raise ValueError("Unexpected Ego4D GoalStep prefix manifest")
     train = WindowCache(manifest, "train", config.runtime.cache_entries)
     validation = WindowCache(manifest, "validation", config.runtime.cache_entries)
@@ -574,8 +610,14 @@ def run(
                 with sync:
                     with torch.autocast(device_type=context.device.type, dtype=torch.bfloat16):
                         normal_loss, zero_loss, tokens = model(payload)
-                        ranking = torch.relu(
-                            config.training.zero_ranking_margin + normal_loss - zero_loss
+                        ranking = (
+                            torch.relu(
+                                config.training.zero_ranking_margin
+                                + normal_loss
+                                - zero_loss
+                            )
+                            if config.input_mode == "delta"
+                            else normal_loss.new_zeros(())
                         )
                         loss = normal_loss + config.training.zero_ranking_weight * ranking
                         scaled = loss / config.runtime.gradient_accumulation_steps
@@ -646,16 +688,17 @@ def run(
                 "continuous_improves": (
                     continuous > initial["metrics"]["continuous"]["word_f1"]
                 ),
-                "continuous_beats_zero": (
-                    continuous
-                    >= metrics["zero"]["word_f1"] + config.evaluation.minimum_delta_gap
-                ),
                 "continuous_beats_reset": (
                     continuous
                     >= metrics["reset_each"]["word_f1"]
                     + config.evaluation.minimum_memory_gap
                 ),
             }
+            if config.input_mode == "delta":
+                checks["continuous_beats_zero"] = (
+                    continuous
+                    >= metrics["zero"]["word_f1"] + config.evaluation.minimum_delta_gap
+                )
             result = {
                 "schema": "deltaomni.ego4d_goalstep_caption_lora.v1",
                 "run_id": run_id,

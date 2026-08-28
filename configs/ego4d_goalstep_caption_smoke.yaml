@@ -1,4 +1,5 @@
 seed: 42
+input_mode: delta
 caption_config: configs/ego4d_goalstep_caption_base.yaml
 prefix_manifest: intermediates/cache/omni_ego4d_goalstep/manifest.json
 license_record: inputs/licenses/ego4d.accepted.json
