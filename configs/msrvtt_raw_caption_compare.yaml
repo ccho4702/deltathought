@@ -1,0 +1,3 @@
+training_config: configs/msrvtt_raw_caption.yaml
+checkpoint: outputs/real_pilots/msrvtt_raw_caption/msrvtt-raw-caption-1000step-main/checkpoints/step-001000.pt
+report_path: outputs/reports/msrvtt_raw_caption_comparison.json

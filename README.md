@@ -26,15 +26,18 @@ S_t^m = Accumulate_m(S_(t-1)^m, d_t^m)
 z_hat_t^m = Reconstruct_m(A_k^m, S_t^m)
 ```
 
-`A_k` is the full embedding at the last caption/reset. Each delta compares immediately consecutive
-embeddings. A commit generates a scoped change caption, refreshes only that modality's full anchor,
-and resets only its delta state.
+`A_k` is the full embedding at the last explicit refresh. Each delta compares immediately
+consecutive embeddings. A caption commit does not clear the Thinker context: its generated tokens
+remain in the same autoregressive KV cache and later delta chunks continue from that state. A FULL
+refresh is reserved for a declared context/window boundary, not forced after every caption.
 
 ```text
 <FULL_A> <FULL_V>
 <DELTA_A> <DELTA_V>
 ...
-<CAPTION_D_V>video change caption</CAPTION_D_V> <FULL_V>
+<CAPTION_D_V>video change caption</CAPTION_D_V>
+<DELTA_V> ... <CAPTION_D_V>later caption with prior caption still in KV</CAPTION_D_V>
+... <FULL_V>  # explicit long-gap/window refresh only
 ```
 
 Audio and video may commit at the same timestamp or at different timestamps.
@@ -83,6 +86,9 @@ uv run deltaomni-data-audit
 # Diagnostic report only; exits zero even when data are blocked:
 uv run deltaomni-data-audit --allow-not-ready
 uv run deltaomni-annotation-audit
+uv run deltaomni-audit-longvideobench --config configs/canonical/longvideobench.yaml
+uv run deltaomni-preprocess-ego4d-goalstep \
+  --config configs/canonical/ego4d_goalstep.yaml
 uv run deltaomni-backbone-smoke
 uv run deltaomni-omni-backbone-smoke
 uv run deltaomni-language-smoke
@@ -129,6 +135,7 @@ and selected large migration backups.
 - [Architecture and losses](docs/ARCHITECTURE.md)
 - [Data and model provenance](docs/DATA_POLICY.md)
 - [Real-data gated execution plan](docs/REAL_DATA_PLAN.md)
+- [Long-video preregistered protocol](docs/LONG_VIDEO_PROTOCOL.md)
 - [Current status and retained metrics](docs/STATUS.md)
 - [First real-data pilot results](docs/REAL_PILOT_RESULTS.md)
 - [Server migration handoff](docs/MIGRATION.md)

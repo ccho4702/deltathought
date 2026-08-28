@@ -1,0 +1,19 @@
+dataset: ego4d_goalstep
+dataset_revision: official-v2-goalstep-231129-schema-v2
+resource_name: ego4d
+chunk_seconds: 1.0
+minimum_segment_seconds: 0.5
+minimum_commits_per_video: 2
+cpu_workers: 8
+minimum_available_videos:
+  train: 275
+  validation: 69
+annotations:
+  train: /mnt/nfs_shared_data/dataset/ego4d_540/v2_annotations/v2/annotations/goalstep_train.json
+  validation: /mnt/nfs_shared_data/dataset/ego4d_540/v2_annotations/v2/annotations/goalstep_val.json
+metadata: /mnt/nfs_shared_data/dataset/ego4d_540/v2_annotations/ego4d.json
+media_root: /mnt/nfs_shared_data/dataset/ego4d_540/v2/video_540ss
+license_record: inputs/licenses/ego4d.accepted.json
+cache_root: intermediates/cache/canonical_ego4d_goalstep/official-v2-goalstep-231129-schema-v2
+output_root: intermediates/canonical
+report_path: outputs/reports/canonical_ego4d_goalstep_v2.json

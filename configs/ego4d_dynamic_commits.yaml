@@ -1,0 +1,5 @@
+block_seconds: 1.0
+maximum_window_seconds: 120.0
+maximum_commit_gap_seconds: 90.0
+maximum_commits_per_window: 8
+minimum_commits_per_window: 2

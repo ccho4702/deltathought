@@ -53,3 +53,14 @@ sources:
       - /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/videos
     media_extensions: [.mp4]
     media_policy: configs/msrvtt_media_policy.yaml
+  ego4d_goalstep:
+    enabled: true
+    resource_name: ego4d
+    annotation_files:
+      - /mnt/nfs_shared_data/dataset/ego4d_540/v2_annotations/v2/annotations/goalstep_train.json
+      - /mnt/nfs_shared_data/dataset/ego4d_540/v2_annotations/v2/annotations/goalstep_val.json
+      - /mnt/nfs_shared_data/dataset/ego4d_540/v2_annotations/ego4d.json
+    media_dirs:
+      - /mnt/nfs_shared_data/dataset/ego4d_540/v2/video_540ss
+    media_extensions: [.mp4]
+    license_record: inputs/licenses/ego4d.accepted.json

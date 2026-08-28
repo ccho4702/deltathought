@@ -75,12 +75,14 @@ class TrainingConfig:
     keep_last_checkpoints: int
     gradient_clip_norm: float
     resume: str
+    caption_sampling: str = "random"
 
 
 @dataclass(frozen=True)
 class EvaluationConfig:
     examples: int
     max_new_tokens: int
+    split: str = "validation"
 
 
 @dataclass(frozen=True)
@@ -133,6 +135,10 @@ def load_config(path: Path) -> RawCaptionConfig:
     )
     if config.runtime.precision != "bfloat16" or config.training.resume not in {"auto", "never"}:
         raise ValueError("Raw caption LoRA requires bfloat16 and a valid resume mode")
+    if config.training.caption_sampling not in {"random", "first"}:
+        raise ValueError("Raw caption sampling must be random or first")
+    if config.evaluation.split not in {"train", "validation"}:
+        raise ValueError("Raw caption evaluation split must be train or validation")
     positive = (
         config.train_count,
         config.validation_count,
@@ -422,6 +428,7 @@ def run(
     _set_seed(config.seed)
     torch.set_num_threads(config.runtime.cpu_threads)
     train, validation = _select(config)
+    evaluation_data = train if config.evaluation.split == "train" else validation
     signature = resolved_input_signature(
         config,
         {
@@ -452,10 +459,31 @@ def run(
         run_id = _broadcast_string(selected if context.is_primary else None, context)
         run_dir = config.output_root / run_id
         log_path = config.log_root / run_id / "metrics.jsonl"
+        events_path = config.log_root / run_id / "events.jsonl"
         if context.is_primary:
             run_dir.mkdir(parents=True, exist_ok=True)
-            if not (run_dir / "resolved_config.json").is_file():
+            new_run = not (run_dir / "resolved_config.json").is_file()
+            if new_run:
                 _atomic_json(run_dir / "resolved_config.json", asdict(config))
+                _atomic_json(
+                    run_dir / "metadata.json",
+                    {
+                        "code_revision": code_revision,
+                        "world_size": context.world_size,
+                        "gpu": torch.cuda.get_device_name(context.device),
+                        "torch_version": torch.__version__,
+                        "cuda_version": torch.version.cuda,
+                        "started_at_utc": datetime.now(UTC).isoformat(),
+                    },
+                )
+                _append_jsonl(
+                    events_path,
+                    {"event": "start", "at_utc": datetime.now(UTC).isoformat()},
+                )
+                _atomic_json(
+                    run_dir / "status.json",
+                    {"status": "running", "started_at_utc": datetime.now(UTC).isoformat()},
+                )
         if context.world_size > 1:
             torch.distributed.barrier()
         start_step = 1
@@ -472,6 +500,23 @@ def run(
             optimizer.load_state_dict(value["optimizer"])
             _restore_rng(value["rng_states"][context.rank], context.device)
             start_step = int(value["next_step"])
+            if context.is_primary:
+                _append_jsonl(
+                    events_path,
+                    {
+                        "event": "resume",
+                        "next_step": start_step,
+                        "at_utc": datetime.now(UTC).isoformat(),
+                    },
+                )
+                _atomic_json(
+                    run_dir / "status.json",
+                    {
+                        "status": "running",
+                        "resumed_at_utc": datetime.now(UTC).isoformat(),
+                        "next_step": start_step,
+                    },
+                )
         final_step = min(config.training.max_steps, stop_after_step or config.training.max_steps)
         started = time.perf_counter()
         for step in range(start_step, final_step + 1):
@@ -487,8 +532,10 @@ def run(
                 )
                 index = int(global_indices[context.rank])
                 references = train.item(index)["references"]
-                reference_index = int(
-                    torch.randint(0, len(references), (), generator=generator)
+                reference_index = (
+                    int(torch.randint(0, len(references), (), generator=generator))
+                    if config.training.caption_sampling == "random"
+                    else 0
                 )
                 item = train.item(index, reference_index=reference_index)
                 frames = train.frames(index)
@@ -539,20 +586,31 @@ def run(
                         },
                     )
                     _prune_checkpoints(run_dir, config.training.keep_last_checkpoints)
+                    _append_jsonl(
+                        events_path,
+                        {
+                            "event": "checkpoint",
+                            "step": step,
+                            "at_utc": datetime.now(UTC).isoformat(),
+                        },
+                    )
         if context.world_size > 1:
             torch.distributed.barrier()
         result = {}
         if final_step < config.training.max_steps:
             result = {"run_id": run_id, "status": "interrupted", "step": final_step}
+            if context.is_primary:
+                _atomic_json(run_dir / "status.json", result)
         elif context.is_primary:
-            metrics = evaluate(core, validation, config)
+            metrics = evaluate(core, evaluation_data, config)
             full = metrics["metrics"]["full_video"]["word_f1"]
             first = metrics["metrics"]["first_block"]["word_f1"]
             result = {
-                "schema": "deltaomni.msrvtt_raw_caption_lora.v1",
+                "schema": "deltaomni.msrvtt_raw_caption_lora.v2",
                 "run_id": run_id,
                 "status": "complete",
-                "validation": metrics,
+                "evaluation_split": config.evaluation.split,
+                "evaluation": metrics,
                 "checks": {"full_video_beats_first_block": full > first},
                 "passed": full > first,
                 "training_seconds": time.perf_counter() - started,
@@ -560,6 +618,14 @@ def run(
                 "canonical_manifest_sha256": sha256_file(config.canonical_manifest),
             }
             _atomic_json(run_dir / "summary.json", result)
+            _atomic_json(
+                run_dir / "status.json",
+                {
+                    "status": "complete",
+                    "step": final_step,
+                    "completed_at_utc": result["completed_at_utc"],
+                },
+            )
             _atomic_json(config.report_path, result)
         if context.world_size > 1:
             torch.distributed.barrier()

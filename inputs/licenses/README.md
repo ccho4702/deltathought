@@ -16,3 +16,12 @@ Required fields:
 
 This record documents authorization; it does not replace the upstream license or terms.
 
+For the active long-video pipeline:
+
+- Ego4D requires `ego4d.accepted.json` after personally completing the agreement linked from
+  <https://ego4d-data.org/docs/start-here/>.
+- LongVideoBench requires `longvideobench.accepted.json` after accepting the gated conditions at
+  <https://huggingface.co/datasets/longvideobench/LongVideoBench>.
+
+Set `dataset` to `Ego4D` or `LongVideoBench` exactly. Never copy access tokens or temporary AWS
+credentials into either record.

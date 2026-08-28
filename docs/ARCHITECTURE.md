@@ -11,7 +11,8 @@
 
 Each modality owns an independent `anchor`, `previous`, `delta_slots`, evidence `load`, and section
 age. `previous` is the immediately preceding embedding; `anchor` is the full embedding at the last
-caption/reset.
+explicit FULL refresh. Caption generation and language memory are separate from this representation
+state: emitting a caption never clears the Thinker's autoregressive context.
 
 ```text
 d_t = DeltaEncoder(previous, current)
@@ -33,15 +34,20 @@ inputs produce exact zero delta.
 The accumulator keeps an additive evidence path and adds a small gated recurrent residual for order
 sensitivity. This retains magnitude while keeping a bounded token count.
 
-## Commit and reset
+## Commit, representation state, and language memory
 
-A modality commits when its learned trigger crosses a threshold, its load reaches capacity, or its
-maximum age is reached. At commit it:
+A modality commits when its learned trigger crosses a threshold, an official temporal boundary is
+reached, its load reaches capacity, or its maximum age is reached. At commit it:
 
 1. emits `<CAPTION_D_m> ... </CAPTION_D_m>` from anchor and accumulated delta;
-2. refreshes the modality anchor with the current full embedding;
-3. resets only that modality's slots, load, and age;
-4. emits `<FULL_m>` to mark the next section.
+2. retains the emitted caption tokens and all earlier captions in the same Thinker KV cache;
+3. closes or resets only the modality-local accumulation range when required by its policy;
+4. continues consecutive deltas from the current modality state without an automatic FULL refresh.
+
+An explicit `<FULL_m>` refresh is allowed at a declared context boundary, such as a long
+unannotated gap or maximum window length. It does not erase caption tokens from the Thinker KV
+cache. Evaluation must distinguish modality-state refresh from language-context reset; treating
+independent `generate()` calls as continuous memory is invalid.
 
 ## Loss
 
@@ -69,9 +75,15 @@ constructed by copying caption text is explicitly invalid as method-level eviden
 
 The method-level target uses `Qwen/Qwen2.5-Omni-7B` revision
 `ae9e1690543ffd5c0221dc27f79834d0294cba00`. The Thinker's native `visual` and `audio_tower`
-produce variable-length 3584-dimensional sequences. Inputs are split into causal two-second blocks;
+produce variable-length 3584-dimensional sequences. The active streaming setting uses causal
+one-second blocks;
 each block is encoded independently so a current embedding cannot attend to future media. The
 student Thinker receives the first full block followed by typed, time-positioned delta blocks.
+
+Multi-commit training uses one causal concatenated attention graph with loss only on caption target
+tokens. Incremental inference must produce the same logits by appending chunks through
+`past_key_values`; generated caption tokens are appended before later delta chunks. This equivalence
+is an implementation invariant, not an empirical research claim.
 
 The required evaluation compares raw full Omni input, first plus all ordered deltas, first only,
 last delta only, zero delta, temporal reversal, within-class temporal shuffle, and wrong-source

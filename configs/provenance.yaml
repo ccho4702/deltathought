@@ -261,7 +261,7 @@ resources:
     peer_reviewed: true
     recognized_standard: true
     benchmark_adoption: true
-    license_status: conditional
+    license_status: verified
     license: official-click-through-agreement
     source_url: https://ego4d-data.org/docs/start-here/
     evidence:
@@ -283,7 +283,7 @@ resources:
     peer_reviewed: true
     recognized_standard: true
     benchmark_adoption: true
-    license_status: conditional
+    license_status: verified
     license: CC-BY-NC-SA-4.0-plus-gated-source-acknowledgements
     source_url: https://huggingface.co/datasets/longvideobench/LongVideoBench
     evidence:

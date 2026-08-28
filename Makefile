@@ -1,7 +1,8 @@
 GPU_IDS ?= 0,1,2,3
 NPROC_PER_NODE ?= 4
+EVAL_GPU_ID ?= 0
 
-.PHONY: setup lint test sanity verify provenance data-audit data-audit-report annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot nextqa-readiness nextqa-joint-cache-v2 nextqa-joint-cache-s3 nextqa-vanilla-controls-v2 nextqa-vanilla-controls-analysis nextqa-video-lora-smoke nextqa-video-lora-train nextqa-stage3-preflight msrvtt-raw-caption-smoke msrvtt-raw-caption report verify-code verify-research verify-all
+.PHONY: setup lint test sanity verify provenance data-audit data-audit-report annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong audit-longvideobench preprocess-ego4d-goalstep backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot nextqa-readiness nextqa-joint-cache-v2 nextqa-joint-cache-s3 nextqa-vanilla-controls-v2 nextqa-vanilla-controls-analysis nextqa-video-lora-smoke nextqa-video-lora-train nextqa-stage3-preflight msrvtt-raw-caption-smoke msrvtt-raw-caption msrvtt-raw-caption-overfit msrvtt-raw-caption-compare report verify-code verify-research verify-all
 
 setup:
 	uv sync --frozen --group dev
@@ -42,6 +43,12 @@ preprocess-audioset-strong:
 preprocess-msrvtt:
 	uv run --frozen deltaomni-preprocess-msrvtt
 
+audit-longvideobench:
+	uv run --frozen deltaomni-audit-longvideobench
+
+preprocess-ego4d-goalstep:
+	uv run --frozen deltaomni-preprocess-ego4d-goalstep
+
 msrvtt-video-cache-smoke:
 	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \
 		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.omni_msrvtt_video_cache \
@@ -71,6 +78,16 @@ msrvtt-raw-caption:
 	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \
 		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.msrvtt_raw_caption_lora \
 		--config configs/msrvtt_raw_caption.yaml
+
+msrvtt-raw-caption-overfit:
+	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \
+		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.msrvtt_raw_caption_lora \
+		--config configs/msrvtt_raw_caption_overfit.yaml
+
+msrvtt-raw-caption-compare:
+	CUDA_VISIBLE_DEVICES=$(EVAL_GPU_ID) uv run --frozen \
+		deltaomni-compare-msrvtt-raw-caption \
+		--config configs/msrvtt_raw_caption_compare.yaml
 
 backbone-smoke:
 	uv run deltaomni-backbone-smoke

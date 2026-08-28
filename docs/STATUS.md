@@ -32,6 +32,16 @@ evidence. It is not yet the retained baseline: several generations produced a re
 clause followed by spurious `Human:` dialogue continuations, so the 1,000-step matched run and
 larger validation evaluation remain required.
 
+The matched 1,000-step raw-video baseline is complete on all 6,513 MSR-VTT training videos and a
+fixed 128-video validation evaluation. Training took 8,065s on four A6000s with valid atomic
+checkpoints through step 1,000. Full-video word-F1/ROUGE-L was `0.4183/0.4014`, versus
+`0.3882/0.3821` from only the first two frames, so later visual evidence contributed `+3.01`
+word-F1 points. However, this is not a strong caption model: many outputs began with a plausible
+clause and then emitted unrelated `Harry Potter`, HTML, `Human:`, or no-input continuations. Longer
+training therefore passed the weak later-frame control but did not repair output-format or
+hallucination failures. The result is retained as the required fine-tuned full-input baseline and
+as negative evidence against assuming that more steps alone solve caption grounding.
+
 The final long-video evaluation source is now LongVideoBench, not MSR-VTT. The existing shared
 distribution is present as the official 151 GB split-tar release at Hugging Face revision
 `60d1c89c1919a198b73be39c2babb213b29d6a5c`: 1,337 labeled validation questions and 5,341

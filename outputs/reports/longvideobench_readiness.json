@@ -1,0 +1,43 @@
+{
+  "annotation_sha256": {
+    "test": "713836a89f6aeb51cab1554f462bac4a6b377f67eae53c81d1ab285b0c8bf660",
+    "validation": "d32bf2e0cbbdb4fa2e99666a5a49b5a19bca2ceec69222c9a7d3aad567d1fa23"
+  },
+  "completed_at_utc": "2026-08-28T02:26:11.651088+00:00",
+  "dataset_revision": "60d1c89c1919a198b73be39c2babb213b29d6a5c",
+  "duration_groups": [
+    15,
+    60,
+    600,
+    3600
+  ],
+  "license_acceptance": null,
+  "provenance_approved": true,
+  "question_categories": [
+    "E2O",
+    "E3E",
+    "O2E",
+    "O3O",
+    "S2A",
+    "S2E",
+    "S2O",
+    "SAA",
+    "SOS",
+    "SSS",
+    "T2A",
+    "T2E",
+    "T2O",
+    "T3E",
+    "T3O",
+    "TAA",
+    "TOS"
+  ],
+  "ready": false,
+  "schema": "deltaomni.longvideobench_readiness.v1",
+  "status": "blocked_missing_license_acceptance",
+  "subtitle_archive_members": 9343,
+  "test_questions_without_labels": 5341,
+  "unique_annotated_videos": 3761,
+  "validation_questions": 1337,
+  "video_archive_members": 3991
+}

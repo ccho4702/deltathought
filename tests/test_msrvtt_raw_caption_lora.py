@@ -16,6 +16,14 @@ def test_raw_caption_configs_define_matched_full_video_baseline() -> None:
     assert full.training.max_steps == 1000
     assert full.evaluation.examples == 128
     assert smoke.training.target_modules_regex == full.training.target_modules_regex
+    assert smoke.evaluation.split == full.evaluation.split == "validation"
+
+    overfit = load_config(Path("configs/msrvtt_raw_caption_overfit.yaml"))
+    assert overfit.train_count == overfit.evaluation.examples == 16
+    assert overfit.evaluation.split == "train"
+    assert overfit.training.max_steps == 300
+    assert overfit.training.caption_sampling == "first"
+    assert full.training.caption_sampling == "random"
 
 
 def test_raw_caption_config_rejects_invalid_resume_mode(tmp_path: Path) -> None:

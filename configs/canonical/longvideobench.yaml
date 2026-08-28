@@ -1,0 +1,16 @@
+dataset_revision: 60d1c89c1919a198b73be39c2babb213b29d6a5c
+resource_name: longvideobench
+raw_root: /mnt/nfs_shared_data/dataset/LongVideoBench
+validation_annotations: /mnt/nfs_shared_data/dataset/LongVideoBench/lvb_val.json
+test_annotations: /mnt/nfs_shared_data/dataset/LongVideoBench/lvb_test_wo_gt.json
+video_parts_glob: videos.tar.part.*
+subtitles_archive: /mnt/nfs_shared_data/dataset/LongVideoBench/subtitles.tar
+license_acceptance: inputs/licenses/longvideobench.accepted.json
+expected_validation_questions: 1337
+expected_test_questions: 5341
+expected_question_categories: 17
+expected_archive_videos: 3991
+expected_annotated_videos: 3761
+index_path: intermediates/indexes/longvideobench/60d1c89/archive_index.json
+frozen_validation_manifest: intermediates/canonical/longvideobench/60d1c89/frozen_validation.json
+report_path: outputs/reports/longvideobench_readiness.json
