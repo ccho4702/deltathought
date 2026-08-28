@@ -6,6 +6,7 @@ maximum_videos: 4
 maximum_questions: 6
 caption_max_new_tokens: 24
 answer_max_new_tokens: 8
+answer_strategy: choice_logit
 arms:
   - name: full_commit_ft
     mode: full

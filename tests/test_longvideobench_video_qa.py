@@ -10,6 +10,7 @@ def test_longvideobench_video_qa_smoke_has_all_causal_controls() -> None:
     names = {arm.name for arm in config.arms}
 
     assert config.maximum_questions == 6
+    assert config.answer_strategy == "choice_logit"
     assert {
         "full_commit_ft",
         "delta_continuous_kv",

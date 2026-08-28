@@ -48,6 +48,7 @@ class QAConfig:
     maximum_questions: int | None
     caption_max_new_tokens: int
     answer_max_new_tokens: int
+    answer_strategy: str
     arms: tuple[ModelArm, ...]
     predictions_path: Path
     report_path: Path
@@ -74,6 +75,7 @@ def load_config(path: Path) -> QAConfig:
         ),
         caption_max_new_tokens=int(raw["caption_max_new_tokens"]),
         answer_max_new_tokens=int(raw["answer_max_new_tokens"]),
+        answer_strategy=str(raw["answer_strategy"]),
         arms=tuple(
             ModelArm(
                 name=str(value["name"]),
@@ -101,6 +103,8 @@ def load_config(path: Path) -> QAConfig:
         raise ValueError("LongVideoBench QA controls must be positive")
     if len({arm.name for arm in config.arms}) != len(config.arms):
         raise ValueError("LongVideoBench QA arm names must be unique")
+    if config.answer_strategy not in {"choice_logit", "greedy"}:
+        raise ValueError("Unknown LongVideoBench answer strategy")
     valid_modes = {
         "full",
         "delta",
@@ -265,6 +269,17 @@ def _predict(
     assert state is not None
     prompt = _answer_prompt(model, question).to(state.attention_mask.device).unsqueeze(0)
     logits, state = runner.append(state=state, input_ids=prompt)
+    if config.answer_strategy == "choice_logit":
+        tokenizer = model.single.interface.tokenizer
+        choice_ids = []
+        for index in range(len(question["candidates"])):
+            ids = tokenizer(chr(65 + index), add_special_tokens=False)["input_ids"]
+            if len(ids) != 1:
+                raise ValueError("LongVideoBench choice letter is not one token")
+            choice_ids.append(ids[0])
+        scores = logits[0, -1, torch.tensor(choice_ids, device=logits.device)]
+        selected = int(scores.argmax())
+        return chr(65 + selected), captions
     ids, _ = runner.greedy_append(
         logits,
         state,
@@ -349,6 +364,7 @@ def run(config_path: Path) -> dict[str, Any]:
         "videos": len(video_ids),
         "predictions": len(rows),
         "elapsed_seconds": time.perf_counter() - started,
+        "answer_strategy": config.answer_strategy,
         "code_revision": git_revision(root),
         "completed_at_utc": datetime.now(UTC).isoformat(),
     }
