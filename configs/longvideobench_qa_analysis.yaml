@@ -1,0 +1,25 @@
+predictions: outputs/predictions/longvideobench/all_arms.jsonl
+frozen_validation_manifest: intermediates/canonical/longvideobench/60d1c89/frozen_validation.json
+required_arms:
+  - vanilla_uniform
+  - full_ft_uniform
+  - delta_continuous_kv
+  - delta_zero
+  - delta_cross_video
+  - delta_reversed
+  - delta_last_only
+  - caption_memory_removed
+  - caption_memory_shuffled
+  - subtitle_only
+comparisons:
+  - {left: full_ft_uniform, right: vanilla_uniform}
+  - {left: delta_continuous_kv, right: full_ft_uniform}
+  - {left: delta_continuous_kv, right: delta_zero}
+  - {left: delta_continuous_kv, right: delta_cross_video}
+  - {left: delta_continuous_kv, right: delta_reversed}
+  - {left: delta_continuous_kv, right: delta_last_only}
+  - {left: delta_continuous_kv, right: caption_memory_removed}
+  - {left: delta_continuous_kv, right: caption_memory_shuffled}
+bootstrap_samples: 100000
+seed: 42
+report_path: outputs/reports/longvideobench_qa_analysis.json
