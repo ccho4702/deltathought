@@ -42,6 +42,30 @@ training therefore passed the weak later-frame control but did not repair output
 hallucination failures. The result is retained as the required fine-tuned full-input baseline and
 as negative evidence against assuming that more steps alone solve caption grounding.
 
+A separate matched evaluation confirms that the fine-tuned raw-video baseline is worse than the
+actual vanilla model. On the same 128 validation videos, pretrained Qwen2.5-Omni full-video
+word-F1 was `0.4861`, compared with `0.4183` after the 1,000-step MSR-VTT LoRA (`-6.78` points).
+The fine-tuned model still beat its own first-two-frame control (`0.3882`), so it learned from later
+frames while degrading overall generation. The required terminology is therefore fixed:
+`vanilla` is untouched Qwen, `full_ft` is this worse raw-video LoRA, and the delta model is reported
+separately. Fine-tuning is not treated as the baseline merely because it was trained.
+
+The deliberately aggressive 16-video training-set diagnostic reached caption CE below `1e-4` by
+roughly 40 steps and remained there through step 300. On those same training videos, full-video
+word-F1 was `0.5831` versus `0.4068` for the first two frames (`+17.63` points). This proves the LoRA
+path can memorize the fixed targets and use later visual input. It does not prove clean caption
+generation: exact match remained zero because outputs often continued into unrelated role, JSON,
+or no-input text after the correct first clause.
+
+The full 1,000-step ordered-delta caption model passed every preregistered 497-video NLL and
+128-video generation control. Final normal/zero/cross-video-shuffled NLL was
+`2.5623/2.6069/2.6450`; word-F1 was `0.6271/0.6144/0.5898`. Normal therefore beat zero by `1.27`
+points and source-disjoint shuffled delta by `3.73` points, while improving from its initial
+`0.4126`. Generated outputs were generally concise and avoided the raw baseline's long role/HTML
+tails, although some examples remained identical under normal and zero delta and several captions
+were semantically wrong. This is bounded MSR-VTT evidence that ordered delta content affects open-
+vocabulary captioning; it is not yet multi-commit memory or long-video QA evidence.
+
 The final long-video evaluation source is now LongVideoBench, not MSR-VTT. The existing shared
 distribution is present as the official 151 GB split-tar release at Hugging Face revision
 `60d1c89c1919a198b73be39c2babb213b29d6a5c`: 1,337 labeled validation questions and 5,341
