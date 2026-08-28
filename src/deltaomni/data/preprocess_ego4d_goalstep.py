@@ -220,16 +220,19 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
 
     selected: dict[str, list[tuple[dict[str, Any], list[dict[str, Any]]]]] = {}
     missing_media: dict[str, list[str]] = {}
+    missing_metadata: dict[str, list[str]] = {}
     for split, videos in raw_splits.items():
         selected[split] = []
         missing_media[split] = []
+        missing_metadata[split] = []
         for video in videos:
             segments = _leaf_segments(video, config.minimum_segment_seconds)
             if len(segments) < config.minimum_commits_per_video:
                 continue
             uid = str(video["video_uid"])
             if uid not in metadata:
-                raise ValueError(f"Missing Ego4D metadata: {uid}")
+                missing_metadata[split].append(uid)
+                continue
             media = config.media_root / f"{uid}.mp4"
             if not media.is_file():
                 missing_media[split].append(uid)
@@ -384,6 +387,9 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
         },
         "missing_eligible_media": {
             split: len(values) for split, values in missing_media.items()
+        },
+        "missing_metadata": {
+            split: len(values) for split, values in missing_metadata.items()
         },
         "commit_interval_seconds": {
             "minimum": min(intervals),
