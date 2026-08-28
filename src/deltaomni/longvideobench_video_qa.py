@@ -7,7 +7,7 @@ import re
 import time
 import uuid
 from collections import OrderedDict
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -300,8 +300,44 @@ def _atomic_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
     os.replace(temporary, path)
 
 
-def run(config_path: Path) -> dict[str, Any]:
+def _select_arms(
+    config: QAConfig,
+    selected_arms: list[str] | None,
+    output_suffix: str | None,
+) -> QAConfig:
+    if selected_arms is None:
+        return config
+    requested = set(selected_arms)
+    available = {arm.name for arm in config.arms}
+    unknown = requested - available
+    if unknown:
+        raise ValueError(f"Unknown LongVideoBench QA arms: {sorted(unknown)}")
+    arms = tuple(arm for arm in config.arms if arm.name in requested)
+    if not arms:
+        raise ValueError("At least one LongVideoBench QA arm must be selected")
+    suffix = output_suffix or "-".join(arm.name for arm in arms)
+    if re.fullmatch(r"[A-Za-z0-9_-]+", suffix) is None:
+        raise ValueError("LongVideoBench output suffix must be filesystem-safe")
+
+    def suffixed(path: Path) -> Path:
+        return path.with_name(f"{path.stem}_{suffix}{path.suffix}")
+
+    return replace(
+        config,
+        arms=arms,
+        predictions_path=suffixed(config.predictions_path),
+        report_path=suffixed(config.report_path),
+    )
+
+
+def run(
+    config_path: Path,
+    *,
+    selected_arms: list[str] | None = None,
+    output_suffix: str | None = None,
+) -> dict[str, Any]:
     config = load_config(config_path)
+    config = _select_arms(config, selected_arms, output_suffix)
     root = config_path.resolve().parent.parent
     if not git_worktree_is_clean(root):
         raise RuntimeError("LongVideoBench QA requires a clean Git worktree")
@@ -321,6 +357,15 @@ def run(config_path: Path) -> dict[str, Any]:
         correct = 0
         parsed = 0
         completed = 0
+        total_questions = sum(len(data.videos[video_id]["questions"]) for video_id in video_ids)
+        if config.maximum_questions is not None:
+            total_questions = min(total_questions, config.maximum_questions)
+        arm_started = time.perf_counter()
+        last_progress = arm_started
+        print(
+            f"longvideobench_arm={arm.name} questions=0/{total_questions} eta=pending",
+            flush=True,
+        )
         for video_index, video_id in enumerate(video_ids):
             windows = data.windows(video_id)
             donor_id = video_ids[(video_index + 1) % len(video_ids)]
@@ -347,6 +392,17 @@ def run(config_path: Path) -> dict[str, Any]:
                         "captions": captions,
                     }
                 )
+                now = time.perf_counter()
+                if completed == 1 or now - last_progress >= 180 or completed == total_questions:
+                    elapsed = now - arm_started
+                    eta = elapsed / completed * (total_questions - completed)
+                    print(
+                        f"longvideobench_arm={arm.name} "
+                        f"questions={completed}/{total_questions} "
+                        f"elapsed_seconds={elapsed:.1f} eta_seconds={eta:.1f}",
+                        flush=True,
+                    )
+                    last_progress = now
             if config.maximum_questions is not None and completed >= config.maximum_questions:
                 break
         arm_reports[arm.name] = {
@@ -377,8 +433,23 @@ def main() -> int:
     parser.add_argument(
         "--config", type=Path, default=Path("configs/longvideobench_video_qa_smoke.yaml")
     )
+    parser.add_argument(
+        "--arm",
+        action="append",
+        dest="arms",
+        help="Evaluate only this configured arm; repeat to select multiple arms",
+    )
+    parser.add_argument(
+        "--output-suffix",
+        help="Suffix added to prediction and report filenames when --arm is used",
+    )
     args = parser.parse_args()
-    print(json.dumps(run(args.config), indent=2))
+    print(
+        json.dumps(
+            run(args.config, selected_arms=args.arms, output_suffix=args.output_suffix),
+            indent=2,
+        )
+    )
     return 0
 
 

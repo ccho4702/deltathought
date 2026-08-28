@@ -2,7 +2,12 @@ from pathlib import Path
 
 import torch
 
-from deltaomni.longvideobench_video_qa import _match_deltas, _parse_choice, load_config
+from deltaomni.longvideobench_video_qa import (
+    _match_deltas,
+    _parse_choice,
+    _select_arms,
+    load_config,
+)
 
 
 def test_longvideobench_video_qa_smoke_has_all_causal_controls() -> None:
@@ -28,3 +33,12 @@ def test_longvideobench_choice_parser_and_length_matched_donors() -> None:
     donor = torch.arange(5).view(5, 1, 1)
     matched = _match_deltas(donor, 3)
     assert matched[:, 0, 0].tolist() == [0, 2, 4]
+
+
+def test_longvideobench_arm_selection_uses_distinct_output_paths() -> None:
+    config = load_config(Path("configs/longvideobench_video_qa_smoke.yaml"))
+    selected = _select_arms(config, ["delta_zero"], "zero")
+
+    assert [arm.name for arm in selected.arms] == ["delta_zero"]
+    assert selected.predictions_path.name == "smoke_video_only_zero.jsonl"
+    assert selected.report_path.name == "longvideobench_video_qa_smoke_zero.json"
