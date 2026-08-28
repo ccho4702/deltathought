@@ -394,6 +394,8 @@ def _load_goalstep(config: GoalStepCaptionConfig, device: torch.device) -> GoalS
     set_peft_model_state_dict(single.thinker, checkpoint["lora"])
     expanded = _expanded_adapter_state(single.adapter.state_dict(), checkpoint["adapter"])
     single.adapter.load_state_dict(expanded)
+    if config.input_mode == "full":
+        single.adapter.requires_grad_(False)
     return GoalStepCaptionModel(single, caption_config, config.input_mode).to(device)
 
 
@@ -523,21 +525,25 @@ def run(
         model: nn.Module = core
         if context.world_size > 1:
             model = DistributedDataParallel(model, device_ids=[context.local_rank])
-        optimizer = torch.optim.AdamW(
-            [
-                {
-                    "params": [
-                        parameter
-                        for parameter in core.single.thinker.parameters()
-                        if parameter.requires_grad
-                    ],
-                    "lr": config.training.learning_rate,
-                },
+        parameter_groups = [
+            {
+                "params": [
+                    parameter
+                    for parameter in core.single.thinker.parameters()
+                    if parameter.requires_grad
+                ],
+                "lr": config.training.learning_rate,
+            }
+        ]
+        if config.input_mode == "delta":
+            parameter_groups.append(
                 {
                     "params": core.single.adapter.parameters(),
                     "lr": config.training.adapter_learning_rate,
-                },
-            ],
+                }
+            )
+        optimizer = torch.optim.AdamW(
+            parameter_groups,
             weight_decay=config.training.weight_decay,
         )
         selected = run_id_override or (
@@ -632,7 +638,8 @@ def run(
             torch.nn.utils.clip_grad_norm_(model.parameters(), config.training.gradient_clip_norm)
             warmup = min(1.0, step / config.training.warmup_steps)
             optimizer.param_groups[0]["lr"] = config.training.learning_rate * warmup
-            optimizer.param_groups[1]["lr"] = config.training.adapter_learning_rate * warmup
+            if config.input_mode == "delta":
+                optimizer.param_groups[1]["lr"] = config.training.adapter_learning_rate * warmup
             optimizer.step()
             reduced = reduce_sums({"metrics": accumulated})["metrics"] / context.world_size
             if context.is_primary:
