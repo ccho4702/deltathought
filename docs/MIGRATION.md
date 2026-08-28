@@ -12,6 +12,9 @@ Prepared: 2026-08-27
 - Native-Omni audio S1 result: `73f9969`
 - Native-Omni AudioCaps Caption LoRA result: `ec8cf1d`
 - One-second native-Omni audio/video S1 result: `2cb7048`
+- Matched MSR-VTT raw/delta/continuous-KV results: `387fd72`
+- Ego4D dynamic cache and matched full/delta trainers: `c60d3a6`
+- Frozen LongVideoBench analysis contract: `ac3941e`
 - Migration handoff tag: `migration-20260826-v2`
 
 Clone and recreate the locked environment:
@@ -33,8 +36,15 @@ uv run pytest -q
 - Existing shared AudioSet media: `/mnt/nfs_shared_data/dataset/omniembed/audioset`
 - Existing shared VGGSound media: `/mnt/nfs_shared_data/dataset/omniembed/vggsound`
 - Existing shared Ego4D media/annotations: `/mnt/nfs_shared_data/dataset/ego4d_540`
+- Existing shared LongVideoBench split-tar release: `/mnt/nfs_shared_data/dataset/LongVideoBench`
 
 Raw files are not stored in Git and were never modified by DeltaOmni.
+
+Ego4D and LongVideoBench are present but gated. A restored checkout must not preprocess, train, or
+evaluate either source until the local user has personally accepted the official terms and created
+the ignored `inputs/licenses/ego4d.accepted.json` and
+`inputs/licenses/longvideobench.accepted.json` records described in `inputs/licenses/README.md`.
+Never back up or migrate access credentials with the project.
 
 AudioCaps annotations are pinned at
 `/mnt/nfs_shared_data/dataset/deltathought/raw/audiocaps` revision

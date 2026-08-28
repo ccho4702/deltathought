@@ -103,6 +103,26 @@ model selection, commit-target construction, or prompt tuning. Ego4D remains the
 for natural variable-duration training commits, conditional on a project-local acceptance record
 for its separate click-through license.
 
+The gated long-video execution code is now ready up to the point where restricted media must be
+consumed. Ego4D preprocessing selects official GoalStep leaf events, verifies local 540p media,
+and writes canonical episodes only after validating `inputs/licenses/ego4d.accepted.json`. The
+dynamic policy produces 1–8 natural commits per window, at most 118 one-second deltas, and explicit
+refreshes after 90-second gaps or 120-second windows. A four-GPU cache stores each native Qwen
+anchor, ordered one-token deltas, exact event ranges, and the 64-token native full embedding at
+every commit. This supports two matched Ego4D arms with identical captions and initialization:
+`full_commit_ft` consumes full native tokens at every commit, while `delta_continuous` consumes one
+anchor plus only new deltas and preserves caption KV state. Both actual Qwen forward/generation
+paths pass synthetic-schema integration smokes; neither has been run on Ego4D media because no
+user acceptance record exists.
+
+LongVideoBench release `60d1c89...` is indexed directly from its 151 GB split tar without duplicate
+extraction. The frozen manifest covers all 1,337 validation questions, 753 source videos, 17
+question categories, and four duration groups. The final analyzer preregisters ten arms and rejects
+any incomplete or duplicate prediction set before computing overall/category/duration accuracy,
+video-cluster bootstrap intervals, and paired exact tests. Actual model predictions remain blocked
+by the absent `inputs/licenses/longvideobench.accepted.json` and by the prerequisite Ego4D
+checkpoints.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a
