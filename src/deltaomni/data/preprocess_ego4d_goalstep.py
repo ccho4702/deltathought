@@ -280,14 +280,23 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
     processed_at = datetime.now(UTC).isoformat()
     episodes: dict[str, list[CanonicalEpisode]] = {split: [] for split in selected}
     intervals = []
+    clipped_segments = 0
     for split, values in selected.items():
         for video, segments in values:
             uid = str(video["video_uid"])
             media = inspected[uid]
             duration = float(media["duration_seconds"])
-            valid_segments = [
-                segment for segment in segments if segment["commit_seconds"] <= duration + 0.5
-            ]
+            valid_segments = []
+            for segment in segments:
+                if segment["start_seconds"] >= duration:
+                    continue
+                bounded = dict(segment)
+                if bounded["commit_seconds"] > duration:
+                    bounded["end_seconds"] = duration
+                    bounded["commit_seconds"] = duration
+                    clipped_segments += 1
+                if bounded["end_seconds"] > bounded["start_seconds"]:
+                    valid_segments.append(bounded)
             if len(valid_segments) < config.minimum_commits_per_video:
                 continue
             commits = [segment["commit_seconds"] for segment in valid_segments]
@@ -391,6 +400,7 @@ def run(config_path: Path, provenance_path: Path) -> dict[str, Any]:
         "missing_metadata": {
             split: len(values) for split, values in missing_metadata.items()
         },
+        "segments_clipped_to_media_duration": clipped_segments,
         "commit_interval_seconds": {
             "minimum": min(intervals),
             "median": statistics.median(intervals),
