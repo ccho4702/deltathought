@@ -1,0 +1,30 @@
+seed: 42
+caption_config: configs/msrvtt_video_caption.yaml
+initial_checkpoint: outputs/real_pilots/msrvtt_video_caption/msrvtt-video-caption-1000step-main/checkpoints/step-001000.pt
+initial_checkpoint_sha256: c15517a464987ea6719f267eb345cb02ee00ea595164c838e5e6db51d5b485aa
+sections_per_sequence: 3
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 4
+  gradient_accumulation_steps: 2
+  cache_entries: 64
+training:
+  learning_rate: 0.00005
+  adapter_learning_rate: 0.0002
+  weight_decay: 0.0001
+  warmup_steps: 10
+  max_steps: 40
+  checkpoint_interval_steps: 20
+  keep_last_checkpoints: 2
+  gradient_clip_norm: 1.0
+  resume: auto
+evaluation:
+  sequences: 8
+  max_new_tokens: 32
+  minimum_delta_gap: 0.005
+  maximum_reset_regression: 0.02
+output_root: outputs/real_pilots/msrvtt_continuous_caption_smoke
+log_root: logs/experiments
+report_path: outputs/reports/msrvtt_continuous_caption_smoke.json
