@@ -1,0 +1,33 @@
+seed: 42
+caption_config: configs/ego4d_goalstep_caption_base.yaml
+prefix_manifest: intermediates/cache/omni_ego4d_goalstep/manifest.json
+license_record: inputs/licenses/ego4d.accepted.json
+initial_checkpoint: outputs/real_pilots/msrvtt_continuous_caption/msrvtt-continuous-caption-ranking-400step-main/checkpoints/step-000400.pt
+initial_checkpoint_sha256: 5815a6376f12c471e2c9b96dbb0a4f96d8fb8640e256139d2cd52413da4becef
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 4
+  gradient_accumulation_steps: 4
+  cache_entries: 512
+training:
+  learning_rate: 0.00005
+  adapter_learning_rate: 0.0002
+  weight_decay: 0.0001
+  warmup_steps: 50
+  max_steps: 800
+  checkpoint_interval_steps: 100
+  keep_last_checkpoints: 3
+  gradient_clip_norm: 1.0
+  zero_ranking_weight: 1.0
+  zero_ranking_margin: 0.1
+  resume: auto
+evaluation:
+  windows: 128
+  max_new_tokens: 32
+  minimum_delta_gap: 0.01
+  minimum_memory_gap: 0.005
+output_root: outputs/real_pilots/ego4d_goalstep_caption
+log_root: logs/experiments
+report_path: outputs/reports/ego4d_goalstep_caption.json
