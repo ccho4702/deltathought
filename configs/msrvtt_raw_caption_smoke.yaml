@@ -1,0 +1,38 @@
+seed: 42
+canonical_manifest: intermediates/canonical/msrvtt/official-msr-vtt-10k-schema-v2/manifest.json
+omni_config: configs/qwen2_5_omni.yaml
+train_count: 64
+validation_count: 32
+sample_fps: 2.0
+frame_width: 224
+frame_height: 224
+max_target_tokens: 48
+system_prompt: You are an accurate video captioning assistant.
+user_prompt: Describe the complete video in one concise sentence.
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  precision: bfloat16
+  cpu_threads: 4
+  gradient_accumulation_steps: 2
+  frame_cache_entries: 8
+training:
+  lora_rank: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+  target_modules_regex: '^model\.layers\.\d+\.(self_attn\.(q_proj|k_proj|v_proj|o_proj)|mlp\.(gate_proj|up_proj|down_proj))$'
+  learning_rate: 0.0002
+  weight_decay: 0.0001
+  warmup_steps: 10
+  max_steps: 20
+  checkpoint_interval_steps: 10
+  keep_last_checkpoints: 2
+  gradient_clip_norm: 1.0
+  resume: auto
+evaluation:
+  examples: 16
+  max_new_tokens: 32
+output_root: outputs/real_pilots/msrvtt_raw_caption_smoke
+log_root: logs/experiments
+report_path: outputs/reports/msrvtt_raw_caption_smoke.json
