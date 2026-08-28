@@ -1,0 +1,46 @@
+seed: 42
+cache_manifest: intermediates/cache/omni_longvideobench_smoke/manifest.json
+device: cuda
+cpu_threads: 4
+maximum_videos: 4
+maximum_questions: 6
+caption_max_new_tokens: 24
+answer_max_new_tokens: 8
+arms:
+  - name: full_commit_ft
+    mode: full
+    model_config: configs/ego4d_goalstep_full_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_full_caption/ego4d-goalstep-full-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: d117aeccaf0fafaee37663fba44cfbce05866ec4c05a0ba776099ef494f45b04
+  - name: delta_continuous_kv
+    mode: delta
+    model_config: configs/ego4d_goalstep_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
+  - name: delta_zero
+    mode: zero
+    model_config: configs/ego4d_goalstep_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
+  - name: delta_reversed
+    mode: reversed
+    model_config: configs/ego4d_goalstep_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
+  - name: delta_last_only
+    mode: last_only
+    model_config: configs/ego4d_goalstep_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
+  - name: delta_cross_video
+    mode: cross_video
+    model_config: configs/ego4d_goalstep_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
+  - name: caption_memory_removed
+    mode: memory_removed
+    model_config: configs/ego4d_goalstep_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
+predictions_path: outputs/predictions/longvideobench/smoke_video_only.jsonl
+report_path: outputs/reports/longvideobench_video_qa_smoke.json
