@@ -1,0 +1,25 @@
+seed: 42
+dataset_resource_name: longvideobench
+annotations: /mnt/nfs_shared_data/dataset/LongVideoBench/lvb_val.json
+archive_index: intermediates/indexes/longvideobench/60d1c89/archive_index.json
+media_policy: configs/longvideobench_media_policy.yaml
+omni_config: configs/qwen2_5_omni.yaml
+deltatok_config: configs/deltatok_vggsound_video_1s.yaml
+deltatok_checkpoint: outputs/real_pilots/deltatok_vggsound_video_1s/deltatok-video-1s-main/checkpoints/step-002000.pt
+deltatok_sha256: 2d46816bc45b4dda9b4ef27c4372b5b956cff4b34a0b7a999d94bd295918a4e5
+window_seconds: 120.0
+block_seconds: 1.0
+sample_fps: 2.0
+frame_width: 224
+frame_height: 224
+expected_video_tokens: 64
+encoder_batch_size: 1
+maximum_videos: 4
+minimum_videos: 4
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 4
+cache_root: intermediates/cache/omni_longvideobench_smoke
+report_path: outputs/reports/omni_longvideobench_smoke.json
