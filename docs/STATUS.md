@@ -66,6 +66,18 @@ tails, although some examples remained identical under normal and zero delta and
 were semantically wrong. This is bounded MSR-VTT evidence that ordered delta content affects open-
 vocabulary captioning; it is not yet multi-commit memory or long-video QA evidence.
 
+The first actual Qwen same-KV multi-commit smoke is complete. Three source-disjoint MSR-VTT
+sections are trained in one causal attention graph, and inference incrementally appends each
+anchor/delta/prompt and generated caption through `past_key_values` without resetting state. Before
+continuous training, the single-caption checkpoint repeated the first section's caption across
+later sections: continuous word-F1 was `0.5694` versus `0.6455` when resetting each section. After
+40 continuous steps, word-F1 was `0.6171` continuous, `0.6144` reset-each, and `0.5890` with zero
+delta. Thus training recovered the `7.61`-point contamination deficit, slightly exceeded reset by
+`0.27` points, and retained a `2.81`-point delta-content gap. The mechanics and contamination gate
+pass on 24 captions from eight validation streams. Because these streams concatenate unrelated
+videos, this is not evidence that prior captions provide useful natural memory; that claim remains
+reserved for Ego4D within-video sequences.
+
 The final long-video evaluation source is now LongVideoBench, not MSR-VTT. The existing shared
 distribution is present as the official 151 GB split-tar release at Hugging Face revision
 `60d1c89c1919a198b73be39c2babb213b29d6a5c`: 1,337 labeled validation questions and 5,341
