@@ -78,6 +78,22 @@ pass on 24 captions from eight validation streams. Because these streams concate
 videos, this is not evidence that prior captions provide useful natural memory; that claim remains
 reserved for Ego4D within-video sequences.
 
+The 64-stream/192-caption scale-up falsified the plain caption-CE objective. After 400 CE-only
+steps, continuous/reset/zero word-F1 was `0.6181/0.6165/0.6157`: contamination was fixed, but the
+zero gap collapsed to `0.24` points and failed the one-point gate. Training had learned to rely on
+anchor and language priors rather than preserve delta use. This negative result is retained rather
+than selecting the favorable eight-stream smoke.
+
+Adding an explicit sequence-level zero-delta NLL margin repaired that failure. With the same 400
+steps and 64 validation streams, final continuous/reset/zero word-F1 was
+`0.6149/0.6129/0.4913`. Continuous same-KV inference improved from `0.5644` before training, stayed
+within `0.19` points above reset-each, and beat zero delta by `12.35` points. The controlled
+objective sacrificed only `0.32` normal word-F1 points relative to CE-only while making delta
+content causally necessary. This establishes actual Qwen multi-commit same-KV mechanics and a
+causal delta caption gate on unrelated concatenated sections. It still does not establish useful
+natural caption memory, since cross-video prior captions should ideally be irrelevant; Ego4D is
+required for that next claim.
+
 The final long-video evaluation source is now LongVideoBench, not MSR-VTT. The existing shared
 distribution is present as the official 151 GB split-tar release at Hugging Face revision
 `60d1c89c1919a198b73be39c2babb213b29d6a5c`: 1,337 labeled validation questions and 5,341

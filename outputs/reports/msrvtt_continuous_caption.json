@@ -1,0 +1,1511 @@
+{
+  "checks": {
+    "continuous_beats_zero": true,
+    "continuous_improves": true,
+    "continuous_within_reset_tolerance": true
+  },
+  "completed_at_utc": "2026-08-28T05:53:34.143050+00:00",
+  "discarded_sections": {
+    "test": 1,
+    "train": 0,
+    "validation": 2
+  },
+  "final": {
+    "examples": [
+      {
+        "continuous": [
+          "a man is being attacked by a woman",
+          "a man is singing a song",
+          "a person is playing a video game"
+        ],
+        "references": [
+          [
+            "a clip from movie shows people holding on",
+            "a clip from the batman movie",
+            "a cutscene from batman",
+            "a man holding another man s arm",
+            "a man is unconscious on-board a failing airplane",
+            "a person holds onto an airplane to avoid being sucked out",
+            "a person is explaining something",
+            "a scene depicts a group of people in the process of a plane crash",
+            "a scene of a movie where some people trying to save a man",
+            "bane holding and tying a rope on a man",
+            "people are fighting in travel",
+            "people are in an airplane",
+            "people in a disaster",
+            "people on a airplane hurt",
+            "people on the plane are about to fly out",
+            "this is a clip from a movie",
+            "a man holding another man s arm",
+            "a man is unconscious on-board a failing airplane",
+            "people on a airplane hurt",
+            "a clip from movie shows people holding on"
+          ],
+          [
+            "a man and woman talking as the woman changes into a nightgown",
+            "a man brushes his hair and talks to his wife who is wearing a pink towel and changing into a nightgown",
+            "there is a police man is talking with a woman",
+            "there is a police man is talking with a woman",
+            "a man and woman is in a room the woman changes her clothes",
+            "the police officer bids good bye to his wife who dresses and  gives him some instructions",
+            "a scene from a foreign soap opera is unfolding where a woman talks to a man and folds clothes",
+            "a lady is changing her dress and talking with man",
+            "a man in a green military outfit talking to a woman changing clothing",
+            "standing in a bedroom a military man watches a woman get dressed after a shower",
+            "a man is looking in the mirror and fixing his hair with a comb a woman is dressing",
+            "an indian man in a uniform talks to a woman while she gets dressed",
+            "a man and a woman in a pink dress stand in a room talking  the woman puts on a different dress as the man walks off screen",
+            "man is in the house and talking with his woman in pink dress",
+            "a man standing in a mirror combing his haor talking to his wife",
+            "a private talking between a police officer and a girl about to attend an evening show movie on  prabhat  theater",
+            "man and woman in room getting ready to go out for the day",
+            "man in woman in their room getting dressed for the day",
+            "a person in police uniform getting ready for his duty talking his wife in his house",
+            "guy in police uniform getting ready as sexy brunette changes in front of him"
+          ],
+          [
+            "a bedroom in the game minecraft",
+            "a game to sole puzzle",
+            "a man describing what objects are in a video game",
+            "a man talks while playing a video game",
+            "a minecraft video showing us his game",
+            "a person is playing a video game",
+            "a person is running around blocks in minecraft",
+            "a person is walking around a pink map on minecraft",
+            "a person playing a video game and commentating",
+            "a runs with his teammate in a video game",
+            "a short clip taken in the game mine craft",
+            "a video game character is exploring a room",
+            "footage of someone playing the game minecraft",
+            "man playing minecraft and talking about it",
+            "minecraft gameplay footage of exploring a house",
+            "minecraft is being played by a few players",
+            "someone giving demo for some game and talking about that",
+            "someone is playing a game",
+            "video game played online computer",
+            "a person is walking around a pink map on minecraft"
+          ]
+        ],
+        "reset_each": [
+          "a man is being attacked by a woman",
+          "a man is talking to a woman",
+          "a minecraft character is running around"
+        ],
+        "source_ids": [
+          "video6946",
+          "video6950",
+          "video6853"
+        ],
+        "zero": [
+          "a man is being attacked",
+          "a man is being attacked",
+          "a man is being attacked"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is talking about a video game",
+          "a woman is cooking",
+          "a woman is showing a purple bottle of hair dye"
+        ],
+        "references": [
+          [
+            "a boy with black t-shirt sharing his views in front of the camera",
+            "there is a man talking about some videos",
+            "there is a tshirt man talking with fun",
+            "a young man asks people to subscribe to his 12 days",
+            "a man is wearing black color dress is standing up",
+            "a young man wearing a gray sweatshirt sits on the gray carpeting by a corner of black sectional furniture which is decorated with throw pillows",
+            "12 days of collamas is the title of the video a person appears",
+            "a man stating that his best friend tag is over and to subscribe",
+            "a small man in a black shirt leans back against a black couch",
+            "a very short presentation for 12 days of collabmas for a web series",
+            "a boy in a long-sleeved shirt is sitting on the floor asking people to subscribe",
+            "a young man talks about his site and encourages viewers to subscribe",
+            "the end of a video is seen with three preview videos playing",
+            "a man in black talking as he gets up from a low table",
+            "man in green shirt is sitting near the bed and talking",
+            "man is sitting near the bed and talking about something",
+            "an advertisement about the 12 days of collabmas subscription is showed",
+            "a screen shot of live video with three feeds in a collage",
+            "some white text is on a red screen",
+            "a young man sits on the floor and thanks his audience pictures of himself with friends flank either side of the video with a caption of 12 days of collabmas hangs above it"
+          ],
+          [
+            "a girl pours chocolate into a pan",
+            "a girl stirring a mixture in a pot",
+            "a person is cooking",
+            "a person teaching a recipe",
+            "a person wearing pink headphones mixes a chocolate dessert",
+            "a woman cooking chocolate pudding on a cooking show in the kitchen",
+            "a woman following a recipe",
+            "a woman is cooking",
+            "a woman is giving a cooking instructional video",
+            "a woman makes chocolate in the kitchen",
+            "a woman pours a chocolate mixture into a pot and heats it on the stove until it reaches a pudding-like consistency",
+            "a young woman is making a chocolate recipe in a kitchen",
+            "creating a thick chocolate pudding",
+            "girl cooking chocolate in the kitchen",
+            "in a kitchen a woman demonstrates how to make chocolate pudding",
+            "in a kitchen a woman mixes ingredients to make a chocolate sauce",
+            "pudding is made by a cook",
+            "the chef wore a yellow apron",
+            "the lady demonstrated how to make pudding",
+            "this is a cooking video"
+          ],
+          [
+            "3 woman talking about a hair care product",
+            "a group of girls are talking about bed head products",
+            "females talking to each other about a new hair care product",
+            "girls talking about bed head products",
+            "girls talking about hair products",
+            "lady reviewing a product",
+            "some women are displaying beaty products",
+            "the woman holds the hair spray",
+            "three woman are talking about products",
+            "three women are discussing a beauty product",
+            "three women are discussing hair products",
+            "three women discuss a hair product",
+            "three women talking about a soap product",
+            "woman talking about bed head product",
+            "woman talks to friends about bed head products",
+            "women on a couch talk about a hair product",
+            "a group of girls are talking about bed head products",
+            "woman talks to friends about bed head products",
+            "three women are discussing a beauty product",
+            "lady reviewing a product"
+          ]
+        ],
+        "reset_each": [
+          "a man is talking about a video game",
+          "a woman is cooking",
+          "a woman is showing a purple bottle of hair product"
+        ],
+        "source_ids": [
+          "video6605",
+          "video6911",
+          "video6959"
+        ],
+        "zero": [
+          "a man is talking about a movie",
+          "a man is talking about a movie",
+          "a man is talking about a movie"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is talking about a movie",
+          "a woman is applying makeup to her face",
+          "a man is driving a car"
+        ],
+        "references": [
+          [
+            "there is a cap man is watching someone",
+            "panning over water and stadium seating transitions to men stretching in black and purple warm up gear",
+            "a man talks while music plays and a group of men walk through and exercise on a sport field",
+            "a man is looking and more persons are there",
+            "a man wearing black color dress is walking with group",
+            "a few baseball players warm up for a game in cold weather",
+            "a man in a sports uniform is contemplating what to do as four people walk up to him",
+            "a motivational video that a group is performing to inspire people",
+            "a man explaining of something about the players engaged in pratice",
+            "a man in cap looking seriously at something and few guys warming up",
+            "there is a stadium with a group of men walking across it and exercising and a male voice over giving motivational messages",
+            "the person is motivating the people who are participating in the games",
+            "a guy talks while various athletes stretch and exercise",
+            "athletes stretch on the field while a man speaks",
+            "different athletes stretch together on an athletic field as a man speaks",
+            "baseball player warm up they are driven to sucessed to even when the odds are against them",
+            "person is recording the street and the big stadium",
+            "a white line is on the ground in a baseball stadium",
+            "a man is saying some innovative thoughts to players so that they can come up in life",
+            "a man with a black hat is holding his ears"
+          ],
+          [
+            "a girl is talking about skin products",
+            "a girl is telling about beauty products",
+            "a girl talking about putting cleanser on her face",
+            "a makeup tutorial about skin clay",
+            "a person is showing how to use a face cleanser",
+            "a review of a skin cleanser",
+            "a woman is applying makeup on herself",
+            "a woman is discussing health products",
+            "a woman showing how she puts on make up",
+            "a woman talks about what she likes about this facial cleanser",
+            "a woman washes her face with a cleanser",
+            "a woman washes her face with a deep cleanser",
+            "a women is putting makeup in her face",
+            "a young woman is cleaning her face with a beauty product",
+            "girl putting on make up",
+            "this is a video about a face cleansing product",
+            "woman is using a face cleanser",
+            "woman reviews deep cleansing face cleanser",
+            "woman is using a face cleanser",
+            "a person is showing how to use a face cleanser"
+          ],
+          [
+            "a beautiful scene on the screen",
+            "a golf ball is bouncing toward a green and a man is lying on the ground",
+            "a golf ball lands close to the pin",
+            "a golf player hits a ball close to the hole and then lays on the ground",
+            "a golfer makes a hole in one while announcers are laughing and people are clapping",
+            "a man is excited he made a goal in golf",
+            "a man is on a golf course and doing exercises",
+            "a man laying on grass",
+            "a man that is happy he made the shot",
+            "a person is playing golf",
+            "incredible golf swing hit",
+            "old man hits a whole in one",
+            "people cheering on a golf course",
+            "the golf ball does not make the hole while a golfer is exercising his hands while lying on the grass",
+            "there is a shot of a golf shot onto the green very near the hole and then a man lying on the grass doing arm exercises",
+            "there is an accident occurring on the golf field",
+            "a golf ball lands close to the pin",
+            "a man laying on grass",
+            "a man is on a golf course and doing exercises",
+            "a golf ball lands close to the pin"
+          ]
+        ],
+        "reset_each": [
+          "a man is talking about a movie",
+          "a woman is applying makeup to her face",
+          "a man is driving a car"
+        ],
+        "source_ids": [
+          "video6784",
+          "video6986",
+          "video6565"
+        ],
+        "zero": [
+          "a man is talking about a movie",
+          "a man is talking about a movie",
+          "a man is talking about a movie"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is talking to a woman",
+          "a woman is applying makeup to her lips",
+          "a man is riding a horse"
+        ],
+        "references": [
+          [
+            "a man in a black suit enters a room and shakes hands with a man in black glasses",
+            "an older man in a black suit is shaking hands with another man in a black suit",
+            "a person wearing a black dress and tie on the room",
+            "there is a black suit man entering in a room",
+            "two politicians greet in a room while a narrator discusses the rebuilding of iraq",
+            "a person in executive attire enters a room and greets a man",
+            "two higher officials meet in a room and have a chat",
+            "a meeting of dignified individuals is underway with two of them shaking hands",
+            "a man is talking with another man both are wearing black color coat",
+            "the video shows a man greeting another man as he enters a room",
+            "politicians are meetin up with each other in a hotel room",
+            "the man wearing a suit and tie talk to the other man",
+            "two formal men are having a conversation inside of a building",
+            "an older man in a black suit enters a beige and white room passes a dark desk and extends his hand to greet his host",
+            "one of which is the iraqi prime minister named haider al-abadi are shaking hands while the narrator speaks in the background translating haider on how to rebuild iraq",
+            "a man is reading a news in the television channel",
+            "a bbc report about the iraqi prime minister the prime minister is asking the english government for funding to help rebuild",
+            "group of men in elegant clothes are meeting in a room",
+            "a prime minister speaking standing meeting hand to hand shaking persons beside  displaying on screen",
+            "a report says the iraqi prime minister says the international community must help iraq rebuild by providing it with funds"
+          ],
+          [
+            "the modern women in black dress applying the lipstic into her lips",
+            "a woman with black hair and long red fingernails applies a purple lip gloss to her lips",
+            "a woman youtuber does a makeup tutorial in front of a silver glittery background",
+            "a brunette is applying lip gloss to her plum colored lips",
+            "a cute woman is embellishing her lips with dark lipstick",
+            "it is a girl putting on make up at the end she is putting on a lip gloss that looks purple",
+            "a cute lady is make up him self by purple leapstick and try to make him self beautiful",
+            "a lady is make up her lips by brush",
+            "a lady is applying lipstick to her lips the color is purple the video speed increases",
+            "a woman puts on lipstick in normal speed then in fast speed",
+            "a woman is applying a lip stick in her lip",
+            "a woman is applying lip color onto her lips",
+            "a dark haired woman is applying dark lip balm on her lips",
+            "oma shows how to put on purple lipstick",
+            "black haired woman is putting the make up on her lips",
+            "brunette woman in black dress is doing her make up",
+            "woman with brunette hair is doing her make up",
+            "a woman is applying some type of lip color cosmetic to her lips",
+            "a woman is applying lip gloss and provides a positive review of the product",
+            "a woman in black lace is applying lip makeup"
+          ],
+          [
+            "a cowboy jumps off a horse a ties the legs of a calf",
+            "a man is lassoing an animal on horseback",
+            "a man is riding a horse and catching an animal",
+            "a man is riding a horse to catch a small calf",
+            "a man is riding a horse while chasing another animal",
+            "a man rides a horse on a track",
+            "a man riding a horse",
+            "a man walking in a fenced off area with a horse in there",
+            "a person lassoing a calf",
+            "a rodeo clown performing for the audience",
+            "a rodeo event going on where the rider must lasso the calf from horseback",
+            "a rodeo featuring horse tricks and an animal getting killed",
+            "a video of a roping competition",
+            "horse rider catching a calf with help of rope",
+            "horse running next to a dog",
+            "people are riding horses and trying to lasso calves",
+            "people preforming in a rodeo",
+            "showing a guy catching an animal with a rope",
+            "some horses has been showed",
+            "the horses were in the stables"
+          ]
+        ],
+        "reset_each": [
+          "a man is talking to a woman",
+          "a woman is applying makeup to her face",
+          "a man is riding a horse"
+        ],
+        "source_ids": [
+          "video6533",
+          "video6715",
+          "video6866"
+        ],
+        "zero": [
+          "a man is talking about a hotel room",
+          "a man is talking about a hotel room",
+          "a man is talking about a hotel room"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is cooking",
+          "a group of people are dancing",
+          "a man is talking about a football game"
+        ],
+        "references": [
+          [
+            "a chef cooks some food",
+            "a chef discusses putting a dish into the oven",
+            "a chef explains how to cook a recipe",
+            "a chef is cooking food",
+            "a chef is cooking",
+            "a chef is puts a hot pot into a oven",
+            "a chef shows how he is making food",
+            "a chef talking about what he will cook",
+            "a french chef describes how to make a recipe",
+            "a french chef puts a pot into an oven",
+            "a man cooking food in a kitchen",
+            "a man cooking food in the kitchen",
+            "a man is cooking",
+            "a man is preparing a meal in a kitchen",
+            "a man with glasses",
+            "a person is making food",
+            "in a kitchen a chef is using an oven",
+            "someone is playing a video game",
+            "this is a french chief doing a cooking video",
+            "a chef is cooking"
+          ],
+          [
+            "black children dance to a song",
+            "children are dancing to music",
+            "kids dance to hip hop song",
+            "kids dancing in a classroom at school",
+            "kids doing the nae nae",
+            "music plays while three young children dance",
+            "some children dance around in a room",
+            "some kids are dancing",
+            "some kids are dancing",
+            "the children are dancing",
+            "three black kids dancing together on a rap song",
+            "three children are dancing to rap music",
+            "three children are dancing together",
+            "three children dancing happily",
+            "three young black children dance",
+            "three young kids are dancing",
+            "three young kids dance to music in the background",
+            "two little girls and a little boy do the whip nae nae dance",
+            "young people dancing and singing",
+            "three children dancing happily"
+          ],
+          [
+            "a group of men cheering in the streets during a news cast",
+            "a group of people jump around in the street",
+            "a man is holding a piece of paper",
+            "a man is talking",
+            "a news clip showing people celebrating on a snowy street",
+            "a news reporter explaining the technical difficulty",
+            "a news reporter is explaining to the audience they are having audio problems",
+            "with loud sports fans then cuts to a woman talking about issues with their audio then cuts to a newscaster holding up a sign please help",
+            "a report from roadside",
+            "a reporter has explains some technical difficulties",
+            "a reporter talks about audio issues",
+            "a woman reporter explaining technical difficulties",
+            "an interviewer is explaining issues with audio",
+            "bunch of reporters doing live street coverage",
+            "news reporters reporting the news",
+            "on the scene television reporters face challenges",
+            "people reporting outside and having issues",
+            "reporters talk about seattle football fans celebrations",
+            "there are different clips of new people on the street",
+            "people reporting outside and having issues"
+          ]
+        ],
+        "reset_each": [
+          "a man is cooking",
+          "a group of people are dancing",
+          "a man is talking about a football game"
+        ],
+        "source_ids": [
+          "video6787",
+          "video6766",
+          "video6832"
+        ],
+        "zero": [
+          "a man is cooking",
+          "a man is cooking",
+          "a man is cooking"
+        ]
+      },
+      {
+        "continuous": [
+          "two kids are talking about a toy",
+          "two men are talking about a movie",
+          "a man is being attacked by a group of people"
+        ],
+        "references": [
+          [
+            "a door was open in the background",
+            "a girl and boy are doing a spoof",
+            "a girl and boy are playing",
+            "a girl and boy are playing",
+            "a girl feeding a boy chips",
+            "a girl feeding a boy some snacks",
+            "a girl is feeding a boy",
+            "a girl pours cereal in another girls mouth",
+            "a girl shows her cheetos",
+            "a girl talking and throwing food into another childs mouth",
+            "a girl throwing cereal in a boys mouth",
+            "a man is performing in front of a group of judges",
+            "girl and boy eat cereal and junk food",
+            "kids are eating food",
+            "putting chips in boys mouth",
+            "siblings eat some snacks",
+            "the two little girls play each other",
+            "two children feed each other with fruit loops",
+            "two girls eating different foods",
+            "two girls enjoying each other"
+          ],
+          [
+            "a man with a bottle clinks the glass of another and both take a drink",
+            "a man with glasses",
+            "credits are shown as two men have a discussion",
+            "scene from a tv show",
+            "two guys drinking alcohol",
+            "two man s are talking about something and drinking something",
+            "two men are doing a toast together",
+            "two men are drinking alcohol",
+            "two men are talking indoors",
+            "two men in a kitchen drink alcohol",
+            "two men in a kitchen who are drinking",
+            "two men in a kitchen",
+            "two men speak about alcohol",
+            "two mens are drinking stella rose and cheerings each other",
+            "two people drinking beer",
+            "two people toast and drink in their kitchen",
+            "two persons are speaking each other and they are drinking",
+            "two spanish guys talking about alcohol",
+            "a man with glasses",
+            "two men in a kitchen who are drinking"
+          ],
+          [
+            "couple are madly in love with each other here",
+            "its a couples on romance each other",
+            "there is a couples having sex in a room",
+            "two people are engaged in a romance scene",
+            "the babies are played in the night very attractively",
+            "the bedroom scenes the couples are enjoying their moments",
+            "its a erotic scene of a man and a women mating we can see the man moving cleaning the table and throwing the things down and makes the lady sit on it and  they both kiss and cuddle each other",
+            "a couple is intertwined rolling and kissing on a bed small bottles and containers are pushed off the top of a wooden dresser",
+            "one boy and girl making fuck in bed and kissing",
+            "one man and women fucks and kisses in bed",
+            "a man and woman rolling around on a bed they then passionately move from the bed to the dresser",
+            "a man and a woman thrash around and change positions as they prepare to have relations",
+            "a man and a woman making love inside a room",
+            "two people having sex roll around in a bed and around a room",
+            "a lady rolls around with  guy pasionatly to make love",
+            "a couples is having sex in their bed room",
+            "a man and a women is making love passionately and rolling on the floor",
+            "a man and a woman were rolling around in the bed",
+            "two people are having wild sex indoors",
+            "a man is kissing a lady in her lips"
+          ]
+        ],
+        "reset_each": [
+          "two kids are talking about a toy",
+          "two men are talking about a movie",
+          "a man is being attacked by a group of people"
+        ],
+        "source_ids": [
+          "video6709",
+          "video6974",
+          "video6769"
+        ],
+        "zero": [
+          "a girl is talking about a toy",
+          "a girl is talking about a toy",
+          "a girl is talking about a toy"
+        ]
+      },
+      {
+        "continuous": [
+          "a man and woman are kissing",
+          "a woman is singing on stage",
+          "a woman is showing how to make a recipe"
+        ],
+        "references": [
+          [
+            "a man in military dress and a woman in a white and dotted dress are kissing",
+            "a man and a woman walk down a wooden staircase and kiss",
+            "there is a police man kissing a woman",
+            "a man and his wife are walking down the stairs in their home and he is saying sweet things to her",
+            "a couple embraces then walks down a flight of stairs and kisses",
+            "a man walks with a woman down a flight of stairs",
+            "they are kissing each other",
+            "a young indian couple waslks down a staircase and the woman kisses the man",
+            "a man is talking and kissing a lady",
+            "a man in a brown shirt and a woman are walking down a set of stairs speaking in a foreign language",
+            "a tamil movie scene is playing in the screen",
+            "a man in military service uniform walks down stairs with girlfriend in home and receives kiss",
+            "a woman and a man are walking down the stairs and kiss when they get to the bottom",
+            "a young couple walks together down a stairs and they begin kissing",
+            "a man and a woman both walk down the stairs together talking",
+            "a man an a woman walking down a staircase and kissing at the bottom",
+            "a man in a uniform and a woman walk down a staircase",
+            "guy in police officer uniform walking down the stairs with his wife",
+            "a man is walking a woman down the stairs as he wraps his arm around her",
+            "a man and a woman are kissing near a plant"
+          ],
+          [
+            "a women in silver dress is singing and entertaining the crowd",
+            "there is a hot woman singing with glittering dress",
+            "women with blonde/brown hair singing while women in undergarments walks down a runway behind her",
+            "taylor swift performs a hit song of hers as a runway model walks in the background in white fluff",
+            "taylor swift performs a song of hers as a runway model walks in the background",
+            "taylor swift performing a song at a victoria s secret fashion show",
+            "a blonde woman is performing on stage in a sparkly dress as another woman in costume comes out from behind her",
+            "a woman sings in front of narrow blue glaciers in a minidress covered with little mirrors forming angular patterns",
+            "a woman in a shiny dress sings as a woman in an angel costume walks on stage",
+            "women in bikin wearing a fake wings cat walks in a musical show",
+            "musician taylor swift is performing her song trouble at a victoria s secret fashion show",
+            "taylor swift is singing on stage at a modeling show",
+            "blonde woman in grey dress is singing on the scene",
+            "blonde woman in grey dress is singing on the scene",
+            "a fashion dress design a girl wearing fashion dress  dressing walking on stage audience watching  displaying on screen",
+            "taylor swift singing at a model fashion show",
+            "taylor swift sings in a shimmery dress at the victoria secret fashion show",
+            "a young blonde girl sings in a sparkling white dress while models walk in white lingerie",
+            "women in fashion show shows off new clothing",
+            "a person looking at the camera and talking"
+          ],
+          [
+            "there is a woman is making a dish with milk",
+            "there is a woman is making a dish with sugar in the kitchen",
+            "there is a woman is making a simple dish",
+            "a woman combines corn starch and salt in a bowl in conjunction with a recipe she is cooking",
+            "someone pouring ingredients into a bowl and then they begin to mix it all together",
+            "the person mix the ingredients in the clear bowl",
+            "a person has mixed many spices and seasonings in a bowl to created a red liquid to cook with",
+            "some water is put and then some sugar while few more liquids are added together",
+            "corn starch and other liquids being stirred in a clear dish",
+            "chef adding all the ingredients in a bowl of water and mixing them well with a steel spoon",
+            "ingredients are mixed ina  bowl with a spoon until disolved",
+            "a womn mixing ingredients in a clear bowl",
+            "a person pour different powders in a bowl of liquid",
+            "a person pours powder in a bowl of liquid on the counter",
+            "a woman puts sugar and corn starch into a glass bowl and stirs it",
+            "a girl bowl  spoon mixing dish inside kitchen to prepare to serve to eat displaying on screen",
+            "a girl pouring  bowl  spoon mixing dish inside kitchen to prepare to serve to eat displaying on screen",
+            "in a kitchen a woman describes mixing ingredients in a bowl",
+            "a woman mixes ingredients into a clear bowl",
+            "a person at a granite counter top mixing food ingredients into a glass bowl"
+          ]
+        ],
+        "reset_each": [
+          "a man and woman are kissing",
+          "a woman is singing on stage",
+          "a woman is showing how to make a recipe"
+        ],
+        "source_ids": [
+          "video6719",
+          "video6854",
+          "video6990"
+        ],
+        "zero": [
+          "a man and woman are kissing",
+          "a man and woman are kissing",
+          "a man and woman are kissing"
+        ]
+      },
+      {
+        "continuous": [
+          "a person is playing a video game",
+          "a man is talking to another man",
+          "a person is playing a video game"
+        ],
+        "references": [
+          [
+            "the woman put some product in the water and it get bubbling",
+            "the hobby kids drop dry ice--or kryptonite as they refer to it--into a green liquid",
+            "there is a woman making green color water",
+            "a bowl of green liquid is bubbling and smoking",
+            "green water is bubbling in a round white bucket",
+            "in the science lab the students are engaged in experiment",
+            "in the science lab the students are engaged in experiment",
+            "a lady discussing a green liquid in a cup that is making steam",
+            "a lady talking of something about the boiling water",
+            "a green colour mineral called kryptonite is boiling and white bubble came from it",
+            "short scene from the hobby kids tv showing colorful animation",
+            "green water boils in a pot while someone talks about kryptonite",
+            "dry ice is dropped into a bucket of water to make fog while a woman talks about kryptonite and superman with a child",
+            "a bowl of green liquid with white smoke pouring out of the top of it",
+            "green water boils out white smoke in a container",
+            "person is putting some water into the white dish",
+            "person is recording the green products in the water",
+            "fog rolls off a bubbly green liquid in a container",
+            "some green and white liquid in a bowl is being boiled",
+            "some white smoke is coming from green liquid"
+          ],
+          [
+            "the two young people discussing something on the dining table",
+            "there is a black tshirt man is talking with a man",
+            "there is a check shirt man is talking someone",
+            "there is a tshirt man is talking with a friend",
+            "at a table sit two men and they have a chat on fictions",
+            "the man talks about a time machine from a science fiction show that has nothing to do with hallowen",
+            "two young men sit at a cafeteria table and talk about science fiction",
+            "a man in black graphic shirt is sitting with another man at a table in front of a vending machine telling him that a tardis is a time machine",
+            "the men sit at the table near the plant and talk to one another",
+            "a man in a black shirt talking to another man in a red and white jacket at a table",
+            "few persons speaking on the library along with the book on the front of them",
+            "two men were talking about something while eating",
+            "a couple guys discussing a concept in a popular show",
+            "two guys sitting on the dining table in a caffeteria and talking to each other",
+            "a man is speaking about time machine and science fiction",
+            "sheldon from the tv show the big bang theory speaks to the other character",
+            "sheldon and raj from the big bang theory talk to each other",
+            "two characters from the big bang theory talk to each other while in a cafeteria",
+            "two men are sitting at a table discussing time machines",
+            "several boys sitting in a lunch room talking while they are eatting"
+          ],
+          [
+            "a 16bit game with people in a field near a fence",
+            "a boy plays a pokemon video game",
+            "a male voice is talking while a pokemon video game",
+            "a man is commentating while playing a pokemon game",
+            "a man is playing a pokemon game while narrating the text",
+            "a man narrates a pokemon game",
+            "a person is playing pokemon for gameboy",
+            "about a video game",
+            "people are playing video games side by side",
+            "person playing a split screen video game",
+            "pokemon plays with men commentating",
+            "side by side screen game",
+            "someone is playing a game",
+            "someone playing pokemon while giving commentary",
+            "the clipping is from a cartoon programme",
+            "the pokemon game plays simultaniously",
+            "the same video game is played twice simultaneously while people talk over it",
+            "two people are competing in a video game",
+            "two players discuss why pokemon should never be exploited for evil",
+            "two players playing a pokemon game and one reading the game text"
+          ]
+        ],
+        "reset_each": [
+          "a person is playing a video game",
+          "a man is talking to another man",
+          "a person is playing a video game"
+        ],
+        "source_ids": [
+          "video6717",
+          "video6763",
+          "video6747"
+        ],
+        "zero": [
+          "a girl is playing with a toy",
+          "a girl is playing with a toy",
+          "a girl is playing with a toy"
+        ]
+      }
+    ],
+    "metrics": {
+      "continuous": {
+        "exact_match": 0.07291666666666667,
+        "examples": 192.0,
+        "rouge_l": 0.6001244075602691,
+        "word_f1": 0.6148513724036485
+      },
+      "reset_each": {
+        "exact_match": 0.057291666666666664,
+        "examples": 192.0,
+        "rouge_l": 0.5943906847831185,
+        "word_f1": 0.6129133353820285
+      },
+      "zero": {
+        "exact_match": 0.015625,
+        "examples": 192.0,
+        "rouge_l": 0.4744738455397801,
+        "word_f1": 0.49131504051507163
+      }
+    }
+  },
+  "initial": {
+    "examples": [
+      {
+        "continuous": [
+          "a man is being attacked",
+          "a man is being attacked",
+          "a man is being attacked"
+        ],
+        "references": [
+          [
+            "a clip from movie shows people holding on",
+            "a clip from the batman movie",
+            "a cutscene from batman",
+            "a man holding another man s arm",
+            "a man is unconscious on-board a failing airplane",
+            "a person holds onto an airplane to avoid being sucked out",
+            "a person is explaining something",
+            "a scene depicts a group of people in the process of a plane crash",
+            "a scene of a movie where some people trying to save a man",
+            "bane holding and tying a rope on a man",
+            "people are fighting in travel",
+            "people are in an airplane",
+            "people in a disaster",
+            "people on a airplane hurt",
+            "people on the plane are about to fly out",
+            "this is a clip from a movie",
+            "a man holding another man s arm",
+            "a man is unconscious on-board a failing airplane",
+            "people on a airplane hurt",
+            "a clip from movie shows people holding on"
+          ],
+          [
+            "a man and woman talking as the woman changes into a nightgown",
+            "a man brushes his hair and talks to his wife who is wearing a pink towel and changing into a nightgown",
+            "there is a police man is talking with a woman",
+            "there is a police man is talking with a woman",
+            "a man and woman is in a room the woman changes her clothes",
+            "the police officer bids good bye to his wife who dresses and  gives him some instructions",
+            "a scene from a foreign soap opera is unfolding where a woman talks to a man and folds clothes",
+            "a lady is changing her dress and talking with man",
+            "a man in a green military outfit talking to a woman changing clothing",
+            "standing in a bedroom a military man watches a woman get dressed after a shower",
+            "a man is looking in the mirror and fixing his hair with a comb a woman is dressing",
+            "an indian man in a uniform talks to a woman while she gets dressed",
+            "a man and a woman in a pink dress stand in a room talking  the woman puts on a different dress as the man walks off screen",
+            "man is in the house and talking with his woman in pink dress",
+            "a man standing in a mirror combing his haor talking to his wife",
+            "a private talking between a police officer and a girl about to attend an evening show movie on  prabhat  theater",
+            "man and woman in room getting ready to go out for the day",
+            "man in woman in their room getting dressed for the day",
+            "a person in police uniform getting ready for his duty talking his wife in his house",
+            "guy in police uniform getting ready as sexy brunette changes in front of him"
+          ],
+          [
+            "a bedroom in the game minecraft",
+            "a game to sole puzzle",
+            "a man describing what objects are in a video game",
+            "a man talks while playing a video game",
+            "a minecraft video showing us his game",
+            "a person is playing a video game",
+            "a person is running around blocks in minecraft",
+            "a person is walking around a pink map on minecraft",
+            "a person playing a video game and commentating",
+            "a runs with his teammate in a video game",
+            "a short clip taken in the game mine craft",
+            "a video game character is exploring a room",
+            "footage of someone playing the game minecraft",
+            "man playing minecraft and talking about it",
+            "minecraft gameplay footage of exploring a house",
+            "minecraft is being played by a few players",
+            "someone giving demo for some game and talking about that",
+            "someone is playing a game",
+            "video game played online computer",
+            "a person is walking around a pink map on minecraft"
+          ]
+        ],
+        "reset_each": [
+          "a man is being attacked",
+          "a man is crying",
+          "a video game character is running"
+        ],
+        "source_ids": [
+          "video6946",
+          "video6950",
+          "video6853"
+        ],
+        "zero": [
+          "a man is being attacked",
+          "a man is being attacked",
+          "a man is being attacked"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is talking about a video",
+          "a woman is cooking",
+          "a woman is talking about a video"
+        ],
+        "references": [
+          [
+            "a boy with black t-shirt sharing his views in front of the camera",
+            "there is a man talking about some videos",
+            "there is a tshirt man talking with fun",
+            "a young man asks people to subscribe to his 12 days",
+            "a man is wearing black color dress is standing up",
+            "a young man wearing a gray sweatshirt sits on the gray carpeting by a corner of black sectional furniture which is decorated with throw pillows",
+            "12 days of collamas is the title of the video a person appears",
+            "a man stating that his best friend tag is over and to subscribe",
+            "a small man in a black shirt leans back against a black couch",
+            "a very short presentation for 12 days of collabmas for a web series",
+            "a boy in a long-sleeved shirt is sitting on the floor asking people to subscribe",
+            "a young man talks about his site and encourages viewers to subscribe",
+            "the end of a video is seen with three preview videos playing",
+            "a man in black talking as he gets up from a low table",
+            "man in green shirt is sitting near the bed and talking",
+            "man is sitting near the bed and talking about something",
+            "an advertisement about the 12 days of collabmas subscription is showed",
+            "a screen shot of live video with three feeds in a collage",
+            "some white text is on a red screen",
+            "a young man sits on the floor and thanks his audience pictures of himself with friends flank either side of the video with a caption of 12 days of collabmas hangs above it"
+          ],
+          [
+            "a girl pours chocolate into a pan",
+            "a girl stirring a mixture in a pot",
+            "a person is cooking",
+            "a person teaching a recipe",
+            "a person wearing pink headphones mixes a chocolate dessert",
+            "a woman cooking chocolate pudding on a cooking show in the kitchen",
+            "a woman following a recipe",
+            "a woman is cooking",
+            "a woman is giving a cooking instructional video",
+            "a woman makes chocolate in the kitchen",
+            "a woman pours a chocolate mixture into a pot and heats it on the stove until it reaches a pudding-like consistency",
+            "a young woman is making a chocolate recipe in a kitchen",
+            "creating a thick chocolate pudding",
+            "girl cooking chocolate in the kitchen",
+            "in a kitchen a woman demonstrates how to make chocolate pudding",
+            "in a kitchen a woman mixes ingredients to make a chocolate sauce",
+            "pudding is made by a cook",
+            "the chef wore a yellow apron",
+            "the lady demonstrated how to make pudding",
+            "this is a cooking video"
+          ],
+          [
+            "3 woman talking about a hair care product",
+            "a group of girls are talking about bed head products",
+            "females talking to each other about a new hair care product",
+            "girls talking about bed head products",
+            "girls talking about hair products",
+            "lady reviewing a product",
+            "some women are displaying beaty products",
+            "the woman holds the hair spray",
+            "three woman are talking about products",
+            "three women are discussing a beauty product",
+            "three women are discussing hair products",
+            "three women discuss a hair product",
+            "three women talking about a soap product",
+            "woman talking about bed head product",
+            "woman talks to friends about bed head products",
+            "women on a couch talk about a hair product",
+            "a group of girls are talking about bed head products",
+            "woman talks to friends about bed head products",
+            "three women are discussing a beauty product",
+            "lady reviewing a product"
+          ]
+        ],
+        "reset_each": [
+          "a man is talking about a video",
+          "a woman is cooking",
+          "a woman is holding a bottle of hair dye"
+        ],
+        "source_ids": [
+          "video6605",
+          "video6911",
+          "video6959"
+        ],
+        "zero": [
+          "a man is talking about a video",
+          "a woman is cooking",
+          "a woman is holding a bottle of hair dye"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is talking about a movie",
+          "a woman is talking about a movie",
+          "a man is talking about a movie"
+        ],
+        "references": [
+          [
+            "there is a cap man is watching someone",
+            "panning over water and stadium seating transitions to men stretching in black and purple warm up gear",
+            "a man talks while music plays and a group of men walk through and exercise on a sport field",
+            "a man is looking and more persons are there",
+            "a man wearing black color dress is walking with group",
+            "a few baseball players warm up for a game in cold weather",
+            "a man in a sports uniform is contemplating what to do as four people walk up to him",
+            "a motivational video that a group is performing to inspire people",
+            "a man explaining of something about the players engaged in pratice",
+            "a man in cap looking seriously at something and few guys warming up",
+            "there is a stadium with a group of men walking across it and exercising and a male voice over giving motivational messages",
+            "the person is motivating the people who are participating in the games",
+            "a guy talks while various athletes stretch and exercise",
+            "athletes stretch on the field while a man speaks",
+            "different athletes stretch together on an athletic field as a man speaks",
+            "baseball player warm up they are driven to sucessed to even when the odds are against them",
+            "person is recording the street and the big stadium",
+            "a white line is on the ground in a baseball stadium",
+            "a man is saying some innovative thoughts to players so that they can come up in life",
+            "a man with a black hat is holding his ears"
+          ],
+          [
+            "a girl is talking about skin products",
+            "a girl is telling about beauty products",
+            "a girl talking about putting cleanser on her face",
+            "a makeup tutorial about skin clay",
+            "a person is showing how to use a face cleanser",
+            "a review of a skin cleanser",
+            "a woman is applying makeup on herself",
+            "a woman is discussing health products",
+            "a woman showing how she puts on make up",
+            "a woman talks about what she likes about this facial cleanser",
+            "a woman washes her face with a cleanser",
+            "a woman washes her face with a deep cleanser",
+            "a women is putting makeup in her face",
+            "a young woman is cleaning her face with a beauty product",
+            "girl putting on make up",
+            "this is a video about a face cleansing product",
+            "woman is using a face cleanser",
+            "woman reviews deep cleansing face cleanser",
+            "woman is using a face cleanser",
+            "a person is showing how to use a face cleanser"
+          ],
+          [
+            "a beautiful scene on the screen",
+            "a golf ball is bouncing toward a green and a man is lying on the ground",
+            "a golf ball lands close to the pin",
+            "a golf player hits a ball close to the hole and then lays on the ground",
+            "a golfer makes a hole in one while announcers are laughing and people are clapping",
+            "a man is excited he made a goal in golf",
+            "a man is on a golf course and doing exercises",
+            "a man laying on grass",
+            "a man that is happy he made the shot",
+            "a person is playing golf",
+            "incredible golf swing hit",
+            "old man hits a whole in one",
+            "people cheering on a golf course",
+            "the golf ball does not make the hole while a golfer is exercising his hands while lying on the grass",
+            "there is a shot of a golf shot onto the green very near the hole and then a man lying on the grass doing arm exercises",
+            "there is an accident occurring on the golf field",
+            "a golf ball lands close to the pin",
+            "a man laying on grass",
+            "a man is on a golf course and doing exercises",
+            "a golf ball lands close to the pin"
+          ]
+        ],
+        "reset_each": [
+          "a man is talking about a movie",
+          "a woman is applying makeup",
+          "a man is driving a car"
+        ],
+        "source_ids": [
+          "video6784",
+          "video6986",
+          "video6565"
+        ],
+        "zero": [
+          "a man is talking about a movie",
+          "a woman is talking about a movie",
+          "a woman is talking about a movie"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is talking to a woman",
+          "a woman is applying makeup",
+          "a man is riding a horse"
+        ],
+        "references": [
+          [
+            "a man in a black suit enters a room and shakes hands with a man in black glasses",
+            "an older man in a black suit is shaking hands with another man in a black suit",
+            "a person wearing a black dress and tie on the room",
+            "there is a black suit man entering in a room",
+            "two politicians greet in a room while a narrator discusses the rebuilding of iraq",
+            "a person in executive attire enters a room and greets a man",
+            "two higher officials meet in a room and have a chat",
+            "a meeting of dignified individuals is underway with two of them shaking hands",
+            "a man is talking with another man both are wearing black color coat",
+            "the video shows a man greeting another man as he enters a room",
+            "politicians are meetin up with each other in a hotel room",
+            "the man wearing a suit and tie talk to the other man",
+            "two formal men are having a conversation inside of a building",
+            "an older man in a black suit enters a beige and white room passes a dark desk and extends his hand to greet his host",
+            "one of which is the iraqi prime minister named haider al-abadi are shaking hands while the narrator speaks in the background translating haider on how to rebuild iraq",
+            "a man is reading a news in the television channel",
+            "a bbc report about the iraqi prime minister the prime minister is asking the english government for funding to help rebuild",
+            "group of men in elegant clothes are meeting in a room",
+            "a prime minister speaking standing meeting hand to hand shaking persons beside  displaying on screen",
+            "a report says the iraqi prime minister says the international community must help iraq rebuild by providing it with funds"
+          ],
+          [
+            "the modern women in black dress applying the lipstic into her lips",
+            "a woman with black hair and long red fingernails applies a purple lip gloss to her lips",
+            "a woman youtuber does a makeup tutorial in front of a silver glittery background",
+            "a brunette is applying lip gloss to her plum colored lips",
+            "a cute woman is embellishing her lips with dark lipstick",
+            "it is a girl putting on make up at the end she is putting on a lip gloss that looks purple",
+            "a cute lady is make up him self by purple leapstick and try to make him self beautiful",
+            "a lady is make up her lips by brush",
+            "a lady is applying lipstick to her lips the color is purple the video speed increases",
+            "a woman puts on lipstick in normal speed then in fast speed",
+            "a woman is applying a lip stick in her lip",
+            "a woman is applying lip color onto her lips",
+            "a dark haired woman is applying dark lip balm on her lips",
+            "oma shows how to put on purple lipstick",
+            "black haired woman is putting the make up on her lips",
+            "brunette woman in black dress is doing her make up",
+            "woman with brunette hair is doing her make up",
+            "a woman is applying some type of lip color cosmetic to her lips",
+            "a woman is applying lip gloss and provides a positive review of the product",
+            "a woman in black lace is applying lip makeup"
+          ],
+          [
+            "a cowboy jumps off a horse a ties the legs of a calf",
+            "a man is lassoing an animal on horseback",
+            "a man is riding a horse and catching an animal",
+            "a man is riding a horse to catch a small calf",
+            "a man is riding a horse while chasing another animal",
+            "a man rides a horse on a track",
+            "a man riding a horse",
+            "a man walking in a fenced off area with a horse in there",
+            "a person lassoing a calf",
+            "a rodeo clown performing for the audience",
+            "a rodeo event going on where the rider must lasso the calf from horseback",
+            "a rodeo featuring horse tricks and an animal getting killed",
+            "a video of a roping competition",
+            "horse rider catching a calf with help of rope",
+            "horse running next to a dog",
+            "people are riding horses and trying to lasso calves",
+            "people preforming in a rodeo",
+            "showing a guy catching an animal with a rope",
+            "some horses has been showed",
+            "the horses were in the stables"
+          ]
+        ],
+        "reset_each": [
+          "a man is talking to a woman",
+          "a woman is applying makeup",
+          "a man is riding a horse"
+        ],
+        "source_ids": [
+          "video6533",
+          "video6715",
+          "video6866"
+        ],
+        "zero": [
+          "a man is walking",
+          "a woman is applying makeup",
+          "a man is walking"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is cooking",
+          "a man is cooking",
+          "a man is cooking"
+        ],
+        "references": [
+          [
+            "a chef cooks some food",
+            "a chef discusses putting a dish into the oven",
+            "a chef explains how to cook a recipe",
+            "a chef is cooking food",
+            "a chef is cooking",
+            "a chef is puts a hot pot into a oven",
+            "a chef shows how he is making food",
+            "a chef talking about what he will cook",
+            "a french chef describes how to make a recipe",
+            "a french chef puts a pot into an oven",
+            "a man cooking food in a kitchen",
+            "a man cooking food in the kitchen",
+            "a man is cooking",
+            "a man is preparing a meal in a kitchen",
+            "a man with glasses",
+            "a person is making food",
+            "in a kitchen a chef is using an oven",
+            "someone is playing a video game",
+            "this is a french chief doing a cooking video",
+            "a chef is cooking"
+          ],
+          [
+            "black children dance to a song",
+            "children are dancing to music",
+            "kids dance to hip hop song",
+            "kids dancing in a classroom at school",
+            "kids doing the nae nae",
+            "music plays while three young children dance",
+            "some children dance around in a room",
+            "some kids are dancing",
+            "some kids are dancing",
+            "the children are dancing",
+            "three black kids dancing together on a rap song",
+            "three children are dancing to rap music",
+            "three children are dancing together",
+            "three children dancing happily",
+            "three young black children dance",
+            "three young kids are dancing",
+            "three young kids dance to music in the background",
+            "two little girls and a little boy do the whip nae nae dance",
+            "young people dancing and singing",
+            "three children dancing happily"
+          ],
+          [
+            "a group of men cheering in the streets during a news cast",
+            "a group of people jump around in the street",
+            "a man is holding a piece of paper",
+            "a man is talking",
+            "a news clip showing people celebrating on a snowy street",
+            "a news reporter explaining the technical difficulty",
+            "a news reporter is explaining to the audience they are having audio problems",
+            "with loud sports fans then cuts to a woman talking about issues with their audio then cuts to a newscaster holding up a sign please help",
+            "a report from roadside",
+            "a reporter has explains some technical difficulties",
+            "a reporter talks about audio issues",
+            "a woman reporter explaining technical difficulties",
+            "an interviewer is explaining issues with audio",
+            "bunch of reporters doing live street coverage",
+            "news reporters reporting the news",
+            "on the scene television reporters face challenges",
+            "people reporting outside and having issues",
+            "reporters talk about seattle football fans celebrations",
+            "there are different clips of new people on the street",
+            "people reporting outside and having issues"
+          ]
+        ],
+        "reset_each": [
+          "a man is cooking",
+          "a group of people are dancing",
+          "a man is talking"
+        ],
+        "source_ids": [
+          "video6787",
+          "video6766",
+          "video6832"
+        ],
+        "zero": [
+          "a man is cooking",
+          "a man is cooking",
+          "a man is cooking"
+        ]
+      },
+      {
+        "continuous": [
+          "a girl is talking",
+          "a man is talking",
+          "a man is talking"
+        ],
+        "references": [
+          [
+            "a door was open in the background",
+            "a girl and boy are doing a spoof",
+            "a girl and boy are playing",
+            "a girl and boy are playing",
+            "a girl feeding a boy chips",
+            "a girl feeding a boy some snacks",
+            "a girl is feeding a boy",
+            "a girl pours cereal in another girls mouth",
+            "a girl shows her cheetos",
+            "a girl talking and throwing food into another childs mouth",
+            "a girl throwing cereal in a boys mouth",
+            "a man is performing in front of a group of judges",
+            "girl and boy eat cereal and junk food",
+            "kids are eating food",
+            "putting chips in boys mouth",
+            "siblings eat some snacks",
+            "the two little girls play each other",
+            "two children feed each other with fruit loops",
+            "two girls eating different foods",
+            "two girls enjoying each other"
+          ],
+          [
+            "a man with a bottle clinks the glass of another and both take a drink",
+            "a man with glasses",
+            "credits are shown as two men have a discussion",
+            "scene from a tv show",
+            "two guys drinking alcohol",
+            "two man s are talking about something and drinking something",
+            "two men are doing a toast together",
+            "two men are drinking alcohol",
+            "two men are talking indoors",
+            "two men in a kitchen drink alcohol",
+            "two men in a kitchen who are drinking",
+            "two men in a kitchen",
+            "two men speak about alcohol",
+            "two mens are drinking stella rose and cheerings each other",
+            "two people drinking beer",
+            "two people toast and drink in their kitchen",
+            "two persons are speaking each other and they are drinking",
+            "two spanish guys talking about alcohol",
+            "a man with glasses",
+            "two men in a kitchen who are drinking"
+          ],
+          [
+            "couple are madly in love with each other here",
+            "its a couples on romance each other",
+            "there is a couples having sex in a room",
+            "two people are engaged in a romance scene",
+            "the babies are played in the night very attractively",
+            "the bedroom scenes the couples are enjoying their moments",
+            "its a erotic scene of a man and a women mating we can see the man moving cleaning the table and throwing the things down and makes the lady sit on it and  they both kiss and cuddle each other",
+            "a couple is intertwined rolling and kissing on a bed small bottles and containers are pushed off the top of a wooden dresser",
+            "one boy and girl making fuck in bed and kissing",
+            "one man and women fucks and kisses in bed",
+            "a man and woman rolling around on a bed they then passionately move from the bed to the dresser",
+            "a man and a woman thrash around and change positions as they prepare to have relations",
+            "a man and a woman making love inside a room",
+            "two people having sex roll around in a bed and around a room",
+            "a lady rolls around with  guy pasionatly to make love",
+            "a couples is having sex in their bed room",
+            "a man and a women is making love passionately and rolling on the floor",
+            "a man and a woman were rolling around in the bed",
+            "two people are having wild sex indoors",
+            "a man is kissing a lady in her lips"
+          ]
+        ],
+        "reset_each": [
+          "a girl is talking",
+          "two men are talking",
+          "a man is being attacked"
+        ],
+        "source_ids": [
+          "video6709",
+          "video6974",
+          "video6769"
+        ],
+        "zero": [
+          "a girl is talking",
+          "a man is talking",
+          "a man is talking"
+        ]
+      },
+      {
+        "continuous": [
+          "a man and woman are kissing",
+          "a woman is singing",
+          "a woman is cooking"
+        ],
+        "references": [
+          [
+            "a man in military dress and a woman in a white and dotted dress are kissing",
+            "a man and a woman walk down a wooden staircase and kiss",
+            "there is a police man kissing a woman",
+            "a man and his wife are walking down the stairs in their home and he is saying sweet things to her",
+            "a couple embraces then walks down a flight of stairs and kisses",
+            "a man walks with a woman down a flight of stairs",
+            "they are kissing each other",
+            "a young indian couple waslks down a staircase and the woman kisses the man",
+            "a man is talking and kissing a lady",
+            "a man in a brown shirt and a woman are walking down a set of stairs speaking in a foreign language",
+            "a tamil movie scene is playing in the screen",
+            "a man in military service uniform walks down stairs with girlfriend in home and receives kiss",
+            "a woman and a man are walking down the stairs and kiss when they get to the bottom",
+            "a young couple walks together down a stairs and they begin kissing",
+            "a man and a woman both walk down the stairs together talking",
+            "a man an a woman walking down a staircase and kissing at the bottom",
+            "a man in a uniform and a woman walk down a staircase",
+            "guy in police officer uniform walking down the stairs with his wife",
+            "a man is walking a woman down the stairs as he wraps his arm around her",
+            "a man and a woman are kissing near a plant"
+          ],
+          [
+            "a women in silver dress is singing and entertaining the crowd",
+            "there is a hot woman singing with glittering dress",
+            "women with blonde/brown hair singing while women in undergarments walks down a runway behind her",
+            "taylor swift performs a hit song of hers as a runway model walks in the background in white fluff",
+            "taylor swift performs a song of hers as a runway model walks in the background",
+            "taylor swift performing a song at a victoria s secret fashion show",
+            "a blonde woman is performing on stage in a sparkly dress as another woman in costume comes out from behind her",
+            "a woman sings in front of narrow blue glaciers in a minidress covered with little mirrors forming angular patterns",
+            "a woman in a shiny dress sings as a woman in an angel costume walks on stage",
+            "women in bikin wearing a fake wings cat walks in a musical show",
+            "musician taylor swift is performing her song trouble at a victoria s secret fashion show",
+            "taylor swift is singing on stage at a modeling show",
+            "blonde woman in grey dress is singing on the scene",
+            "blonde woman in grey dress is singing on the scene",
+            "a fashion dress design a girl wearing fashion dress  dressing walking on stage audience watching  displaying on screen",
+            "taylor swift singing at a model fashion show",
+            "taylor swift sings in a shimmery dress at the victoria secret fashion show",
+            "a young blonde girl sings in a sparkling white dress while models walk in white lingerie",
+            "women in fashion show shows off new clothing",
+            "a person looking at the camera and talking"
+          ],
+          [
+            "there is a woman is making a dish with milk",
+            "there is a woman is making a dish with sugar in the kitchen",
+            "there is a woman is making a simple dish",
+            "a woman combines corn starch and salt in a bowl in conjunction with a recipe she is cooking",
+            "someone pouring ingredients into a bowl and then they begin to mix it all together",
+            "the person mix the ingredients in the clear bowl",
+            "a person has mixed many spices and seasonings in a bowl to created a red liquid to cook with",
+            "some water is put and then some sugar while few more liquids are added together",
+            "corn starch and other liquids being stirred in a clear dish",
+            "chef adding all the ingredients in a bowl of water and mixing them well with a steel spoon",
+            "ingredients are mixed ina  bowl with a spoon until disolved",
+            "a womn mixing ingredients in a clear bowl",
+            "a person pour different powders in a bowl of liquid",
+            "a person pours powder in a bowl of liquid on the counter",
+            "a woman puts sugar and corn starch into a glass bowl and stirs it",
+            "a girl bowl  spoon mixing dish inside kitchen to prepare to serve to eat displaying on screen",
+            "a girl pouring  bowl  spoon mixing dish inside kitchen to prepare to serve to eat displaying on screen",
+            "in a kitchen a woman describes mixing ingredients in a bowl",
+            "a woman mixes ingredients into a clear bowl",
+            "a person at a granite counter top mixing food ingredients into a glass bowl"
+          ]
+        ],
+        "reset_each": [
+          "a man and woman are kissing",
+          "a woman is singing",
+          "a woman is mixing ingredients in a bowl"
+        ],
+        "source_ids": [
+          "video6719",
+          "video6854",
+          "video6990"
+        ],
+        "zero": [
+          "a man and woman are kissing",
+          "a woman is singing",
+          "a woman is singing"
+        ]
+      },
+      {
+        "continuous": [
+          "a person is playing with a toy",
+          "a man is talking to another man",
+          "a man is talking to another man"
+        ],
+        "references": [
+          [
+            "the woman put some product in the water and it get bubbling",
+            "the hobby kids drop dry ice--or kryptonite as they refer to it--into a green liquid",
+            "there is a woman making green color water",
+            "a bowl of green liquid is bubbling and smoking",
+            "green water is bubbling in a round white bucket",
+            "in the science lab the students are engaged in experiment",
+            "in the science lab the students are engaged in experiment",
+            "a lady discussing a green liquid in a cup that is making steam",
+            "a lady talking of something about the boiling water",
+            "a green colour mineral called kryptonite is boiling and white bubble came from it",
+            "short scene from the hobby kids tv showing colorful animation",
+            "green water boils in a pot while someone talks about kryptonite",
+            "dry ice is dropped into a bucket of water to make fog while a woman talks about kryptonite and superman with a child",
+            "a bowl of green liquid with white smoke pouring out of the top of it",
+            "green water boils out white smoke in a container",
+            "person is putting some water into the white dish",
+            "person is recording the green products in the water",
+            "fog rolls off a bubbly green liquid in a container",
+            "some green and white liquid in a bowl is being boiled",
+            "some white smoke is coming from green liquid"
+          ],
+          [
+            "the two young people discussing something on the dining table",
+            "there is a black tshirt man is talking with a man",
+            "there is a check shirt man is talking someone",
+            "there is a tshirt man is talking with a friend",
+            "at a table sit two men and they have a chat on fictions",
+            "the man talks about a time machine from a science fiction show that has nothing to do with hallowen",
+            "two young men sit at a cafeteria table and talk about science fiction",
+            "a man in black graphic shirt is sitting with another man at a table in front of a vending machine telling him that a tardis is a time machine",
+            "the men sit at the table near the plant and talk to one another",
+            "a man in a black shirt talking to another man in a red and white jacket at a table",
+            "few persons speaking on the library along with the book on the front of them",
+            "two men were talking about something while eating",
+            "a couple guys discussing a concept in a popular show",
+            "two guys sitting on the dining table in a caffeteria and talking to each other",
+            "a man is speaking about time machine and science fiction",
+            "sheldon from the tv show the big bang theory speaks to the other character",
+            "sheldon and raj from the big bang theory talk to each other",
+            "two characters from the big bang theory talk to each other while in a cafeteria",
+            "two men are sitting at a table discussing time machines",
+            "several boys sitting in a lunch room talking while they are eatting"
+          ],
+          [
+            "a 16bit game with people in a field near a fence",
+            "a boy plays a pokemon video game",
+            "a male voice is talking while a pokemon video game",
+            "a man is commentating while playing a pokemon game",
+            "a man is playing a pokemon game while narrating the text",
+            "a man narrates a pokemon game",
+            "a person is playing pokemon for gameboy",
+            "about a video game",
+            "people are playing video games side by side",
+            "person playing a split screen video game",
+            "pokemon plays with men commentating",
+            "side by side screen game",
+            "someone is playing a game",
+            "someone playing pokemon while giving commentary",
+            "the clipping is from a cartoon programme",
+            "the pokemon game plays simultaniously",
+            "the same video game is played twice simultaneously while people talk over it",
+            "two people are competing in a video game",
+            "two players discuss why pokemon should never be exploited for evil",
+            "two players playing a pokemon game and one reading the game text"
+          ]
+        ],
+        "reset_each": [
+          "a person is playing with a toy",
+          "a man is talking to another man",
+          "a person is playing a video game"
+        ],
+        "source_ids": [
+          "video6717",
+          "video6763",
+          "video6747"
+        ],
+        "zero": [
+          "a girl is playing with a toy",
+          "a man is talking to another man",
+          "a man is talking to another man"
+        ]
+      }
+    ],
+    "metrics": {
+      "continuous": {
+        "exact_match": 0.041666666666666664,
+        "examples": 192.0,
+        "rouge_l": 0.5480253330032279,
+        "word_f1": 0.5643775156275787
+      },
+      "reset_each": {
+        "exact_match": 0.07291666666666667,
+        "examples": 192.0,
+        "rouge_l": 0.6084859938882708,
+        "word_f1": 0.6275872329821065
+      },
+      "zero": {
+        "exact_match": 0.036458333333333336,
+        "examples": 192.0,
+        "rouge_l": 0.5319742624792935,
+        "word_f1": 0.5475775339068683
+      }
+    }
+  },
+  "passed": true,
+  "run_id": "msrvtt-continuous-caption-ranking-400step-main",
+  "schema": "deltaomni.msrvtt_continuous_caption_lora.v1",
+  "sequence_counts": {
+    "test": 333,
+    "train": 2171,
+    "validation": 165
+  },
+  "status": "complete",
+  "training_seconds": 813.4347759783268
+}
