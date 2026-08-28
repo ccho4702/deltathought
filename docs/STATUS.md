@@ -1,5 +1,14 @@
 # DeltaOmni status
 
+## MSR-VTT video-caption foundation (2026-08-28)
+
+The official local MSR-VTT distribution is now canonicalized under revision
+`official-msr-vtt-10k-schema-v2`: 6,513 train, 497 validation, and 2,990 untouched-test videos,
+with exactly 20 human captions per video (130,260/9,940/59,800 caption items), no missing media, and
+no split source overlap. All 10,000 MP4 files were probed and hashed; canonical conversion plus full
+reload/checksum verification took 36.7s. This is the source of truth for the upcoming native video
+FULL+variable-delta caption LoRA and its full-input fine-tuned Qwen baseline.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a

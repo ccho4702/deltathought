@@ -1,0 +1,20 @@
+{
+  "caption_items": {
+    "test": 59800,
+    "train": 130260,
+    "validation": 9940
+  },
+  "code_revision": "e7dfe57a0ff142d9bc31bbc6d025ded91cd7050f",
+  "completed_at_utc": "2026-08-28T00:01:09.071906+00:00",
+  "dataset": "msrvtt",
+  "dataset_revision": "official-msr-vtt-10k-schema-v2",
+  "elapsed_seconds": 36.6868474856019,
+  "episodes": {
+    "test": 2990,
+    "train": 6513,
+    "validation": 497
+  },
+  "manifest": "/home/changho.choi/deltathought/intermediates/canonical/msrvtt/official-msr-vtt-10k-schema-v2/manifest.json",
+  "schema": "deltaomni.canonical_preprocessing_summary.v1",
+  "status": "complete"
+}
