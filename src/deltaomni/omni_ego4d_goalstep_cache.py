@@ -129,10 +129,11 @@ def _windows(
     dynamic: DynamicCommitConfig,
 ) -> dict[str, list[tuple[CanonicalEpisode, CommitWindow]]]:
     canonical = read_canonical_dataset(config.canonical_manifest)
-    if set(canonical) != {"train", "validation"}:
+    if not {"train", "validation"} <= canonical.keys():
         raise ValueError("Ego4D GoalStep canonical splits changed")
     result = {}
-    for split, episodes in canonical.items():
+    for split in ("train", "validation"):
+        episodes = canonical[split]
         values = [
             (episode, window)
             for episode in episodes
