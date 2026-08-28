@@ -42,6 +42,16 @@ preprocess-audioset-strong:
 preprocess-msrvtt:
 	uv run --frozen deltaomni-preprocess-msrvtt
 
+msrvtt-video-cache-smoke:
+	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \
+		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.omni_msrvtt_video_cache \
+		--config configs/omni_msrvtt_video_cache_smoke.yaml
+
+msrvtt-video-cache:
+	CUDA_VISIBLE_DEVICES=$(GPU_IDS) uv run --frozen torchrun --standalone \
+		--nproc-per-node=$(NPROC_PER_NODE) -m deltaomni.omni_msrvtt_video_cache \
+		--config configs/omni_msrvtt_video_cache.yaml
+
 backbone-smoke:
 	uv run deltaomni-backbone-smoke
 
