@@ -215,6 +215,22 @@ class GoalStepCaptionModel(nn.Module):
         self.continuation_prompt_ids = tuple(
             tokenizer(continuation, add_special_tokens=False)["input_ids"]
         )
+        answer_prompt = tokenizer.apply_chat_template(
+            [
+                {
+                    "role": "user",
+                    "content": (
+                        "What was the last visual event that completed? "
+                        "Answer with one short action phrase."
+                    ),
+                }
+            ],
+            tokenize=False,
+            add_generation_prompt=True,
+        )
+        self.answer_prompt_ids = tuple(
+            tokenizer(answer_prompt, add_special_tokens=False)["input_ids"]
+        )
 
     def _prompt(self, first: bool, device: torch.device) -> Tensor:
         if first:
@@ -353,14 +369,14 @@ class GoalStepCaptionModel(nn.Module):
         return normal, zero, tokens
 
     @torch.no_grad()
-    def generate_window(
+    def generate_window_and_answer(
         self,
         payload: dict[str, Any],
         *,
         control: str,
         reset_each: bool,
         max_new_tokens: int,
-    ) -> list[str]:
+    ) -> tuple[list[str], str]:
         self.eval()
         runner = ContinuousKVRunner(self.single.thinker, position_axes=3)
         state = None
@@ -384,7 +400,37 @@ class GoalStepCaptionModel(nn.Module):
                 max_new_tokens=max_new_tokens,
             )
             generated.extend(self.single.interface.decode(ids))
-        return generated
+        assert state is not None
+        answer_prompt = torch.tensor(
+            self.answer_prompt_ids,
+            device=state.attention_mask.device,
+        ).unsqueeze(0)
+        logits, state = runner.append(state=state, input_ids=answer_prompt)
+        answer_ids, _ = runner.greedy_append(
+            logits,
+            state,
+            end_token_id=self.single.interface.end_token_id,
+            max_new_tokens=max_new_tokens,
+        )
+        answer = self.single.interface.decode(answer_ids)[0]
+        return generated, answer
+
+    @torch.no_grad()
+    def generate_window(
+        self,
+        payload: dict[str, Any],
+        *,
+        control: str,
+        reset_each: bool,
+        max_new_tokens: int,
+    ) -> list[str]:
+        captions, _ = self.generate_window_and_answer(
+            payload,
+            control=control,
+            reset_each=reset_each,
+            max_new_tokens=max_new_tokens,
+        )
+        return captions
 
 
 def _load_goalstep(config: GoalStepCaptionConfig, device: torch.device) -> GoalStepCaptionModel:
@@ -407,40 +453,37 @@ def evaluate(
 ) -> dict[str, Any]:
     count = min(config.evaluation.windows, len(data))
     generated = {name: [] for name in ("continuous", "reset_each", "zero")}
+    final_answers = {name: [] for name in generated}
     references = []
+    answer_references = []
     examples = []
     started = time.perf_counter()
     for index in range(count):
         payload = data.load(index)
-        outputs = {
-            "continuous": model.generate_window(
+        outputs = {}
+        answers = {}
+        for name, control, reset_each in (
+            ("continuous", "normal", False),
+            ("reset_each", "normal", True),
+            ("zero", "zero", False),
+        ):
+            outputs[name], answers[name] = model.generate_window_and_answer(
                 payload,
-                control="normal",
-                reset_each=False,
+                control=control,
+                reset_each=reset_each,
                 max_new_tokens=config.evaluation.max_new_tokens,
-            ),
-            "reset_each": model.generate_window(
-                payload,
-                control="normal",
-                reset_each=True,
-                max_new_tokens=config.evaluation.max_new_tokens,
-            ),
-            "zero": model.generate_window(
-                payload,
-                control="zero",
-                reset_each=False,
-                max_new_tokens=config.evaluation.max_new_tokens,
-            ),
-        }
-        for name, values in outputs.items():
-            generated[name].extend(values)
+            )
+            generated[name].extend(outputs[name])
+            final_answers[name].append(answers[name])
         references.extend((event["text"],) for event in payload["events"])
+        answer_references.append((payload["events"][-1]["text"],))
         if len(examples) < 8:
             examples.append(
                 {
                     "window_id": payload["window_id"],
                     "source_id": payload["source_id"],
                     "events": payload["events"],
+                    "final_answers": answers,
                     **outputs,
                 }
             )
@@ -458,6 +501,11 @@ def evaluate(
             for name, values in generated.items()
         },
         "caption_events": len(references),
+        "final_answer_metrics": {
+            name: _caption_metrics(values, answer_references)
+            for name, values in final_answers.items()
+        },
+        "final_answer_probe": "last_completed_event_from_same_kv",
         "examples": examples,
     }
 
