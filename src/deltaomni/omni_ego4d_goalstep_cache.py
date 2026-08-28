@@ -142,7 +142,29 @@ def _windows(
         ]
         values.sort(key=lambda value: value[1].window_id)
         if config.maximum_windows is not None:
-            values = values[: config.maximum_windows[split]]
+            grouped: dict[str, list[tuple[CanonicalEpisode, CommitWindow]]] = {}
+            for value in values:
+                grouped.setdefault(value[0].source_id, []).append(value)
+            source_ids = sorted(
+                grouped,
+                key=lambda source_id: __import__("hashlib").sha256(
+                    f"{config.seed}:{split}:{source_id}".encode()
+                ).hexdigest(),
+            )
+            diverse = []
+            depth = 0
+            while len(diverse) < config.maximum_windows[split]:
+                added = False
+                for source_id in source_ids:
+                    if depth < len(grouped[source_id]):
+                        diverse.append(grouped[source_id][depth])
+                        added = True
+                        if len(diverse) == config.maximum_windows[split]:
+                            break
+                if not added:
+                    break
+                depth += 1
+            values = diverse
         if len(values) < config.minimum_windows[split]:
             raise ValueError(
                 f"Found {len(values)}/{config.minimum_windows[split]} Ego4D {split} windows"
