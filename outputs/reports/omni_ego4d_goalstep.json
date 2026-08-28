@@ -1,0 +1,13 @@
+{
+  "completed_at_utc": "2026-08-28T16:28:32.244894+00:00",
+  "elapsed_seconds": 3706.919702898711,
+  "schema": "deltaomni.omni_ego4d_goalstep_summary.v1",
+  "splits": {
+    "train": 1722,
+    "validation": 481
+  },
+  "total_blocks": 192240,
+  "total_bytes": 6145994754,
+  "total_commits": 10525,
+  "world_size": 4
+}

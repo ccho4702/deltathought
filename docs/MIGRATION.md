@@ -15,6 +15,8 @@ Prepared: 2026-08-27
 - Matched MSR-VTT raw/delta/continuous-KV results: `387fd72`
 - Ego4D dynamic cache and matched full/delta trainers: `c60d3a6`
 - Frozen LongVideoBench analysis contract: `ac3941e`
+- Ego4D video-only result runs: `ego4d-goalstep-full-caption-800step-main` and
+  `ego4d-goalstep-delta-caption-800step-main`
 - Migration handoff tag: `migration-20260826-v2`
 
 Clone and recreate the locked environment:

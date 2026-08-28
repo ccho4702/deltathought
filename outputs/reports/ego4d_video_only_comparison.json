@@ -1,0 +1,34 @@
+{
+  "schema": "deltaomni.ego4d_video_only_comparison.v1",
+  "dataset_revision": "official-v2-goalstep-231129-schema-v2",
+  "evaluation_windows": 128,
+  "evaluation_caption_events": 496,
+  "full_commit_ft": {
+    "run_id": "ego4d-goalstep-full-caption-800step-main",
+    "caption_word_f1": {"continuous": 0.15970856803695987, "reset_each": 0.15846441156147914},
+    "final_answer_word_f1": {"continuous": 0.13768501463813965, "reset_each": 0.14257649009487244},
+    "checkpoint_sha256": "d117aeccaf0fafaee37663fba44cfbce05866ec4c05a0ba776099ef494f45b04",
+    "passed": false
+  },
+  "delta_continuous_kv": {
+    "run_id": "ego4d-goalstep-delta-caption-800step-main",
+    "caption_word_f1": {"continuous": 0.17827866018390212, "reset_each": 0.1556065052494694, "zero": 0.00270204870240449},
+    "final_answer_word_f1": {"continuous": 0.13557664124070373, "reset_each": 0.14032564147453852, "zero": 0.0},
+    "checkpoint_sha256": "713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2",
+    "passed": true
+  },
+  "differences": {
+    "delta_continuous_minus_full_continuous_caption": 0.01857009214694225,
+    "delta_continuous_minus_delta_reset_caption": 0.02267215493443272,
+    "delta_continuous_minus_zero_caption": 0.17557661148149763,
+    "delta_continuous_minus_full_continuous_final_answer": -0.00210837339743592,
+    "delta_continuous_minus_delta_reset_final_answer": -0.00474900023383479
+  },
+  "interpretation": {
+    "caption_path": "passed",
+    "same_kv_caption_memory": "passed",
+    "delta_content": "passed",
+    "final_answer_memory_benefit": "failed",
+    "scope": "single-seed Ego4D validation; final-answer probe is mechanical and not independent QA evidence"
+  }
+}

@@ -113,6 +113,26 @@ every commit. This supports two matched Ego4D arms with identical captions and i
 anchor plus only new deltas and preserves caption KV state. Both actual Qwen forward/generation
 paths pass synthetic-schema integration smokes and are ready for the real Ego4D run.
 
+The video-only Ego4D GoalStep experiment is complete. Canonicalization retained 275 train and 69
+validation videos with 8,821/2,486 official event captions. The native-Qwen cache contains
+1,722/481 dynamic windows, 192,240 one-second blocks, and 10,525 multi-commit captions in 6.15 GB.
+Each commit follows `FULL → new DELTA accumulation → caption → FULL refresh`; captions and all
+earlier language context remain in the same KV cache.
+
+Matched 800-step full-token and delta arms trained concurrently on two A6000s each and were scored
+on 128 validation windows containing 496 caption events. The full-token baseline reached word-F1
+`0.1597` continuous versus `0.1585` reset-each and failed its 0.5-point memory gate. DeltaThought
+reached `0.1783` continuous, `0.1556` reset-each, and `0.0027` zero-delta. It beat the full-token
+baseline by `1.86` points, its reset ablation by `2.27` points, and zero delta by `17.56` points.
+All caption gates passed; ordered deltas produced concise GoalStep captions while zero-delta output
+mostly collapsed to empty or malformed text.
+
+The same-KV final-answer mechanics also execute end to end, but benefit is not established. The
+last-event probe reached word-F1 `0.1356` continuous, `0.1403` reset-each, and `0.0000` zero; the
+full-token continuous baseline was `0.1377`. Caption generation, visual refresh, accumulation, and
+final-question append all work, but caption memory has not improved an answer. This derived probe
+is a mechanics check, not independent QA evidence; LongVideoBench and Video-MME remain required.
+
 LongVideoBench release `60d1c89...` is indexed directly from its 151 GB split tar without duplicate
 extraction. The frozen manifest covers all 1,337 validation questions, 753 source videos, 17
 question categories, and four duration groups. The final analyzer preregisters ten arms and rejects

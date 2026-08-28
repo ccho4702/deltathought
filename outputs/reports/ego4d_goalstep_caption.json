@@ -1,0 +1,953 @@
+{
+  "checks": {
+    "continuous_beats_reset": true,
+    "continuous_beats_zero": true,
+    "continuous_improves": true
+  },
+  "completed_at_utc": "2026-08-28T17:23:23.494535+00:00",
+  "final": {
+    "caption_events": 496,
+    "examples": [
+      {
+        "continuous": [
+          "add flour to a mixer",
+          "mix flour with milk in the mixer"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0000",
+            "commit_seconds": 25.42242,
+            "delta_end": 19,
+            "delta_start": 0,
+            "end_seconds": 25.42242,
+            "start_seconds": 6.26772,
+            "text": "Dy cooking utensils"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0001",
+            "commit_seconds": 70.238,
+            "delta_end": 64,
+            "delta_start": 19,
+            "end_seconds": 70.238,
+            "start_seconds": 51.09199,
+            "text": "Dry chopping board and knives"
+          }
+        ],
+        "final_answers": {
+          "continuous": "mix flour with milk in the mixer",
+          "reset_each": "wash hands",
+          "zero": ""
+        },
+        "reset_each": [
+          "add flour to a mixer",
+          "wash hands"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0000",
+        "zero": [
+          "\n\n\n\n",
+          ""
+        ]
+      },
+      {
+        "continuous": [
+          "Add noodles to the plate",
+          "Boil water in a pot"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0002",
+            "commit_seconds": 151.47667,
+            "delta_end": 81,
+            "delta_start": 0,
+            "end_seconds": 151.47667,
+            "start_seconds": 70.88518,
+            "text": "Clean Potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0003",
+            "commit_seconds": 180.06027,
+            "delta_end": 110,
+            "delta_start": 81,
+            "end_seconds": 180.06027,
+            "start_seconds": 153.05691,
+            "text": "Preheat Oil"
+          }
+        ],
+        "final_answers": {
+          "continuous": "Boil water in a pot",
+          "reset_each": "Add butter to the pan",
+          "zero": ""
+        },
+        "reset_each": [
+          "Add noodles to the plate",
+          "Add butter to the pan"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0001",
+        "zero": [
+          "\n",
+          ""
+        ]
+      },
+      {
+        "continuous": [
+          "heat the oil in a pan",
+          "add dough to the pan",
+          "regulate the heat temperature of the stove"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0007",
+            "commit_seconds": 535.51573,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 535.51573,
+            "start_seconds": 530.32512,
+            "text": "Preheat Oil"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0008",
+            "commit_seconds": 613.28974,
+            "delta_end": 83,
+            "delta_start": 5,
+            "end_seconds": 613.28974,
+            "start_seconds": 558.91869,
+            "text": "Chop potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0009",
+            "commit_seconds": 627.70382,
+            "delta_end": 97,
+            "delta_start": 83,
+            "end_seconds": 627.70382,
+            "start_seconds": 614.04035,
+            "text": "Preheat Oil"
+          }
+        ],
+        "final_answers": {
+          "continuous": "regulate the heat temperature of the stove",
+          "reset_each": "regulate the heat temperature of the cooker",
+          "zero": ""
+        },
+        "reset_each": [
+          "heat the oil in a pan",
+          "Add sauce to dough in pan",
+          "regulate the heat temperature of the cooker"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0005",
+        "zero": [
+          "0ali1001",
+          "one1001",
+          ""
+        ]
+      },
+      {
+        "continuous": [
+          "Dice potatoes",
+          "Dice onions",
+          "Add onions to pot",
+          "Add salt to pot",
+          "Stir ingredients in pot"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0010",
+            "commit_seconds": 670.02519,
+            "delta_end": 41,
+            "delta_start": 0,
+            "end_seconds": 670.02519,
+            "start_seconds": 629.26196,
+            "text": "Slice potato"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0011",
+            "commit_seconds": 713.80665,
+            "delta_end": 84,
+            "delta_start": 41,
+            "end_seconds": 713.80665,
+            "start_seconds": 675.20963,
+            "text": "Slice potato"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0012",
+            "commit_seconds": 724.05004,
+            "delta_end": 95,
+            "delta_start": 84,
+            "end_seconds": 724.05004,
+            "start_seconds": 715.76793,
+            "text": "Clean chopping board and knife"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0013",
+            "commit_seconds": 728.36287,
+            "delta_end": 99,
+            "delta_start": 95,
+            "end_seconds": 728.36287,
+            "start_seconds": 724.25004,
+            "text": "Clean countertop"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0014",
+            "commit_seconds": 739.70266,
+            "delta_end": 110,
+            "delta_start": 99,
+            "end_seconds": 739.70266,
+            "start_seconds": 730.32325,
+            "text": "Operate range hood"
+          }
+        ],
+        "final_answers": {
+          "continuous": "Stir ingredients in pot",
+          "reset_each": "Heat oil in pan",
+          "zero": ""
+        },
+        "reset_each": [
+          "Dice potatoes",
+          "Flip the potatoes in the pan",
+          "Add syrup to the banana in the pan",
+          "Add flour to the mixer",
+          "heat the oil in the pan"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0006",
+        "zero": [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "continuous": [
+          "Stir the milk in the pot",
+          "Add milk to the pot",
+          "Stir the milk in the pot"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0015",
+            "commit_seconds": 793.58129,
+            "delta_end": 54,
+            "delta_start": 0,
+            "end_seconds": 793.58129,
+            "start_seconds": 739.88932,
+            "text": "Saute potato in a pan"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0016",
+            "commit_seconds": 827.53638,
+            "delta_end": 88,
+            "delta_start": 54,
+            "end_seconds": 827.53638,
+            "start_seconds": 798.41176,
+            "text": "Mix Flour in water"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0017",
+            "commit_seconds": 840.75756,
+            "delta_end": 101,
+            "delta_start": 88,
+            "end_seconds": 840.75756,
+            "start_seconds": 832.37231,
+            "text": "Saute chopped Potatoes"
+          }
+        ],
+        "final_answers": {
+          "continuous": "Stir the milk in the pot",
+          "reset_each": "Fry the sliced potatoes in the pan",
+          "zero": ""
+        },
+        "reset_each": [
+          "Stir the milk in the pot",
+          "add oil to the potato pieces in the pan",
+          "Fry the sliced potatoes in the pan"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0007",
+        "zero": [
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "continuous": [
+          "Add sauce",
+          "Add seasoning",
+          "Stir ingredient",
+          "Stir ingredients"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0018",
+            "commit_seconds": 915.34015,
+            "delta_end": 74,
+            "delta_start": 0,
+            "end_seconds": 915.34015,
+            "start_seconds": 841.10737,
+            "text": "Mix flour in bowl"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0019",
+            "commit_seconds": 925.23652,
+            "delta_end": 84,
+            "delta_start": 74,
+            "end_seconds": 925.23652,
+            "start_seconds": 915.54015,
+            "text": "Add salt to mixture"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0020",
+            "commit_seconds": 945.098,
+            "delta_end": 104,
+            "delta_start": 84,
+            "end_seconds": 945.098,
+            "start_seconds": 925.43651,
+            "text": "Mix flour and salt in bowl"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0021",
+            "commit_seconds": 956.94751,
+            "delta_end": 115,
+            "delta_start": 104,
+            "end_seconds": 956.94751,
+            "start_seconds": 946.68782,
+            "text": "Saute chopped Potatoes"
+          }
+        ],
+        "final_answers": {
+          "continuous": "Stir ingredients",
+          "reset_each": "Spread batter on the pan",
+          "zero": ""
+        },
+        "reset_each": [
+          "Add sauce",
+          "Pour batter in pan",
+          "Add egg to the pot",
+          "Spread batter on the pan"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0008",
+        "zero": [
+          "\n",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "continuous": [
+          "Flip the potatoes in the pan",
+          "Add the diced potatoes to the pan",
+          "Stir the potatoes in the pan"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0025",
+            "commit_seconds": 1473.85089,
+            "delta_end": 49,
+            "delta_start": 0,
+            "end_seconds": 1473.85089,
+            "start_seconds": 1424.00722,
+            "text": "Serve sauteed potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0026",
+            "commit_seconds": 1511.32423,
+            "delta_end": 87,
+            "delta_start": 49,
+            "end_seconds": 1511.32423,
+            "start_seconds": 1474.31837,
+            "text": "Saute chopped Potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0027",
+            "commit_seconds": 1527.34279,
+            "delta_end": 103,
+            "delta_start": 87,
+            "end_seconds": 1527.34279,
+            "start_seconds": 1511.34423,
+            "text": "Serve sauteed potatoes"
+          }
+        ],
+        "final_answers": {
+          "continuous": "Stir the potatoes in the pan",
+          "reset_each": "Stir the egg in the pan",
+          "zero": ""
+        },
+        "reset_each": [
+          "Flip the potatoes in the pan",
+          "Add sliced potatoes into the pan",
+          "Stir the egg in the pan"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0012",
+        "zero": [
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "continuous": [
+          "Put the diced potatoes in the pan",
+          "Put the diced potatoes in the pan"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0028",
+            "commit_seconds": 1577.13324,
+            "delta_end": 50,
+            "delta_start": 0,
+            "end_seconds": 1577.13324,
+            "start_seconds": 1527.36279,
+            "text": "Saute chopped Potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0029",
+            "commit_seconds": 1642.848,
+            "delta_end": 115,
+            "delta_start": 50,
+            "end_seconds": 1642.848,
+            "start_seconds": 1578.5421,
+            "text": "Marinate squid rings in flour mixture"
+          }
+        ],
+        "final_answers": {
+          "continuous": "Put the diced potatoes in the pan",
+          "reset_each": "Fry dough in oil",
+          "zero": ""
+        },
+        "reset_each": [
+          "Put the diced potatoes in the pan",
+          "Fry dough in oil"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0013",
+        "zero": [
+          "",
+          ""
+        ]
+      }
+    ],
+    "final_answer_metrics": {
+      "continuous": {
+        "exact_match": 0.0,
+        "examples": 128.0,
+        "rouge_l": 0.13054597312409813,
+        "word_f1": 0.13557664124070373
+      },
+      "reset_each": {
+        "exact_match": 0.0,
+        "examples": 128.0,
+        "rouge_l": 0.1392095700459671,
+        "word_f1": 0.14032564147453852
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 128.0,
+        "rouge_l": 0.0,
+        "word_f1": 0.0
+      }
+    },
+    "final_answer_probe": "last_completed_event_from_same_kv",
+    "metrics": {
+      "continuous": {
+        "exact_match": 0.0020161290322580645,
+        "examples": 496.0,
+        "rouge_l": 0.17191919303814465,
+        "word_f1": 0.17827866018390212
+      },
+      "reset_each": {
+        "exact_match": 0.0020161290322580645,
+        "examples": 496.0,
+        "rouge_l": 0.15031422084190985,
+        "word_f1": 0.1556065052494694
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 496.0,
+        "rouge_l": 0.00270204870240449,
+        "word_f1": 0.00270204870240449
+      }
+    }
+  },
+  "initial": {
+    "caption_events": 496,
+    "examples": [
+      {
+        "continuous": [
+          "a woman is showing how to make a dish",
+          "a woman is washing dishes"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0000",
+            "commit_seconds": 25.42242,
+            "delta_end": 19,
+            "delta_start": 0,
+            "end_seconds": 25.42242,
+            "start_seconds": 6.26772,
+            "text": "Dy cooking utensils"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0001",
+            "commit_seconds": 70.238,
+            "delta_end": 64,
+            "delta_start": 19,
+            "end_seconds": 70.238,
+            "start_seconds": 51.09199,
+            "text": "Dry chopping board and knives"
+          }
+        ],
+        "final_answers": {
+          "continuous": "a woman is washing dishes",
+          "reset_each": "a man is cooking",
+          "zero": "a woman is talking about a kitchen"
+        },
+        "reset_each": [
+          "a woman is showing how to make a dish",
+          "a man is cooking"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0000",
+        "zero": [
+          "a woman is talking about a kitchen",
+          "a woman is talking about a kitchen"
+        ]
+      },
+      {
+        "continuous": [
+          "a woman is cooking",
+          "a man is cooking"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0002",
+            "commit_seconds": 151.47667,
+            "delta_end": 81,
+            "delta_start": 0,
+            "end_seconds": 151.47667,
+            "start_seconds": 70.88518,
+            "text": "Clean Potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0003",
+            "commit_seconds": 180.06027,
+            "delta_end": 110,
+            "delta_start": 81,
+            "end_seconds": 180.06027,
+            "start_seconds": 153.05691,
+            "text": "Preheat Oil"
+          }
+        ],
+        "final_answers": {
+          "continuous": "a man is cooking",
+          "reset_each": "a person is cooking",
+          "zero": "a woman is cooking"
+        },
+        "reset_each": [
+          "a woman is cooking",
+          "a person is cooking"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0001",
+        "zero": [
+          "a woman is cooking",
+          "a woman is cooking"
+        ]
+      },
+      {
+        "continuous": [
+          "a person is cooking",
+          "a man is cooking",
+          "a man is cooking"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0007",
+            "commit_seconds": 535.51573,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 535.51573,
+            "start_seconds": 530.32512,
+            "text": "Preheat Oil"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0008",
+            "commit_seconds": 613.28974,
+            "delta_end": 83,
+            "delta_start": 5,
+            "end_seconds": 613.28974,
+            "start_seconds": 558.91869,
+            "text": "Chop potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0009",
+            "commit_seconds": 627.70382,
+            "delta_end": 97,
+            "delta_start": 83,
+            "end_seconds": 627.70382,
+            "start_seconds": 614.04035,
+            "text": "Preheat Oil"
+          }
+        ],
+        "final_answers": {
+          "continuous": "a man is cooking",
+          "reset_each": "a man is cooking",
+          "zero": "a person is cooking"
+        },
+        "reset_each": [
+          "a person is cooking",
+          "a person is cooking",
+          "a man is cooking"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0005",
+        "zero": [
+          "a person is cooking",
+          "a person is cooking",
+          "a person is cooking"
+        ]
+      },
+      {
+        "continuous": [
+          "a person is cutting potatoes",
+          "a person is cooking food",
+          "a person is cutting potatoes",
+          "a person is cooking",
+          "a man is cooking"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0010",
+            "commit_seconds": 670.02519,
+            "delta_end": 41,
+            "delta_start": 0,
+            "end_seconds": 670.02519,
+            "start_seconds": 629.26196,
+            "text": "Slice potato"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0011",
+            "commit_seconds": 713.80665,
+            "delta_end": 84,
+            "delta_start": 41,
+            "end_seconds": 713.80665,
+            "start_seconds": 675.20963,
+            "text": "Slice potato"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0012",
+            "commit_seconds": 724.05004,
+            "delta_end": 95,
+            "delta_start": 84,
+            "end_seconds": 724.05004,
+            "start_seconds": 715.76793,
+            "text": "Clean chopping board and knife"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0013",
+            "commit_seconds": 728.36287,
+            "delta_end": 99,
+            "delta_start": 95,
+            "end_seconds": 728.36287,
+            "start_seconds": 724.25004,
+            "text": "Clean countertop"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0014",
+            "commit_seconds": 739.70266,
+            "delta_end": 110,
+            "delta_start": 99,
+            "end_seconds": 739.70266,
+            "start_seconds": 730.32325,
+            "text": "Operate range hood"
+          }
+        ],
+        "final_answers": {
+          "continuous": "a man is cooking",
+          "reset_each": "a man is washing a pan",
+          "zero": "a person is cutting potatoes"
+        },
+        "reset_each": [
+          "a person is cutting potatoes",
+          "a person is cooking",
+          "a person is cooking",
+          "a man is washing dishes",
+          "a man is washing a pan"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0006",
+        "zero": [
+          "a person is cutting potatoes",
+          "a person is cutting potatoes",
+          "a person is cutting potatoes",
+          "a person is cutting potatoes",
+          "a person is cutting potatoes"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is cooking food in a pan",
+          "a man is cooking food in a pan",
+          "a man is cooking food in a pan"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0015",
+            "commit_seconds": 793.58129,
+            "delta_end": 54,
+            "delta_start": 0,
+            "end_seconds": 793.58129,
+            "start_seconds": 739.88932,
+            "text": "Saute potato in a pan"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0016",
+            "commit_seconds": 827.53638,
+            "delta_end": 88,
+            "delta_start": 54,
+            "end_seconds": 827.53638,
+            "start_seconds": 798.41176,
+            "text": "Mix Flour in water"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0017",
+            "commit_seconds": 840.75756,
+            "delta_end": 101,
+            "delta_start": 88,
+            "end_seconds": 840.75756,
+            "start_seconds": 832.37231,
+            "text": "Saute chopped Potatoes"
+          }
+        ],
+        "final_answers": {
+          "continuous": "a man is cooking food in a pan",
+          "reset_each": "a man is cooking",
+          "zero": "a man is cooking"
+        },
+        "reset_each": [
+          "a man is cooking food in a pan",
+          "a man is cooking food",
+          "a man is cooking"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0007",
+        "zero": [
+          "a man is cooking",
+          "a man is cooking",
+          "a man is cooking"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is cooking",
+          "a man is pouring milk into a bowl",
+          "a man is putting a plastic bag on a counter",
+          "a man is cooking"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0018",
+            "commit_seconds": 915.34015,
+            "delta_end": 74,
+            "delta_start": 0,
+            "end_seconds": 915.34015,
+            "start_seconds": 841.10737,
+            "text": "Mix flour in bowl"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0019",
+            "commit_seconds": 925.23652,
+            "delta_end": 84,
+            "delta_start": 74,
+            "end_seconds": 925.23652,
+            "start_seconds": 915.54015,
+            "text": "Add salt to mixture"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0020",
+            "commit_seconds": 945.098,
+            "delta_end": 104,
+            "delta_start": 84,
+            "end_seconds": 945.098,
+            "start_seconds": 925.43651,
+            "text": "Mix flour and salt in bowl"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0021",
+            "commit_seconds": 956.94751,
+            "delta_end": 115,
+            "delta_start": 104,
+            "end_seconds": 956.94751,
+            "start_seconds": 946.68782,
+            "text": "Saute chopped Potatoes"
+          }
+        ],
+        "final_answers": {
+          "continuous": "a man is cooking",
+          "reset_each": "spreading butter on a plate",
+          "zero": "a man is cooking"
+        },
+        "reset_each": [
+          "a man is cooking",
+          "a man is cooking",
+          "a person is putting food in a bag",
+          "a person is spreading butter on a plate"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0008",
+        "zero": [
+          "a man is cooking",
+          "a man is cooking",
+          "a man is cooking",
+          "a man is cooking"
+        ]
+      },
+      {
+        "continuous": [
+          "a person is cooking food in a pan",
+          "a person is cooking food in a pan",
+          "a person is cooking food in a pan"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0025",
+            "commit_seconds": 1473.85089,
+            "delta_end": 49,
+            "delta_start": 0,
+            "end_seconds": 1473.85089,
+            "start_seconds": 1424.00722,
+            "text": "Serve sauteed potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0026",
+            "commit_seconds": 1511.32423,
+            "delta_end": 87,
+            "delta_start": 49,
+            "end_seconds": 1511.32423,
+            "start_seconds": 1474.31837,
+            "text": "Saute chopped Potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0027",
+            "commit_seconds": 1527.34279,
+            "delta_end": 103,
+            "delta_start": 87,
+            "end_seconds": 1527.34279,
+            "start_seconds": 1511.34423,
+            "text": "Serve sauteed potatoes"
+          }
+        ],
+        "final_answers": {
+          "continuous": "a person is cooking food in a pan",
+          "reset_each": "a man is cooking food in a pan",
+          "zero": "a person is cooking food"
+        },
+        "reset_each": [
+          "a person is cooking food in a pan",
+          "a man is cooking food in a pan",
+          "a man is cooking food in a pan"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0012",
+        "zero": [
+          "a person is cooking food",
+          "a person is cooking food",
+          "a person is cooking food"
+        ]
+      },
+      {
+        "continuous": [
+          "a man is cooking food",
+          "a man is cooking food"
+        ],
+        "events": [
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0028",
+            "commit_seconds": 1577.13324,
+            "delta_end": 50,
+            "delta_start": 0,
+            "end_seconds": 1577.13324,
+            "start_seconds": 1527.36279,
+            "text": "Saute chopped Potatoes"
+          },
+          {
+            "caption_id": "ego4d-goalstep:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0029",
+            "commit_seconds": 1642.848,
+            "delta_end": 115,
+            "delta_start": 50,
+            "end_seconds": 1642.848,
+            "start_seconds": 1578.5421,
+            "text": "Marinate squid rings in flour mixture"
+          }
+        ],
+        "final_answers": {
+          "continuous": "a man is cooking food",
+          "reset_each": "a man is cooking food",
+          "zero": "a man is cooking food"
+        },
+        "reset_each": [
+          "a man is cooking food",
+          "a man is cooking food"
+        ],
+        "source_id": "002c3b5c-ed86-4af3-99a1-4b497b7c8a86",
+        "window_id": "validation:002c3b5c-ed86-4af3-99a1-4b497b7c8a86:0013",
+        "zero": [
+          "a man is cooking food",
+          "a man is cooking food"
+        ]
+      }
+    ],
+    "final_answer_metrics": {
+      "continuous": {
+        "exact_match": 0.0,
+        "examples": 128.0,
+        "rouge_l": 0.03110869803195171,
+        "word_f1": 0.033340840889094565
+      },
+      "reset_each": {
+        "exact_match": 0.0,
+        "examples": 128.0,
+        "rouge_l": 0.031195800727050728,
+        "word_f1": 0.03231187215562216
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 128.0,
+        "rouge_l": 0.034412308228944255,
+        "word_f1": 0.03552837965751569
+      }
+    },
+    "final_answer_probe": "last_completed_event_from_same_kv",
+    "metrics": {
+      "continuous": {
+        "exact_match": 0.0,
+        "examples": 496.0,
+        "rouge_l": 0.03932816858216963,
+        "word_f1": 0.042574921828922876
+      },
+      "reset_each": {
+        "exact_match": 0.0,
+        "examples": 496.0,
+        "rouge_l": 0.03827924155779194,
+        "word_f1": 0.04150679357566654
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 496.0,
+        "rouge_l": 0.03943794227940463,
+        "word_f1": 0.042864090964685186
+      }
+    }
+  },
+  "passed": true,
+  "run_id": "ego4d-goalstep-delta-caption-800step-main",
+  "schema": "deltaomni.ego4d_goalstep_caption_lora.v1",
+  "status": "complete",
+  "training_seconds": 2761.9510074071586
+}

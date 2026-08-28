@@ -1,0 +1,33 @@
+{
+  "code_revision": "f6c6d41e7424f0c57bd07c88a739fa21371390ab",
+  "commit_interval_seconds": {
+    "maximum": 1448.14434,
+    "median": 13.661349999999857,
+    "minimum": 0.0
+  },
+  "commits": {
+    "test": 0,
+    "train": 8821,
+    "validation": 2486
+  },
+  "completed_at_utc": "2026-08-28T15:26:14.275600+00:00",
+  "dataset_revision": "official-v2-goalstep-231129-schema-v2",
+  "elapsed_seconds": 165.92667742073536,
+  "episodes": {
+    "test": 0,
+    "train": 275,
+    "validation": 69
+  },
+  "manifest": "/home/changho.choi/deltathought/intermediates/canonical/ego4d_goalstep/official-v2-goalstep-231129-schema-v2/manifest.json",
+  "missing_eligible_media": {
+    "train": 153,
+    "validation": 28
+  },
+  "missing_metadata": {
+    "train": 139,
+    "validation": 33
+  },
+  "schema": "deltaomni.ego4d_goalstep_preprocessing.v1",
+  "segments_clipped_to_media_duration": 11,
+  "status": "complete"
+}
