@@ -9,6 +9,20 @@ no split source overlap. All 10,000 MP4 files were probed and hashed; canonical 
 reload/checksum verification took 36.7s. This is the source of truth for the upcoming native video
 FULL+variable-delta caption LoRA and its full-input fine-tuned Qwen baseline.
 
+The first native MSR-VTT video prefix cache is complete for all 6,513 train and 497 validation
+videos plus a locked 1,000-video test subset. It occupies 3.89 GB and took 1,077s on four A6000s;
+every artifact binds the media, canonical manifest, Qwen revision, and video DeltaTok checkpoint
+and was reloaded for shape/finiteness verification.
+
+A 20-step video-caption LoRA smoke improved validation normal word-F1 from `0.396` to `0.617` and
+normal NLL from `3.476` to `2.706`, proving that native video prefixes can train and generate fluent
+captions. It failed the causal delta gate: final shuffled/zero word-F1 was `0.613/0.586`, and normal
+NLL was worse than shuffled/zero (`2.706` versus `2.699/2.680`). Qualitatively, several outputs were
+reasonable coarse captions, while others hallucinated singing, race cars, or hotel rooms. Long
+training with the same objective is therefore blocked. The next comparison must fine-tune full raw
+video and first-frame-only Qwen baselines and isolate temporally dependent captions before another
+delta-caption run.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a

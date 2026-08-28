@@ -1,0 +1,12 @@
+{
+  "completed_at_utc": "2026-08-28T01:12:16.138724+00:00",
+  "elapsed_seconds": 1077.2483542487025,
+  "schema": "deltaomni.omni_msrvtt_video_summary.v1",
+  "splits": {
+    "test": 1000,
+    "train": 6513,
+    "validation": 497
+  },
+  "total_bytes": 3888225744,
+  "world_size": 4
+}
