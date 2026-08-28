@@ -19,6 +19,8 @@ training:
   checkpoint_interval_steps: 20
   keep_last_checkpoints: 2
   gradient_clip_norm: 1.0
+  zero_ranking_weight: 1.0
+  zero_ranking_margin: 0.1
   resume: auto
 evaluation:
   sequences: 8

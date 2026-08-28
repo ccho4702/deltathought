@@ -65,6 +65,8 @@ class TrainingConfig:
     checkpoint_interval_steps: int
     keep_last_checkpoints: int
     gradient_clip_norm: float
+    zero_ranking_weight: float
+    zero_ranking_margin: float
     resume: str
 
 
@@ -124,6 +126,8 @@ def load_config(path: Path) -> ContinuousConfig:
         config.training.checkpoint_interval_steps,
         config.training.keep_last_checkpoints,
         config.training.gradient_clip_norm,
+        config.training.zero_ranking_weight,
+        config.training.zero_ranking_margin,
         config.evaluation.sequences,
         config.evaluation.max_new_tokens,
         config.evaluation.minimum_delta_gap,
@@ -194,7 +198,12 @@ class ContinuousCaptionModel(nn.Module):
         prompt_embeds = self.single.thinker.get_input_embeddings()(prompt)
         return torch.cat((prefix, prompt_embeds), dim=1)
 
-    def forward(self, payloads: list[dict[str, Any]], captions: list[str]) -> tuple[Tensor, Tensor]:
+    def _caption_loss(
+        self,
+        payloads: list[dict[str, Any]],
+        captions: list[str],
+        control: str,
+    ) -> tuple[Tensor, Tensor]:
         if len(payloads) != len(captions):
             raise ValueError("Continuous caption section/target mismatch")
         device = next(self.parameters()).device
@@ -202,7 +211,7 @@ class ContinuousCaptionModel(nn.Module):
         labels = []
         token_count = 0
         for index, (payload, caption) in enumerate(zip(payloads, captions, strict=True)):
-            chunk = self._chunk(payload, index == 0, "normal")
+            chunk = self._chunk(payload, index == 0, control)
             embeddings.append(chunk)
             labels.append(torch.full(chunk.shape[:2], -100, dtype=torch.long, device=device))
             ids = self.single.interface.tokenizer(caption, add_special_tokens=False)["input_ids"]
@@ -225,6 +234,15 @@ class ContinuousCaptionModel(nn.Module):
             use_cache=False,
         )
         return output.loss, torch.tensor(token_count, device=device)
+
+    def forward(
+        self,
+        payloads: list[dict[str, Any]],
+        captions: list[str],
+    ) -> tuple[Tensor, Tensor, Tensor]:
+        normal, tokens = self._caption_loss(payloads, captions, "normal")
+        zero, _ = self._caption_loss(payloads, captions, "zero")
+        return normal, zero, tokens
 
     @torch.no_grad()
     def generate_sequence(
@@ -460,7 +478,7 @@ def run(
         for step in range(start_step, final_step + 1):
             model.train()
             optimizer.zero_grad(set_to_none=True)
-            accumulated = torch.zeros(2, device=context.device)
+            accumulated = torch.zeros(4, device=context.device)
             for accumulation in range(config.runtime.gradient_accumulation_steps):
                 generator = torch.Generator().manual_seed(
                     config.seed * 1_000_003 + step * 101 + accumulation
@@ -482,11 +500,22 @@ def run(
                 )
                 with sync:
                     with torch.autocast(device_type=context.device.type, dtype=torch.bfloat16):
-                        loss, tokens = model(payloads, captions)
+                        normal_loss, zero_loss, tokens = model(payloads, captions)
+                        ranking = torch.relu(
+                            config.training.zero_ranking_margin + normal_loss - zero_loss
+                        )
+                        loss = normal_loss + config.training.zero_ranking_weight * ranking
                         scaled = loss / config.runtime.gradient_accumulation_steps
                     scaled.backward()
-                    accumulated += torch.stack((scaled.detach(), tokens.detach().float()))
-                    del loss, scaled, tokens
+                    accumulated += torch.stack(
+                        (
+                            scaled.detach(),
+                            normal_loss.detach() / config.runtime.gradient_accumulation_steps,
+                            zero_loss.detach() / config.runtime.gradient_accumulation_steps,
+                            ranking.detach() / config.runtime.gradient_accumulation_steps,
+                        )
+                    )
+                    del loss, normal_loss, ranking, scaled, tokens, zero_loss
             torch.nn.utils.clip_grad_norm_(model.parameters(), config.training.gradient_clip_norm)
             warmup = min(1.0, step / config.training.warmup_steps)
             optimizer.param_groups[0]["lr"] = config.training.learning_rate * warmup
@@ -496,11 +525,19 @@ def run(
             if context.is_primary:
                 elapsed = time.perf_counter() - started
                 eta = elapsed / (step - start_step + 1) * (final_step - step)
-                record = {"step": step, "loss": float(reduced[0]), "tokens": float(reduced[1])}
+                record = {
+                    "step": step,
+                    "loss": float(reduced[0]),
+                    "normal_nll": float(reduced[1]),
+                    "zero_nll": float(reduced[2]),
+                    "zero_ranking": float(reduced[3]),
+                }
                 _append_jsonl(log_path, record)
                 if step % 5 == 0 or step == final_step:
                     print(
                         f"continuous_step={step}/{final_step} loss={record['loss']:.5f} "
+                        f"normal={record['normal_nll']:.5f} zero={record['zero_nll']:.5f} "
+                        f"rank={record['zero_ranking']:.5f} "
                         f"elapsed={elapsed:.1f}s eta={eta:.1f}s",
                         flush=True,
                     )
