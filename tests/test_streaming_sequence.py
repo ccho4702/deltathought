@@ -70,7 +70,11 @@ def test_sequence_builder_requires_multiple_sections_and_tracks_remainder(
             "source_id": f"source-{index}",
             "source_group_id": f"group-{index}",
             "cache_path": f"/cache/{index}.pt",
-            "delta_updates": 10 + index,
+            **(
+                {"delta_updates": 10 + index}
+                if index % 2 == 0
+                else {"blocks": 11 + index}
+            ),
             "captions": 5,
         }
         for index in range(7)
@@ -83,3 +87,7 @@ def test_sequence_builder_requires_multiple_sections_and_tracks_remainder(
     assert len(sequences["train"]) == 2
     assert all(len(sequence.sections) == 3 for sequence in sequences["train"])
     assert discarded == {"train": 1}
+    for sequence in sequences["train"]:
+        for section in sequence.sections:
+            index = int(section.source_id.rsplit("-", 1)[1])
+            assert section.delta_updates == 10 + index

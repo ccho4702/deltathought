@@ -67,6 +67,14 @@ def build_sequences(
     manifest = json.loads(prefix_manifest.read_text(encoding="utf-8"))
     result = {}
     discarded = {}
+
+    def delta_updates(record: dict[str, Any]) -> int:
+        if "delta_updates" in record:
+            return int(record["delta_updates"])
+        if "blocks" in record:
+            return int(record["blocks"]) - 1
+        raise ValueError(f"Prefix record has no delta length: {record.get('source_id')}")
+
     for split, raw_records in manifest["splits"].items():
         records = sorted(
             raw_records,
@@ -81,7 +89,7 @@ def build_sequences(
                     source_id=str(record["source_id"]),
                     source_group_id=str(record["source_group_id"]),
                     cache_path=Path(record["cache_path"]),
-                    delta_updates=int(record["delta_updates"]),
+                    delta_updates=delta_updates(record),
                     captions=int(record["captions"]),
                 )
                 for record in records[start : start + sections_per_sequence]
