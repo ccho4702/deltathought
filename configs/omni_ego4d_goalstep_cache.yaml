@@ -1,0 +1,25 @@
+seed: 42
+dataset_resource_name: ego4d
+canonical_manifest: intermediates/canonical/ego4d_goalstep/official-v2-goalstep-231129-schema-v2/manifest.json
+license_record: inputs/licenses/ego4d.accepted.json
+dynamic_commit_config: configs/ego4d_dynamic_commits.yaml
+omni_config: configs/qwen2_5_omni.yaml
+deltatok_config: configs/deltatok_vggsound_video_1s.yaml
+deltatok_checkpoint: outputs/real_pilots/deltatok_vggsound_video_1s/deltatok-video-1s-main/checkpoints/step-002000.pt
+deltatok_sha256: 2d46816bc45b4dda9b4ef27c4372b5b956cff4b34a0b7a999d94bd295918a4e5
+block_seconds: 1.0
+sample_fps: 2.0
+frame_width: 224
+frame_height: 224
+expected_video_tokens: 64
+encoder_batch_size: 1
+minimum_windows:
+  train: 1700
+  validation: 470
+runtime:
+  device: cuda
+  backend: nccl
+  nccl_compatibility_mode: true
+  cpu_threads: 8
+cache_root: intermediates/cache/omni_ego4d_goalstep
+report_path: outputs/reports/omni_ego4d_goalstep.json
