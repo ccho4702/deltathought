@@ -88,10 +88,18 @@ caption target and then repeat the normal/zero/last/cross-label-shuffle gate bef
 
 ## R4 — Video commit timing
 
-SSV2 does not contain internal caption boundaries. This phase remains blocked until an established,
-licensed temporal-caption source passes the provenance and acquisition gates. ActivityNet Captions
-is the leading candidate, but is currently blocked on exact usage terms. Kinetics-GEB+ is not core
-under the current adoption policy.
+SSV2 and MSR-VTT do not contain suitable internal caption boundaries. Ego4D dense narrations and
+GoalStep/NLQ temporal annotations are the selected source for variable-duration training commits.
+Their timing must be preserved rather than quantized to a fixed number of updates, and caption
+targets must describe evidence available up to each causal boundary. Ego4D requires an individual
+or institutional license acceptance record before any training run.
+
+LongVideoBench is the frozen external QA evaluation. Use its labeled 1,337-question validation
+split only for final comparisons because public test labels are absent. No LongVideoBench question,
+answer, subtitle, category, or duration bucket may influence training, checkpoint selection,
+threshold selection, prompt development, or commit construction. Predeclare vanilla full-video,
+fine-tuned full-video, no-delta, ordered-delta, zero-delta, cross-video shuffled-delta, and
+caption-memory shuffle controls before opening aggregate validation results.
 
 ## No-go conditions
 

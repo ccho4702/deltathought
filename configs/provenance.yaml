@@ -254,6 +254,51 @@ resources:
       Internal research follows configs/msrvtt_media_policy.yaml. Raw media and recoverable
       embeddings are not publishable; public results must cite the official CVPR 2016 paper.
 
+  ego4d:
+    kind: dataset
+    role: natural_variable_commit_caption_training
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    benchmark_adoption: true
+    license_status: conditional
+    license: official-click-through-agreement
+    source_url: https://ego4d-data.org/docs/start-here/
+    evidence:
+      github_stars: null
+      huggingface_downloads: null
+      paper_citations: 1000
+    evidence_urls:
+      paper: https://openaccess.thecvf.com/content/CVPR2022/html/Grauman_Ego4D_Around_the_World_in_3000_Hours_of_Egocentric_Video_CVPR_2022_paper.html
+      annotations: https://ego4d-data.org/docs/data/annotation-guidelines/
+    restriction: >-
+      Any use of videos or annotations requires prior acceptance of the official Ego4D agreement.
+      Training is blocked until inputs/licenses records the project user's acceptance; shared media
+      is read-only and must not be redistributed.
+
+  longvideobench:
+    kind: dataset
+    role: frozen_external_long_video_qa_evaluation
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    benchmark_adoption: true
+    license_status: conditional
+    license: CC-BY-NC-SA-4.0-plus-gated-source-acknowledgements
+    source_url: https://huggingface.co/datasets/longvideobench/LongVideoBench
+    evidence:
+      github_stars: 134
+      huggingface_downloads: null
+      paper_citations: null
+    evidence_urls:
+      paper: https://proceedings.neurips.cc/paper_files/paper/2024/hash/329ad516cf7a6ac306f29882e9c77558-Abstract-Datasets_and_Benchmarks_Track.html
+      github: https://github.com/longvideobench/LongVideoBench
+      benchmark: https://longvideobench.github.io/
+    restriction: >-
+      Non-commercial use only. Upstream requires explicit acknowledgement of third-party video
+      ownership and gated terms. Use validation only as a frozen final evaluation; test labels are
+      not public, and no benchmark content may enter training or model selection.
+
   activitynet_captions:
     kind: dataset
     role: timestamped_video_section_caption_candidate

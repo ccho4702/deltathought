@@ -23,6 +23,24 @@ training with the same objective is therefore blocked. The next comparison must 
 video and first-frame-only Qwen baselines and isolate temporally dependent captions before another
 delta-caption run.
 
+The matched raw-video Qwen2.5-Omni LoRA baseline now passes an exact-resume 20-step smoke on the
+same canonical training source. A forced stop at step 2 wrote a complete checkpoint and resumed at
+step 3 with model, optimizer, deterministic sampling, and per-rank RNG state restored. Validation
+word-F1 on 16 videos was `0.442` with the complete 2-fps video versus `0.375` with only the first
+two frames. This establishes that the full-input baseline path consumes useful later visual
+evidence. It is not yet the retained baseline: several generations produced a reasonable first
+clause followed by spurious `Human:` dialogue continuations, so the 1,000-step matched run and
+larger validation evaluation remain required.
+
+The final long-video evaluation source is now LongVideoBench, not MSR-VTT. The existing shared
+distribution is present as the official 151 GB split-tar release at Hugging Face revision
+`60d1c89c1919a198b73be39c2babb213b29d6a5c`: 1,337 labeled validation questions and 5,341
+unlabeled test questions. It is read-only and requires upstream gated-terms acceptance. Validation
+will be frozen for external evaluation only; neither its questions nor labels may enter training,
+model selection, commit-target construction, or prompt tuning. Ego4D remains the intended source
+for natural variable-duration training commits, conditional on a project-local acceptance record
+for its separate click-through license.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a
