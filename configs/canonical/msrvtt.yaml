@@ -1,0 +1,14 @@
+dataset: msrvtt
+dataset_revision: official-msr-vtt-10k-schema-v2
+resource_name: msrvtt_annotations
+chunk_seconds: 1.0
+cpu_workers: 16
+annotations:
+  train: /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/train.json
+  validation: /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/val.json
+  test: /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/metadata/test.json
+media_root: /mnt/nfs_shared_data/dataset/omniembed/MSRVTT/videos
+media_policy: configs/msrvtt_media_policy.yaml
+cache_root: intermediates/cache/canonical_msrvtt/official-msr-vtt-10k-schema-v2
+output_root: intermediates/canonical
+report_path: outputs/reports/canonical_msrvtt_v2.json

@@ -39,6 +39,9 @@ preprocess-ssv2:
 preprocess-audioset-strong:
 	uv run deltaomni-preprocess-audioset-strong
 
+preprocess-msrvtt:
+	uv run --frozen deltaomni-preprocess-msrvtt
+
 backbone-smoke:
 	uv run deltaomni-backbone-smoke
 

@@ -42,6 +42,7 @@ deltaomni-preprocess-audioset-strong = "deltaomni.data.preprocess_audioset_stron
 deltaomni-preprocess-vggsound-s1 = "deltaomni.data.preprocess_vggsound_s1:main"
 deltaomni-preprocess-audiocaps = "deltaomni.data.preprocess_audiocaps:main"
 deltaomni-preprocess-clotho = "deltaomni.data.preprocess_clotho:main"
+deltaomni-preprocess-msrvtt = "deltaomni.data.preprocess_msrvtt:main"
 deltaomni-backbone-smoke = "deltaomni.backbone_smoke:main"
 deltaomni-language-smoke = "deltaomni.language_smoke:main"
 deltaomni-omni-backbone-smoke = "deltaomni.omni_backbone_smoke:main"
