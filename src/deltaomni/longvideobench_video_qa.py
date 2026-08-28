@@ -300,6 +300,39 @@ def _atomic_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
     os.replace(temporary, path)
 
 
+def _load_resume_rows(
+    path: Path,
+    arms: tuple[ModelArm, ...],
+    *,
+    code_revision: str,
+    answer_strategy: str,
+) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    expected = {arm.name: arm.checkpoint_sha256 for arm in arms}
+    rows = []
+    identities = set()
+    with path.open(encoding="utf-8") as stream:
+        for line_number, line in enumerate(stream, start=1):
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError as error:
+                raise ValueError(f"Invalid resume row at {path}:{line_number}") from error
+            arm = row.get("arm")
+            identity = (arm, str(row.get("video_id")), str(row.get("id")))
+            compatible = (
+                arm in expected
+                and row.get("checkpoint_sha256") == expected[arm]
+                and row.get("code_revision") == code_revision
+                and row.get("answer_strategy") == answer_strategy
+            )
+            if not compatible or identity in identities:
+                raise ValueError(f"Incompatible resume row at {path}:{line_number}")
+            identities.add(identity)
+            rows.append(row)
+    return rows
+
+
 def _select_arms(
     config: QAConfig,
     selected_arms: list[str] | None,
@@ -341,6 +374,7 @@ def run(
     root = config_path.resolve().parent.parent
     if not git_worktree_is_clean(root):
         raise RuntimeError("LongVideoBench QA requires a clean Git worktree")
+    revision = git_revision(root)
     _set_seed(config.seed)
     torch.set_num_threads(config.cpu_threads)
     device = torch.device(config.device)
@@ -349,14 +383,22 @@ def run(
     video_ids = list(data.videos)
     if config.maximum_videos is not None:
         video_ids = video_ids[: config.maximum_videos]
-    rows = []
+    rows = _load_resume_rows(
+        config.predictions_path,
+        config.arms,
+        code_revision=revision,
+        answer_strategy=config.answer_strategy,
+    )
+    resumed_predictions = len(rows)
     arm_reports = {}
     started = time.perf_counter()
     for arm in config.arms:
         model = _load_arm(arm, device)
-        correct = 0
-        parsed = 0
-        completed = 0
+        arm_rows = [row for row in rows if row["arm"] == arm.name]
+        correct = sum(row["parsed_choice"] == row["correct_choice"] for row in arm_rows)
+        parsed = sum(row["parsed_choice"] is not None for row in arm_rows)
+        completed = len(arm_rows)
+        completed_ids = {(str(row["video_id"]), str(row["id"])) for row in arm_rows}
         total_questions = sum(len(data.videos[video_id]["questions"]) for video_id in video_ids)
         if config.maximum_questions is not None:
             total_questions = min(total_questions, config.maximum_questions)
@@ -366,45 +408,72 @@ def run(
             f"longvideobench_arm={arm.name} questions=0/{total_questions} eta=pending",
             flush=True,
         )
-        for video_index, video_id in enumerate(video_ids):
-            windows = data.windows(video_id)
-            donor_id = video_ids[(video_index + 1) % len(video_ids)]
-            donors = data.windows(donor_id)
-            for question in data.videos[video_id]["questions"]:
+        try:
+            for video_index, video_id in enumerate(video_ids):
+                questions = [
+                    question
+                    for question in data.videos[video_id]["questions"]
+                    if (video_id, str(question["id"])) not in completed_ids
+                ]
+                if not questions:
+                    continue
+                windows = data.windows(video_id)
+                donor_id = video_ids[(video_index + 1) % len(video_ids)]
+                donors = data.windows(donor_id)
+                for question in questions:
+                    if (
+                        config.maximum_questions is not None
+                        and completed >= config.maximum_questions
+                    ):
+                        break
+                    prediction, captions = _predict(model, windows, donors, question, arm, config)
+                    choice = _parse_choice(prediction, len(question["candidates"]))
+                    expected = int(question["correct_choice"])
+                    parsed += choice is not None
+                    correct += choice == expected
+                    completed += 1
+                    rows.append(
+                        {
+                            "arm": arm.name,
+                            "id": question["id"],
+                            "video_id": video_id,
+                            "prediction": prediction,
+                            "parsed_choice": choice,
+                            "correct_choice": expected,
+                            "duration_group": question["duration_group"],
+                            "question_category": question["question_category"],
+                            "captions": captions,
+                            "checkpoint_sha256": arm.checkpoint_sha256,
+                            "code_revision": revision,
+                            "answer_strategy": config.answer_strategy,
+                        }
+                    )
+                    completed_ids.add((video_id, str(question["id"])))
+                    if completed % 10 == 0:
+                        _atomic_jsonl(config.predictions_path, rows)
+                    now = time.perf_counter()
+                    if (
+                        completed == len(arm_rows) + 1
+                        or now - last_progress >= 180
+                        or completed == total_questions
+                    ):
+                        elapsed = now - arm_started
+                        new_predictions = completed - len(arm_rows)
+                        remaining = total_questions - completed
+                        eta = elapsed / new_predictions * remaining
+                        print(
+                            f"longvideobench_arm={arm.name} "
+                            f"questions={completed}/{total_questions} "
+                            f"elapsed_seconds={elapsed:.1f} eta_seconds={eta:.1f}",
+                            flush=True,
+                        )
+                        last_progress = now
                 if config.maximum_questions is not None and completed >= config.maximum_questions:
                     break
-                prediction, captions = _predict(model, windows, donors, question, arm, config)
-                choice = _parse_choice(prediction, len(question["candidates"]))
-                expected = int(question["correct_choice"])
-                parsed += choice is not None
-                correct += choice == expected
-                completed += 1
-                rows.append(
-                    {
-                        "arm": arm.name,
-                        "id": question["id"],
-                        "video_id": video_id,
-                        "prediction": prediction,
-                        "parsed_choice": choice,
-                        "correct_choice": expected,
-                        "duration_group": question["duration_group"],
-                        "question_category": question["question_category"],
-                        "captions": captions,
-                    }
-                )
-                now = time.perf_counter()
-                if completed == 1 or now - last_progress >= 180 or completed == total_questions:
-                    elapsed = now - arm_started
-                    eta = elapsed / completed * (total_questions - completed)
-                    print(
-                        f"longvideobench_arm={arm.name} "
-                        f"questions={completed}/{total_questions} "
-                        f"elapsed_seconds={elapsed:.1f} eta_seconds={eta:.1f}",
-                        flush=True,
-                    )
-                    last_progress = now
-            if config.maximum_questions is not None and completed >= config.maximum_questions:
-                break
+        except BaseException:
+            _atomic_jsonl(config.predictions_path, rows)
+            raise
+        _atomic_jsonl(config.predictions_path, rows)
         arm_reports[arm.name] = {
             "accuracy": correct / completed,
             "parse_rate": parsed / completed,
@@ -421,7 +490,8 @@ def run(
         "predictions": len(rows),
         "elapsed_seconds": time.perf_counter() - started,
         "answer_strategy": config.answer_strategy,
-        "code_revision": git_revision(root),
+        "resumed_predictions": resumed_predictions,
+        "code_revision": revision,
         "completed_at_utc": datetime.now(UTC).isoformat(),
     }
     _atomic_json(config.report_path, report)

@@ -1,8 +1,10 @@
+import json
 from pathlib import Path
 
 import torch
 
 from deltaomni.longvideobench_video_qa import (
+    _load_resume_rows,
     _match_deltas,
     _parse_choice,
     _select_arms,
@@ -42,3 +44,25 @@ def test_longvideobench_arm_selection_uses_distinct_output_paths() -> None:
     assert [arm.name for arm in selected.arms] == ["delta_zero"]
     assert selected.predictions_path.name == "smoke_video_only_zero.jsonl"
     assert selected.report_path.name == "longvideobench_video_qa_smoke_zero.json"
+
+
+def test_longvideobench_resume_rows_require_matching_provenance(tmp_path: Path) -> None:
+    config = load_config(Path("configs/longvideobench_video_qa_smoke.yaml"))
+    arm = config.arms[0]
+    path = tmp_path / "partial.jsonl"
+    row = {
+        "arm": arm.name,
+        "id": "question-1",
+        "video_id": "video-1",
+        "checkpoint_sha256": arm.checkpoint_sha256,
+        "code_revision": "abc123",
+        "answer_strategy": "choice_logit",
+    }
+    path.write_text(json.dumps(row) + "\n", encoding="utf-8")
+
+    assert _load_resume_rows(
+        path,
+        (arm,),
+        code_revision="abc123",
+        answer_strategy="choice_logit",
+    ) == [row]
