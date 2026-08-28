@@ -229,6 +229,7 @@ class RawCaptionModel(nn.Module):
         self.processor = processor
         self.config = config
         self.end_token_id = int(processor.tokenizer.convert_tokens_to_ids("<|im_end|>"))
+        self.prompt = self._prompt()
 
     def _prompt(self) -> str:
         conversation = [
@@ -251,7 +252,7 @@ class RawCaptionModel(nn.Module):
     def _inputs(self, frames: list, device: torch.device) -> dict[str, Tensor]:
         omni = load_omni_backbone_config(self.config.omni_config)
         values = self.processor(
-            text=self._prompt(),
+            text=self.prompt,
             videos=[frames],
             return_tensors="pt",
             padding=True,
@@ -503,6 +504,7 @@ def run(
                         scaled = loss / config.runtime.gradient_accumulation_steps
                     scaled.backward()
                     accumulated += torch.stack((scaled.detach(), tokens.detach().float()))
+                    del loss, scaled, tokens
             torch.nn.utils.clip_grad_norm_(model.parameters(), config.training.gradient_clip_norm)
             warmup = min(1.0, step / config.training.warmup_steps)
             for group in optimizer.param_groups:
@@ -521,6 +523,7 @@ def run(
                         flush=True,
                     )
             if step % config.training.checkpoint_interval_steps == 0 or step == final_step:
+                torch.cuda.empty_cache()
                 states = _gather_rng_states(context)
                 if context.is_primary:
                     _atomic_torch_save(
