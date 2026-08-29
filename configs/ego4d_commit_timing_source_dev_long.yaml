@@ -1,0 +1,24 @@
+seed: 42
+cache_manifest: intermediates/cache/omni_ego4d_goalstep/manifest.json
+device: cuda
+cpu_threads: 4
+cache_entries: 512
+delta_width: 768
+hidden_width: 256
+batch_size: 32
+learning_rate: 0.0005
+weight_decay: 0.0001
+positive_weight: 15.0
+threshold: 0.5
+fixed_interval_seconds: 12
+max_steps: 10000
+checkpoint_interval_steps: 500
+keep_last_checkpoints: 20
+evaluation_windows: 481
+minimum_tolerance_f1_gap: 0.02
+resume: auto
+dev_fraction: 0.1
+threshold_candidates: [0.5, 0.6, 0.7, 0.8, 0.9]
+output_root: outputs/real_pilots/ego4d_commit_timing_source_dev_long
+log_root: logs/experiments
+report_path: outputs/reports/ego4d_commit_timing_source_dev_long.json

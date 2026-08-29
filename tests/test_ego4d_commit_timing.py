@@ -60,3 +60,11 @@ def test_ego4d_timing_source_dev_split_is_group_disjoint() -> None:
     fit_sources = {record["source_group_id"] for record in fit}
     dev_sources = {record["source_group_id"] for record in dev}
     assert not (fit_sources & dev_sources)
+
+
+def test_ego4d_timing_long_run_retains_selection_checkpoints() -> None:
+    config = load_config(Path("configs/ego4d_commit_timing_source_dev_long.yaml"))
+
+    assert config.max_steps == 10_000
+    assert config.checkpoint_interval_steps == 500
+    assert config.keep_last_checkpoints == 20
