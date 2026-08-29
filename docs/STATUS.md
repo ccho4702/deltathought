@@ -156,6 +156,24 @@ delta activations, but not use of the correct ordered video change. An untouched
 commit baseline was omitted from this run and is the next required correction; no positive
 DeltaThought long-video claim is made before that baseline and stronger content controls complete.
 
+That post-hoc correction is now complete. Untouched Qwen under the same native-token commit/KV
+interface scored `0.4809`, statistically identical to DeltaThought's `0.4817` (`+0.07` points,
+video-cluster bootstrap 95% CI `[-2.29, 2.42]`, paired exact p=`1.0`). Full-token caption
+fine-tuning scored `0.4667`, `1.42` points below vanilla (CI `[-3.50, 0.66]`, p=`0.206`). Stronger
+post-hoc delta controls separate activation from content: ordered delta beat anchor-only `0.4607`
+by `2.09` points (CI `[0.31, 3.86]`, p=`0.020`) and norm-matched random noise `0.4510` by `3.07`
+points (CI `[0.76, 5.36]`, p=`0.0086`). However, deterministic within-window permutation produced
+exactly the same `0.4817` accuracy (CI of the difference `[-1.11, 1.10]`, p=`1.0`), reversed delta
+remained slightly higher, and cross-video delta remained indistinguishable. The model uses
+in-distribution learned-delta structure but has not learned temporal order or source-specific
+alignment. Same-KV memory remains beneficial relative to removal, but shuffled-caption memory was
+not run, so correct semantic memory is not established. These controls were chosen after the first
+aggregate result and are diagnostics, not preregistered confirmation. The current objective fails
+the primary baseline, order, and source-specific causal gates; changing only dataset or inference
+configuration is not justified before training explicitly against cross-video and order-corrupted
+negatives. `vanilla_commit` isolates untouched weights under the method's input interface; a
+standard raw/uniform-video vanilla evaluation is still required for an external baseline claim.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a

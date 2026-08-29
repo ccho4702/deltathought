@@ -74,3 +74,13 @@ retained KV bytes. Any efficiency claim requires a compute-matched control.
   anchor priors. If caption-memory shuffling does not hurt, captions are not useful memory.
 
 No test-set submission or leaderboard claim is authorized by this local protocol.
+
+## Execution deviation recorded after the first aggregate run
+
+The first implemented aggregate evaluator covered the full-token commit arm, DeltaThought, zero,
+cross-video, reversed, last-only, and memory-removed controls. It did not implement the originally
+listed raw/uniform, shuffled-caption, or subtitle-only arms before inspecting aggregate validation
+results. The later untouched-weight commit baseline, anchor-only, norm-matched-noise, and
+within-window-permutation controls are explicitly post-hoc diagnostics. They must not be described
+as preregistered confirmation, and the repeatedly inspected LongVideoBench validation split must
+not be used to select a revised objective and then presented as an untouched final evaluation.

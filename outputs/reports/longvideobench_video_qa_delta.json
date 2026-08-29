@@ -1,0 +1,17 @@
+{
+  "answer_strategy": "choice_logit",
+  "arms": {
+    "delta_continuous_kv": {
+      "accuracy": 0.4816753926701571,
+      "parse_rate": 1.0,
+      "questions": 1337
+    }
+  },
+  "code_revision": "61d14b148bce9db3754a443c85891908a6f09a73",
+  "completed_at_utc": "2026-08-28T23:23:13.464410+00:00",
+  "elapsed_seconds": 2647.9195002131164,
+  "predictions": 1337,
+  "resumed_predictions": 0,
+  "schema": "deltaomni.longvideobench_video_qa.v1",
+  "videos": 753
+}

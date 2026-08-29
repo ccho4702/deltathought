@@ -1,0 +1,1156 @@
+{
+  "all_parse_rates_complete": true,
+  "annotation_sha256": "d32bf2e0cbbdb4fa2e99666a5a49b5a19bca2ceec69222c9a7d3aad567d1fa23",
+  "arms": {
+    "caption_memory_removed": {
+      "accuracy": 0.45774121166791326,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.5079365079365079,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.4078014184397163,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.5232558139534884,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.47572815533980584,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.46153846153846156,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.5212765957446809,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.5862068965517241,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.48484848484848486,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.4772727272727273,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.6021505376344086,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.4305555555555556,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.3888888888888889,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.4567901234567901,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.29896907216494845,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.45569620253164556,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.5076923076923077,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.42105263157894735,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.3698630136986301,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.43243243243243246,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.45121951219512196,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.410958904109589,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "delta_anchor_only": {
+      "accuracy": 0.4607329842931937,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.49206349206349204,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.4432624113475177,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.47674418604651164,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.46359223300970875,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.4461538461538462,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.5212765957446809,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.5747126436781609,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.5151515151515151,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.5227272727272727,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.5806451612903226,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.4583333333333333,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.4166666666666667,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.5432098765432098,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.31958762886597936,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.45569620253164556,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.46153846153846156,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.40789473684210525,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.410958904109589,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.40540540540540543,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.4146341463414634,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.3424657534246575,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "delta_continuous_kv": {
+      "accuracy": 0.4816753926701571,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.5079365079365079,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.4521276595744681,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.5232558139534884,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.49271844660194175,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.47692307692307695,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.5319148936170213,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.5632183908045977,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.5606060606060606,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.5,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.6236559139784946,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.5,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.4027777777777778,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.5308641975308642,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.32989690721649484,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.45569620253164556,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.49230769230769234,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.4473684210526316,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.4246575342465753,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.44594594594594594,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.4878048780487805,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.3972602739726027,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "delta_cross_video": {
+      "accuracy": 0.47643979057591623,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.4708994708994709,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.4450354609929078,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.5290697674418605,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.5,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.46153846153846156,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.48936170212765956,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.6091954022988506,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.4696969696969697,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.5227272727272727,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.6344086021505376,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.4444444444444444,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.4166666666666667,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.49382716049382713,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.32989690721649484,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.4810126582278481,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.5230769230769231,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.4868421052631579,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.4246575342465753,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.44594594594594594,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.4878048780487805,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.3424657534246575,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "delta_last_only": {
+      "accuracy": 0.23261032161555723,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.2804232804232804,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.2198581560283688,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.2441860465116279,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.22330097087378642,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.24615384615384617,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.1702127659574468,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.28735632183908044,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.2878787878787879,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.26136363636363635,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.20430107526881722,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.20833333333333334,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.2916666666666667,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.19753086419753085,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.2268041237113402,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.379746835443038,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.16923076923076924,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.27631578947368424,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.2054794520547945,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.21621621621621623,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.14634146341463414,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.1917808219178082,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "delta_norm_noise": {
+      "accuracy": 0.45100972326103217,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.5026455026455027,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.40602836879432624,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.48255813953488375,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.47572815533980584,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.5076923076923077,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.4574468085106383,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.5862068965517241,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.45454545454545453,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.5227272727272727,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.5698924731182796,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.4583333333333333,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.4305555555555556,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.48148148148148145,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.29896907216494845,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.379746835443038,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.47692307692307695,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.32894736842105265,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.4383561643835616,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.4189189189189189,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.4634146341463415,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.3835616438356164,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "delta_permuted": {
+      "accuracy": 0.4816753926701571,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.49206349206349204,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.45567375886524825,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.5232558139534884,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.49514563106796117,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.46153846153846156,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.5425531914893617,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.5977011494252874,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.5303030303030303,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.4772727272727273,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.6236559139784946,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.5,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.4166666666666667,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.5432098765432098,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.30927835051546393,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.45569620253164556,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.5230769230769231,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.4342105263157895,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.410958904109589,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.44594594594594594,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.47560975609756095,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.4246575342465753,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "delta_reversed": {
+      "accuracy": 0.48616305160807777,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.48148148148148145,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.4627659574468085,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.5348837209302325,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.5,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.47692307692307695,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.5531914893617021,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.5747126436781609,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.5151515151515151,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.5113636363636364,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.6236559139784946,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.5138888888888888,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.4166666666666667,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.5185185185185185,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.38144329896907214,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.46835443037974683,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.5230769230769231,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.42105263157894735,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.4246575342465753,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.44594594594594594,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.4878048780487805,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.3698630136986301,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "delta_zero": {
+      "accuracy": 0.23709798055347794,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.2751322751322751,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.20921985815602837,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.26744186046511625,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.24514563106796117,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.24615384615384617,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.19148936170212766,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.25287356321839083,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.3181818181818182,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.23863636363636365,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.24731182795698925,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.2222222222222222,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.20833333333333334,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.20987654320987653,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.2268041237113402,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.379746835443038,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.23076923076923078,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.2894736842105263,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.2054794520547945,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.21621621621621623,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.13414634146341464,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.2328767123287671,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "full_commit_ft": {
+      "accuracy": 0.4667165295437547,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.47619047619047616,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.4432624113475177,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.5290697674418605,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.4684466019417476,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.47692307692307695,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.5425531914893617,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.5632183908045977,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.42424242424242425,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.4318181818181818,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.5913978494623656,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.4027777777777778,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.4305555555555556,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.5061728395061729,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.35051546391752575,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.4810126582278481,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.5538461538461539,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.42105263157894735,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.410958904109589,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.4594594594594595,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.4878048780487805,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.3698630136986301,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    },
+    "vanilla_commit": {
+      "accuracy": 0.4809274495138369,
+      "by_duration_group": {
+        "15": {
+          "accuracy": 0.49206349206349204,
+          "questions": 189
+        },
+        "3600": {
+          "accuracy": 0.46631205673758863,
+          "questions": 564
+        },
+        "60": {
+          "accuracy": 0.5232558139534884,
+          "questions": 172
+        },
+        "600": {
+          "accuracy": 0.47815533980582525,
+          "questions": 412
+        }
+      },
+      "by_question_category": {
+        "E2O": {
+          "accuracy": 0.5076923076923077,
+          "questions": 65
+        },
+        "E3E": {
+          "accuracy": 0.6063829787234043,
+          "questions": 94
+        },
+        "O2E": {
+          "accuracy": 0.5517241379310345,
+          "questions": 87
+        },
+        "O3O": {
+          "accuracy": 0.36363636363636365,
+          "questions": 66
+        },
+        "S2A": {
+          "accuracy": 0.48863636363636365,
+          "questions": 88
+        },
+        "S2E": {
+          "accuracy": 0.6129032258064516,
+          "questions": 93
+        },
+        "S2O": {
+          "accuracy": 0.5,
+          "questions": 72
+        },
+        "SAA": {
+          "accuracy": 0.4305555555555556,
+          "questions": 72
+        },
+        "SOS": {
+          "accuracy": 0.5925925925925926,
+          "questions": 81
+        },
+        "SSS": {
+          "accuracy": 0.29896907216494845,
+          "questions": 97
+        },
+        "T2A": {
+          "accuracy": 0.4810126582278481,
+          "questions": 79
+        },
+        "T2E": {
+          "accuracy": 0.6153846153846154,
+          "questions": 65
+        },
+        "T2O": {
+          "accuracy": 0.4473684210526316,
+          "questions": 76
+        },
+        "T3E": {
+          "accuracy": 0.3972602739726027,
+          "questions": 73
+        },
+        "T3O": {
+          "accuracy": 0.44594594594594594,
+          "questions": 74
+        },
+        "TAA": {
+          "accuracy": 0.45121951219512196,
+          "questions": 82
+        },
+        "TOS": {
+          "accuracy": 0.3561643835616438,
+          "questions": 73
+        }
+      },
+      "parse_rate": 1.0,
+      "questions": 1337,
+      "videos": 753
+    }
+  },
+  "bootstrap_samples": 100000,
+  "comparisons": {
+    "delta_continuous_kv_minus_caption_memory_removed": {
+      "accuracy_difference": 0.023934181002243815,
+      "cluster_bootstrap_95ci": [
+        0.005443234836702948,
+        0.04229607250755285
+      ],
+      "left_only_correct": 87,
+      "paired_exact_p": 0.009043246714205942,
+      "right_only_correct": 55
+    },
+    "delta_continuous_kv_minus_delta_anchor_only": {
+      "accuracy_difference": 0.020942408376963373,
+      "cluster_bootstrap_95ci": [
+        0.003053435114503844,
+        0.038632986627043064
+      ],
+      "left_only_correct": 82,
+      "paired_exact_p": 0.02026001125424599,
+      "right_only_correct": 54
+    },
+    "delta_continuous_kv_minus_delta_cross_video": {
+      "accuracy_difference": 0.005235602094240843,
+      "cluster_bootstrap_95ci": [
+        -0.009833585476550666,
+        0.020439061317183926
+      ],
+      "left_only_correct": 60,
+      "paired_exact_p": 0.5726564757939473,
+      "right_only_correct": 53
+    },
+    "delta_continuous_kv_minus_delta_last_only": {
+      "accuracy_difference": 0.24906507105459985,
+      "cluster_bootstrap_95ci": [
+        0.21172886519421175,
+        0.2862481315396114
+      ],
+      "left_only_correct": 495,
+      "paired_exact_p": 4.1885933335101924e-40,
+      "right_only_correct": 162
+    },
+    "delta_continuous_kv_minus_delta_norm_noise": {
+      "accuracy_difference": 0.030665669409124907,
+      "cluster_bootstrap_95ci": [
+        0.007552870090634434,
+        0.05362318840579705
+      ],
+      "left_only_correct": 137,
+      "paired_exact_p": 0.008638406577337608,
+      "right_only_correct": 96
+    },
+    "delta_continuous_kv_minus_delta_permuted": {
+      "accuracy_difference": 0.0,
+      "cluster_bootstrap_95ci": [
+        -0.011111111111111127,
+        0.011013215859030812
+      ],
+      "left_only_correct": 27,
+      "paired_exact_p": 1.0,
+      "right_only_correct": 27
+    },
+    "delta_continuous_kv_minus_delta_reversed": {
+      "accuracy_difference": -0.004487658937920691,
+      "cluster_bootstrap_95ci": [
+        -0.015897047691143085,
+        0.006782215523737756
+      ],
+      "left_only_correct": 27,
+      "paired_exact_p": 0.5189580031896518,
+      "right_only_correct": 33
+    },
+    "delta_continuous_kv_minus_delta_zero": {
+      "accuracy_difference": 0.24457741211667913,
+      "cluster_bootstrap_95ci": [
+        0.20772594752186585,
+        0.2811572700296736
+      ],
+      "left_only_correct": 488,
+      "paired_exact_p": 3.6583371709406316e-39,
+      "right_only_correct": 161
+    },
+    "delta_continuous_kv_minus_full_commit_ft": {
+      "accuracy_difference": 0.014958863126402377,
+      "cluster_bootstrap_95ci": [
+        -0.007374631268436571,
+        0.037319116527037344
+      ],
+      "left_only_correct": 117,
+      "paired_exact_p": 0.19388944511670828,
+      "right_only_correct": 97
+    },
+    "delta_continuous_kv_minus_vanilla_commit": {
+      "accuracy_difference": 0.0007479431563201522,
+      "cluster_bootstrap_95ci": [
+        -0.02294596595114734,
+        0.02422407267221799
+      ],
+      "left_only_correct": 124,
+      "paired_exact_p": 1.0,
+      "right_only_correct": 123
+    },
+    "full_commit_ft_minus_vanilla_commit": {
+      "accuracy_difference": -0.014210919970082225,
+      "cluster_bootstrap_95ci": [
+        -0.03497023809523808,
+        0.006578947368421073
+      ],
+      "left_only_correct": 92,
+      "paired_exact_p": 0.20635238230278724,
+      "right_only_correct": 111
+    }
+  },
+  "dataset_revision": "60d1c89c1919a198b73be39c2babb213b29d6a5c",
+  "schema": "deltaomni.longvideobench_qa_analysis.v1",
+  "source_clusters": 753
+}
