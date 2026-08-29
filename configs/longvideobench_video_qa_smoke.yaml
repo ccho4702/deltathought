@@ -48,6 +48,24 @@ arms:
     model_config: configs/ego4d_goalstep_caption.yaml
     checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
     checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
+  - name: delta_anchor_only
+    mode: anchor_only
+    weights: fine_tuned
+    model_config: configs/ego4d_goalstep_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
+  - name: delta_norm_noise
+    mode: norm_noise
+    weights: fine_tuned
+    model_config: configs/ego4d_goalstep_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
+  - name: delta_permuted
+    mode: permuted
+    weights: fine_tuned
+    model_config: configs/ego4d_goalstep_caption.yaml
+    checkpoint: outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/checkpoints/step-000800.pt
+    checkpoint_sha256: 713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2
   - name: caption_memory_removed
     mode: memory_removed
     weights: fine_tuned

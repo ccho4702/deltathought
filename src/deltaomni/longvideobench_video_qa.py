@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -123,6 +124,9 @@ def load_config(path: Path) -> QAConfig:
         "last_only",
         "cross_video",
         "memory_removed",
+        "anchor_only",
+        "norm_noise",
+        "permuted",
     }
     invalid_arm = any(
         arm.mode not in valid_modes
@@ -210,8 +214,28 @@ def _payload(
     deltas = window["deltas"]
     if mode == "zero":
         deltas = torch.zeros_like(deltas)
+    elif mode == "anchor_only":
+        deltas = deltas[:0]
     elif mode == "reversed":
         deltas = deltas.flip(0)
+    elif mode == "permuted":
+        seed = int.from_bytes(
+            hashlib.sha256(str(window["window_id"]).encode()).digest()[:8], "little"
+        )
+        generator = torch.Generator().manual_seed(seed)
+        indices = torch.randperm(len(deltas), generator=generator)
+        if len(deltas) > 1 and torch.equal(indices, torch.arange(len(deltas))):
+            indices = indices.roll(1)
+        deltas = deltas[indices]
+    elif mode == "norm_noise":
+        seed = int.from_bytes(
+            hashlib.sha256(f"noise:{window['window_id']}".encode()).digest()[:8], "little"
+        )
+        generator = torch.Generator().manual_seed(seed)
+        noise = torch.randn(deltas.shape, generator=generator, dtype=torch.float32)
+        target_norm = deltas.float().norm(dim=-1, keepdim=True)
+        noise = noise * target_norm / noise.norm(dim=-1, keepdim=True).clamp_min(1e-12)
+        deltas = noise.to(deltas.dtype)
     elif mode == "last_only":
         retained = torch.zeros_like(deltas)
         retained[-1] = deltas[-1]
@@ -455,7 +479,7 @@ def run(
                     continue
                 windows = data.windows(video_id)
                 donor_id = video_ids[(video_index + 1) % len(video_ids)]
-                donors = data.windows(donor_id)
+                donors = data.windows(donor_id) if arm.mode == "cross_video" else []
                 for question in questions:
                     if (
                         config.maximum_questions is not None
