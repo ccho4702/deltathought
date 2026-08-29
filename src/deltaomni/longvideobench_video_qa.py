@@ -297,7 +297,7 @@ def _predict(
     question: dict[str, Any],
     arm: ModelArm,
     config: QAConfig,
-) -> tuple[str, list[str]]:
+) -> tuple[str, list[str], list[float] | None]:
     runner = ContinuousKVRunner(model.single.thinker, position_axes=3)
     state = None
     captions = []
@@ -339,14 +339,14 @@ def _predict(
             choice_ids.append(ids[0])
         scores = logits[0, -1, torch.tensor(choice_ids, device=logits.device)]
         selected = int(scores.argmax())
-        return chr(65 + selected), captions
+        return chr(65 + selected), captions, [float(value) for value in scores]
     ids, _ = runner.greedy_append(
         logits,
         state,
         end_token_id=model.single.interface.end_token_id,
         max_new_tokens=config.answer_max_new_tokens,
     )
-    return model.single.interface.decode(ids)[0], captions
+    return model.single.interface.decode(ids)[0], captions, None
 
 
 def _atomic_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -428,6 +428,8 @@ def run(
     *,
     selected_arms: list[str] | None = None,
     output_suffix: str | None = None,
+    video_shard_index: int = 0,
+    video_shard_count: int = 1,
 ) -> dict[str, Any]:
     config = load_config(config_path)
     config = _select_arms(config, selected_arms, output_suffix)
@@ -443,6 +445,9 @@ def run(
     video_ids = list(data.videos)
     if config.maximum_videos is not None:
         video_ids = video_ids[: config.maximum_videos]
+    if video_shard_count <= 0 or not 0 <= video_shard_index < video_shard_count:
+        raise ValueError("Invalid LongVideoBench video shard")
+    video_ids = video_ids[video_shard_index::video_shard_count]
     rows = _load_resume_rows(
         config.predictions_path,
         config.arms,
@@ -486,7 +491,9 @@ def run(
                         and completed >= config.maximum_questions
                     ):
                         break
-                    prediction, captions = _predict(model, windows, donors, question, arm, config)
+                    prediction, captions, choice_scores = _predict(
+                        model, windows, donors, question, arm, config
+                    )
                     choice = _parse_choice(prediction, len(question["candidates"]))
                     expected = int(question["correct_choice"])
                     parsed += choice is not None
@@ -503,6 +510,7 @@ def run(
                             "duration_group": question["duration_group"],
                             "question_category": question["question_category"],
                             "captions": captions,
+                            "choice_scores": choice_scores,
                             "checkpoint_sha256": arm.checkpoint_sha256,
                             "weights": arm.weights,
                             "code_revision": revision,
@@ -551,6 +559,8 @@ def run(
         "predictions": len(rows),
         "elapsed_seconds": time.perf_counter() - started,
         "answer_strategy": config.answer_strategy,
+        "video_shard_index": video_shard_index,
+        "video_shard_count": video_shard_count,
         "resumed_predictions": resumed_predictions,
         "code_revision": revision,
         "completed_at_utc": datetime.now(UTC).isoformat(),
@@ -574,10 +584,18 @@ def main() -> int:
         "--output-suffix",
         help="Suffix added to prediction and report filenames when --arm is used",
     )
+    parser.add_argument("--video-shard-index", type=int, default=0)
+    parser.add_argument("--video-shard-count", type=int, default=1)
     args = parser.parse_args()
     print(
         json.dumps(
-            run(args.config, selected_arms=args.arms, output_suffix=args.output_suffix),
+            run(
+                args.config,
+                selected_arms=args.arms,
+                output_suffix=args.output_suffix,
+                video_shard_index=args.video_shard_index,
+                video_shard_count=args.video_shard_count,
+            ),
             indent=2,
         )
     )

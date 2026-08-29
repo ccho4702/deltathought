@@ -54,6 +54,15 @@ def test_longvideobench_arm_selection_uses_distinct_output_paths() -> None:
     assert selected.report_path.name == "longvideobench_video_qa_smoke_zero.json"
 
 
+def test_longvideobench_multineg_diagnostic_uses_completed_ego_checkpoint() -> None:
+    config = load_config(Path("configs/longvideobench_video_qa_multineg_diagnostic.yaml"))
+
+    assert [arm.name for arm in config.arms] == ["delta_multineg_diagnostic"]
+    assert config.arms[0].checkpoint_sha256 == (
+        "05c036baafba32e3e9fb391cc436fa96acd41dbc7155e3fc68f20871a508760c"
+    )
+
+
 def test_longvideobench_resume_rows_require_matching_provenance(tmp_path: Path) -> None:
     config = load_config(Path("configs/longvideobench_video_qa_smoke.yaml"))
     arm = config.arms[0]
