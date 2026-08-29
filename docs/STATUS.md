@@ -207,6 +207,15 @@ primitive. The architecture documentation now distinguishes historical bounded D
 from the active native-Qwen path, which currently concatenates deltas and has no fixed-size visual
 state or selective visual-KV eviction.
 
+Source-disjoint Ego4D timing selection is now complete. Official train was divided by source into
+1,573 fit windows from 236 videos and 149 dev windows from 26 videos; official validation remained
+481 windows from 67 videos. The 2,000-step run selected threshold `0.8` on dev and reached official-
+validation exact/±1s/±3s F1 `0.1863/0.2265/0.2936`, above zero and cross-video but below the fixed-
+12s ±3s F1 `0.3633`. Extending unchanged training to 10,000 steps selected threshold `0.9` and
+degraded ±3s F1 to `0.1601` while NLL rose to `4.9539`; longer training overfits and is rejected.
+The retained timing candidate is therefore the 2,000-step source-dev run, but it still fails the
+fixed-rate gate and cannot yet drive the final streaming evaluator.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a

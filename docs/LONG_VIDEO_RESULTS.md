@@ -123,3 +123,10 @@ uses only Ego4D train for learned weights and Ego4D validation for selection. Lo
 to evaluation-only status. A new raw streaming cache must retain the actual FULL embedding whenever
 an Ego4D-trained commit policy fires; fixed-12s and learned timing are evaluated side by side, and
 120 seconds is only a forced safety refresh upper bound.
+
+The corrected source-dev timing experiment used 236 Ego4D train sources for fitting, 26 disjoint
+train sources for threshold selection, and all 67 cached official-validation sources for final
+measurement. At 2,000 steps, learned timing reached exact/±1s/±3s F1
+`0.1863/0.2265/0.2936`; fixed-12s reached `0.0610/0.1689/0.3633`. A 10,000-step run reduced learned
+±3s F1 to `0.1601`, confirming overfitting rather than undertraining. Exact localization contains
+delta signal, but practical commit scheduling remains below the fixed baseline.

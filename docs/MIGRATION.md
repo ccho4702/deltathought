@@ -22,6 +22,9 @@ Prepared: 2026-08-29
 - Source-disjoint LongVideoBench diagnostic split: `bc15bf7`
 - Real Ego4D commit-timing trainer: `5ad0aaa`
 - Sharded Ego-trained LongVideoBench logits: `320095f`
+- Ego4D source-dev timing selection: `bcd6b70`
+- Ten-thousand-step timing overfit diagnostic: `0bd7c32`
+- Legacy diagnostic cleanup: `b36d264`
 - Ego4D video-only result runs: `ego4d-goalstep-full-caption-800step-main` and
   `ego4d-goalstep-delta-caption-800step-main`
 - Migration handoff tag: `migration-20260826-v2`
@@ -69,6 +72,14 @@ The retained Ego4D training runs are:
 - `outputs/real_pilots/ego4d_commit_timing/ego4d-commit-timing-2000step-main/`
   - checkpoint `checkpoints/step-002000.pt`
   - SHA-256 `ec5fd70140d236eccdb6c844068b0f93f5f82d1b114e05936d01cfe287df5569`
+- `outputs/real_pilots/ego4d_commit_timing_source_dev/ego4d-commit-timing-source-dev-2000step-main/`
+  - checkpoint `checkpoints/step-002000.pt`
+  - SHA-256 `c22c87ddf2c3265cc79aaecafe95dbe150338fffd92301fe470406239be61947`
+  - retained source-dev timing candidate; still fails fixed-12s ±3s gate
+- `outputs/real_pilots/ego4d_commit_timing_source_dev_long/ego4d-commit-timing-source-dev-10000step-main/`
+  - checkpoint `checkpoints/step-010000.pt`
+  - SHA-256 `866724a5b445751bd4dce3c401ddd0804c14f95dba931bfa8fdd156a5f2ecc76`
+  - negative result: overfit; do not select for streaming evaluation
 
 The regenerable LongVideoBench native-token cache is
 `intermediates/cache/omni_longvideobench/manifest.json`: 753 videos, 3,468 windows, 358,853
