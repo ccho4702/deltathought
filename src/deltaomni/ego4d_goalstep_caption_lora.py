@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import time
@@ -67,6 +68,10 @@ class TrainingConfig:
     zero_ranking_weight: float
     zero_ranking_margin: float
     resume: str
+    cross_ranking_weight: float = 0.0
+    cross_ranking_margin: float = 0.1
+    order_ranking_weight: float = 0.0
+    order_ranking_margin: float = 0.1
 
 
 @dataclass(frozen=True)
@@ -75,6 +80,10 @@ class EvaluationConfig:
     max_new_tokens: int
     minimum_delta_gap: float
     minimum_memory_gap: float
+    nll_windows: int | None = None
+    minimum_cross_gap: float = 0.0
+    minimum_order_gap: float = 0.0
+    minimum_negative_nll_gap: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -132,6 +141,7 @@ def load_config(path: Path) -> GoalStepCaptionConfig:
         config.evaluation.max_new_tokens,
         config.evaluation.minimum_delta_gap,
         config.evaluation.minimum_memory_gap,
+        *(() if config.evaluation.nll_windows is None else (config.evaluation.nll_windows,)),
     )
     if min(positive) <= 0 or len(config.initial_checkpoint_sha256) != 64:
         raise ValueError("Ego4D GoalStep caption controls must be positive")
@@ -139,6 +149,28 @@ def load_config(path: Path) -> GoalStepCaptionConfig:
         raise ValueError("Ego4D GoalStep caption input mode must be delta or full")
     if config.training.resume not in {"auto", "never"}:
         raise ValueError("Invalid Ego4D GoalStep caption resume mode")
+    nonnegative = (
+        config.training.cross_ranking_weight,
+        config.training.cross_ranking_margin,
+        config.training.order_ranking_weight,
+        config.training.order_ranking_margin,
+        config.evaluation.minimum_cross_gap,
+        config.evaluation.minimum_order_gap,
+        config.evaluation.minimum_negative_nll_gap,
+    )
+    if min(nonnegative) < 0:
+        raise ValueError("Ego4D GoalStep multi-negative controls must be nonnegative")
+    if config.input_mode == "full" and any(
+        value > 0
+        for value in (
+            config.training.cross_ranking_weight,
+            config.training.order_ranking_weight,
+            config.evaluation.minimum_cross_gap,
+            config.evaluation.minimum_order_gap,
+            config.evaluation.minimum_negative_nll_gap,
+        )
+    ):
+        raise ValueError("Full-token GoalStep training cannot use delta-negative controls")
     return config
 
 
@@ -150,6 +182,16 @@ class WindowCache:
 
     def __len__(self) -> int:
         return len(self.records)
+
+    def source_disjoint_index(self, index: int, offset: int = 1) -> int:
+        if not 0 <= index < len(self.records) or offset <= 0:
+            raise ValueError("Invalid GoalStep source-disjoint lookup")
+        source = self.records[index]["source_group_id"]
+        for step in range(len(self.records) - 1):
+            candidate = (index + offset + step) % len(self.records)
+            if self.records[candidate]["source_group_id"] != source:
+                return candidate
+        raise ValueError("GoalStep cache has no source-disjoint donor")
 
     def load(self, index: int) -> dict[str, Any]:
         path = self.records[index]["cache_path"]
@@ -194,6 +236,27 @@ def _expanded_adapter_state(
         else:
             raise ValueError(f"Incompatible adapter checkpoint parameter: {name}")
     return result
+
+
+def _match_delta_length(deltas: Tensor, length: int) -> Tensor:
+    if length < 0 or deltas.shape[0] == 0:
+        raise ValueError("Invalid GoalStep delta length match")
+    if length == 0:
+        return deltas[:0]
+    if deltas.shape[0] == length:
+        return deltas
+    indices = torch.linspace(0, deltas.shape[0] - 1, length).round().long()
+    return deltas[indices]
+
+
+def _permutation_indices(identity: str, length: int) -> Tensor:
+    if length <= 1:
+        return torch.arange(length)
+    seed = int.from_bytes(hashlib.sha256(identity.encode()).digest()[:8], "little")
+    indices = torch.randperm(length, generator=torch.Generator().manual_seed(seed))
+    if torch.equal(indices, torch.arange(length)):
+        indices = indices.roll(1)
+    return indices
 
 
 class GoalStepCaptionModel(nn.Module):
@@ -259,6 +322,7 @@ class GoalStepCaptionModel(nn.Module):
         include_anchor: bool,
         accumulated: bool,
         control: str,
+        donor: dict[str, Any] | None = None,
     ) -> Tensor:
         device = next(self.parameters()).device
         embeddings = self.single.thinker.get_input_embeddings()
@@ -290,6 +354,18 @@ class GoalStepCaptionModel(nn.Module):
         deltas = all_deltas[:, start:end]
         if control == "zero":
             deltas = torch.zeros_like(deltas)
+        elif control == "cross_video":
+            if donor is None or donor["source_id"] == payload["source_id"]:
+                raise ValueError("GoalStep cross-video control requires a source-disjoint donor")
+            donor_deltas = donor["deltas"].float().to(device)
+            deltas = _match_delta_length(donor_deltas, end - start).unsqueeze(0)
+        elif control == "permuted":
+            indices = _permutation_indices(
+                f"{payload['window_id']}:{event_index}:{start}:{end}", end - start
+            ).to(device)
+            deltas = deltas[:, indices]
+        elif control != "normal":
+            raise ValueError(f"Unknown GoalStep delta control: {control}")
         pieces = [embeddings(start_ids)]
         if include_anchor:
             pieces.append((full + self.single.adapter.anchor_type).to(embeddings.weight.dtype))
@@ -306,6 +382,7 @@ class GoalStepCaptionModel(nn.Module):
         first: bool,
         reset_each: bool,
         control: str,
+        donor: dict[str, Any] | None = None,
     ) -> Tensor:
         device = next(self.parameters()).device
         visual = self._visual_chunk(
@@ -315,12 +392,18 @@ class GoalStepCaptionModel(nn.Module):
             include_anchor=True,
             accumulated=False,
             control=control,
+            donor=donor,
         )
         prompt = self._prompt(first or reset_each, device)
         prompt_embeddings = self.single.thinker.get_input_embeddings()(prompt)
         return torch.cat((visual, prompt_embeddings), dim=1)
 
-    def _caption_loss(self, payload: dict[str, Any], control: str) -> tuple[Tensor, Tensor]:
+    def _caption_loss(
+        self,
+        payload: dict[str, Any],
+        control: str,
+        donor: dict[str, Any] | None = None,
+    ) -> tuple[Tensor, Tensor]:
         device = next(self.parameters()).device
         embeddings = []
         labels = []
@@ -333,6 +416,7 @@ class GoalStepCaptionModel(nn.Module):
                 first=index == 0,
                 reset_each=False,
                 control=control,
+                donor=donor,
             )
             embeddings.append(chunk)
             labels.append(torch.full(chunk.shape[:2], -100, dtype=torch.long, device=device))
@@ -359,14 +443,15 @@ class GoalStepCaptionModel(nn.Module):
         )
         return output.loss, torch.tensor(token_count, device=device)
 
-    def forward(self, payload: dict[str, Any]) -> tuple[Tensor, Tensor, Tensor]:
-        normal, tokens = self._caption_loss(payload, "normal")
-        zero, _ = (
-            self._caption_loss(payload, "zero")
-            if self.input_mode == "delta"
-            else (normal, tokens)
-        )
-        return normal, zero, tokens
+    def forward(
+        self,
+        payload: dict[str, Any],
+        control: str = "normal",
+        donor: dict[str, Any] | None = None,
+    ) -> tuple[Tensor, Tensor]:
+        if self.input_mode == "full" and control != "normal":
+            raise ValueError("Full-token GoalStep model does not support delta controls")
+        return self._caption_loss(payload, control, donor)
 
     @torch.no_grad()
     def generate_window_and_answer(
@@ -376,6 +461,7 @@ class GoalStepCaptionModel(nn.Module):
         control: str,
         reset_each: bool,
         max_new_tokens: int,
+        donor: dict[str, Any] | None = None,
     ) -> tuple[list[str], str]:
         self.eval()
         runner = ContinuousKVRunner(self.single.thinker, position_axes=3)
@@ -391,6 +477,7 @@ class GoalStepCaptionModel(nn.Module):
                 first=index == 0,
                 reset_each=reset_each,
                 control=control,
+                donor=donor,
             )
             logits, state = runner.append(state=state, inputs_embeds=chunk)
             ids, state = runner.greedy_append(
@@ -452,29 +539,53 @@ def evaluate(
     config: GoalStepCaptionConfig,
 ) -> dict[str, Any]:
     count = min(config.evaluation.windows, len(data))
-    generated = {name: [] for name in ("continuous", "reset_each", "zero")}
+    names = ["continuous", "reset_each", "zero"]
+    if config.input_mode == "delta":
+        names.extend(("cross_video", "permuted"))
+    generated = {name: [] for name in names}
     final_answers = {name: [] for name in generated}
+    nll_names = ("normal", "zero", "cross_video", "permuted")
+    nll_sums = {name: 0.0 for name in nll_names}
+    nll_tokens = {name: 0 for name in nll_names}
+    nll_count = min(config.evaluation.nll_windows or count, count)
     references = []
     answer_references = []
     examples = []
     started = time.perf_counter()
     for index in range(count):
         payload = data.load(index)
+        donor = data.load(data.source_disjoint_index(index))
         outputs = {}
         answers = {}
-        for name, control, reset_each in (
+        controls = [
             ("continuous", "normal", False),
             ("reset_each", "normal", True),
             ("zero", "zero", False),
-        ):
+        ]
+        if config.input_mode == "delta":
+            controls.extend(
+                (("cross_video", "cross_video", False), ("permuted", "permuted", False))
+            )
+        for name, control, reset_each in controls:
             outputs[name], answers[name] = model.generate_window_and_answer(
                 payload,
                 control=control,
                 reset_each=reset_each,
                 max_new_tokens=config.evaluation.max_new_tokens,
+                donor=donor if control == "cross_video" else None,
             )
             generated[name].extend(outputs[name])
             final_answers[name].append(answers[name])
+        if config.input_mode == "delta" and index < nll_count:
+            for control in nll_names:
+                loss, tokens = model._caption_loss(
+                    payload,
+                    control,
+                    donor if control == "cross_video" else None,
+                )
+                token_count = int(tokens)
+                nll_sums[control] += float(loss) * token_count
+                nll_tokens[control] += token_count
         references.extend((event["text"],) for event in payload["events"])
         answer_references.append((payload["events"][-1]["text"],))
         if len(examples) < 8:
@@ -506,6 +617,12 @@ def evaluate(
             for name, values in final_answers.items()
         },
         "final_answer_probe": "last_completed_event_from_same_kv",
+        "nll": (
+            {name: nll_sums[name] / nll_tokens[name] for name in nll_names}
+            if config.input_mode == "delta"
+            else {}
+        ),
+        "nll_windows": nll_count if config.input_mode == "delta" else 0,
         "examples": examples,
     }
 
@@ -646,43 +763,129 @@ def run(
         for step in range(start_step, final_step + 1):
             model.train()
             optimizer.zero_grad(set_to_none=True)
-            accumulated = torch.zeros(4, device=context.device)
+            accumulated = torch.zeros(8, device=context.device)
             for accumulation in range(config.runtime.gradient_accumulation_steps):
                 generator = torch.Generator().manual_seed(
                     config.seed * 1_000_003 + step * 101 + accumulation
                 )
                 indices = torch.randint(0, len(train), (context.world_size,), generator=generator)
-                payload = train.load(int(indices[context.rank]))
-                sync = (
+                selected_index = int(indices[context.rank])
+                payload = train.load(selected_index)
+                final_accumulation = (
+                    accumulation == config.runtime.gradient_accumulation_steps - 1
+                )
+                normal_sync = (
                     nullcontext()
-                    if accumulation == config.runtime.gradient_accumulation_steps - 1
-                    or not isinstance(model, DistributedDataParallel)
+                    if final_accumulation or not isinstance(model, DistributedDataParallel)
                     else model.no_sync()
                 )
-                with sync:
-                    with torch.autocast(device_type=context.device.type, dtype=torch.bfloat16):
-                        normal_loss, zero_loss, tokens = model(payload)
-                        ranking = (
-                            torch.relu(
-                                config.training.zero_ranking_margin
-                                + normal_loss
-                                - zero_loss
-                            )
-                            if config.input_mode == "delta"
-                            else normal_loss.new_zeros(())
-                        )
-                        loss = normal_loss + config.training.zero_ranking_weight * ranking
-                        scaled = loss / config.runtime.gradient_accumulation_steps
-                    scaled.backward()
+                denominator = config.runtime.gradient_accumulation_steps
+                if config.input_mode == "full":
+                    with normal_sync:
+                        with torch.autocast(
+                            device_type=context.device.type, dtype=torch.bfloat16
+                        ):
+                            normal_loss, tokens = model(payload)
+                            scaled = normal_loss / denominator
+                        scaled.backward()
                     accumulated += torch.stack(
                         (
                             scaled.detach(),
-                            normal_loss.detach() / config.runtime.gradient_accumulation_steps,
-                            zero_loss.detach() / config.runtime.gradient_accumulation_steps,
-                            ranking.detach() / config.runtime.gradient_accumulation_steps,
+                            normal_loss.detach() / denominator,
+                            normal_loss.detach() / denominator,
+                            normal_loss.detach() / denominator,
+                            normal_loss.detach() / denominator,
+                            normal_loss.new_zeros(()),
+                            normal_loss.new_zeros(()),
+                            normal_loss.new_zeros(()),
                         )
                     )
-                    del loss, normal_loss, ranking, scaled, tokens, zero_loss
+                    del normal_loss, scaled, tokens
+                    continue
+
+                offset = 1 + (
+                    step * context.world_size + context.rank + accumulation
+                ) % (len(train) - 1)
+                donor = train.load(train.source_disjoint_index(selected_index, offset))
+                with torch.no_grad(), torch.autocast(
+                    device_type=context.device.type, dtype=torch.bfloat16
+                ):
+                    normal_probe, _ = core(payload, "normal")
+                normal_value = normal_probe.detach()
+                del normal_probe
+                negative_values = {
+                    "zero": normal_value,
+                    "cross_video": normal_value,
+                    "permuted": normal_value,
+                }
+                rankings = {name: normal_value.new_zeros(()) for name in negative_values}
+                active_weight = 0.0
+                objective_value = normal_value
+                negative_specs = (
+                    (
+                        "zero",
+                        config.training.zero_ranking_weight,
+                        config.training.zero_ranking_margin,
+                    ),
+                    (
+                        "cross_video",
+                        config.training.cross_ranking_weight,
+                        config.training.cross_ranking_margin,
+                    ),
+                    (
+                        "permuted",
+                        config.training.order_ranking_weight,
+                        config.training.order_ranking_margin,
+                    ),
+                )
+                for control, weight, margin in negative_specs:
+                    if weight == 0:
+                        continue
+                    negative_sync = (
+                        model.no_sync()
+                        if isinstance(model, DistributedDataParallel)
+                        else nullcontext()
+                    )
+                    with negative_sync:
+                        with torch.autocast(
+                            device_type=context.device.type, dtype=torch.bfloat16
+                        ):
+                            negative_loss, _ = model(
+                                payload,
+                                control,
+                                donor if control == "cross_video" else None,
+                            )
+                            ranking = torch.relu(margin + normal_value - negative_loss.detach())
+                            active = bool(ranking > 0)
+                            negative_term = (
+                                -weight * negative_loss / denominator
+                                if active
+                                else negative_loss * 0.0
+                            )
+                        negative_term.backward()
+                    negative_values[control] = negative_loss.detach()
+                    rankings[control] = ranking
+                    objective_value = objective_value + weight * ranking
+                    active_weight += weight if active else 0.0
+                    del negative_loss, negative_term, ranking
+                with normal_sync:
+                    with torch.autocast(device_type=context.device.type, dtype=torch.bfloat16):
+                        normal_loss, tokens = model(payload, "normal")
+                        normal_term = (1.0 + active_weight) * normal_loss / denominator
+                    normal_term.backward()
+                accumulated += torch.stack(
+                    (
+                        objective_value / denominator,
+                        normal_loss.detach() / denominator,
+                        negative_values["zero"] / denominator,
+                        negative_values["cross_video"] / denominator,
+                        negative_values["permuted"] / denominator,
+                        rankings["zero"] / denominator,
+                        rankings["cross_video"] / denominator,
+                        rankings["permuted"] / denominator,
+                    )
+                )
+                del normal_loss, normal_term, tokens
             torch.nn.utils.clip_grad_norm_(model.parameters(), config.training.gradient_clip_norm)
             warmup = min(1.0, step / config.training.warmup_steps)
             optimizer.param_groups[0]["lr"] = config.training.learning_rate * warmup
@@ -698,14 +901,21 @@ def run(
                     "loss": float(reduced[0]),
                     "normal_nll": float(reduced[1]),
                     "zero_nll": float(reduced[2]),
-                    "zero_ranking": float(reduced[3]),
+                    "cross_nll": float(reduced[3]),
+                    "permuted_nll": float(reduced[4]),
+                    "zero_ranking": float(reduced[5]),
+                    "cross_ranking": float(reduced[6]),
+                    "order_ranking": float(reduced[7]),
                 }
                 _append_jsonl(log_path, record)
                 if step % 5 == 0 or step == final_step:
                     print(
                         f"goalstep_step={step}/{final_step} loss={record['loss']:.5f} "
                         f"normal={record['normal_nll']:.5f} zero={record['zero_nll']:.5f} "
-                        f"rank={record['zero_ranking']:.5f} "
+                        f"cross={record['cross_nll']:.5f} "
+                        f"perm={record['permuted_nll']:.5f} "
+                        f"rank={record['zero_ranking']:.5f}/"
+                        f"{record['cross_ranking']:.5f}/{record['order_ranking']:.5f} "
                         f"elapsed={elapsed:.1f}s eta={eta:.1f}s",
                         flush=True,
                     )
@@ -752,6 +962,28 @@ def run(
                     continuous
                     >= metrics["zero"]["word_f1"] + config.evaluation.minimum_delta_gap
                 )
+                if config.evaluation.minimum_cross_gap > 0:
+                    checks["continuous_beats_cross_video"] = (
+                        continuous
+                        >= metrics["cross_video"]["word_f1"]
+                        + config.evaluation.minimum_cross_gap
+                    )
+                if config.evaluation.minimum_order_gap > 0:
+                    checks["continuous_beats_permuted"] = (
+                        continuous
+                        >= metrics["permuted"]["word_f1"]
+                        + config.evaluation.minimum_order_gap
+                    )
+                if config.evaluation.minimum_negative_nll_gap > 0:
+                    normal_nll = final["nll"]["normal"]
+                    gap = config.evaluation.minimum_negative_nll_gap
+                    checks["normal_nll_beats_zero"] = normal_nll + gap <= final["nll"]["zero"]
+                    checks["normal_nll_beats_cross_video"] = (
+                        normal_nll + gap <= final["nll"]["cross_video"]
+                    )
+                    checks["normal_nll_beats_permuted"] = (
+                        normal_nll + gap <= final["nll"]["permuted"]
+                    )
             result = {
                 "schema": "deltaomni.ego4d_goalstep_caption_lora.v1",
                 "run_id": run_id,
