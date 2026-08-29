@@ -19,6 +19,7 @@ def test_longvideobench_video_qa_smoke_has_all_causal_controls() -> None:
     assert config.maximum_questions == 6
     assert config.answer_strategy == "choice_logit"
     assert {
+        "vanilla_commit",
         "full_commit_ft",
         "delta_continuous_kv",
         "delta_zero",
@@ -27,6 +28,9 @@ def test_longvideobench_video_qa_smoke_has_all_causal_controls() -> None:
         "delta_cross_video",
         "caption_memory_removed",
     } == names
+    vanilla = next(arm for arm in config.arms if arm.name == "vanilla_commit")
+    assert vanilla.weights == "vanilla"
+    assert vanilla.checkpoint is None
 
 
 def test_longvideobench_choice_parser_and_length_matched_donors() -> None:

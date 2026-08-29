@@ -140,6 +140,22 @@ any incomplete or duplicate prediction set before computing overall/category/dur
 video-cluster bootstrap intervals, and paired exact tests. Actual model predictions wait only on
 the prerequisite Ego4D checkpoints.
 
+The first complete video-only LongVideoBench evaluation is finished on all 1,337 validation
+questions from 753 videos. DeltaThought scored `0.4817`, the matched full-token commit model
+`0.4667`, caption-memory-removed `0.4577`, zero-delta `0.2371`, last-delta-only `0.2326`, reversed
+delta `0.4862`, and source-disjoint cross-video delta `0.4764`; every arm had 100% choice parsing.
+DeltaThought beat memory removal by `2.39` points (video-cluster bootstrap 95% CI
+`[0.58, 4.23]`, paired exact p=`0.009`) and zero/last-only by more than 24 points. It did not beat
+the full-token arm significantly (`+1.50` points, CI `[-0.75, 3.73]`, p=`0.194`), cross-video
+delta (`+0.52` points, CI `[-0.98, 2.04]`, p=`0.573`), or reversed delta (`-0.45` points, CI
+`[-1.58, 0.68]`, p=`0.519`). The preregistered causal-content and temporal-order gates therefore
+fail. Caption inspection explains the zero control but not source specificity: 92.8% of zero-delta
+captions are empty, whereas cross-video deltas retain fluent nonempty captions and nearly unchanged
+QA. Current evidence supports a useful same-KV caption channel and need for accumulated nonzero
+delta activations, but not use of the correct ordered video change. An untouched-Qwen matched
+commit baseline was omitted from this run and is the next required correction; no positive
+DeltaThought long-video claim is made before that baseline and stronger content controls complete.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a

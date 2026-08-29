@@ -16,6 +16,8 @@ import torch
 import yaml
 from peft import set_peft_model_state_dict
 
+from deltaomni.audiocaps_caption_lora import _load_model as _load_caption_model
+from deltaomni.audiocaps_caption_lora import load_config as load_caption_config
 from deltaomni.continuous_kv import ContinuousKVRunner
 from deltaomni.ego4d_goalstep_caption_lora import (
     GoalStepCaptionModel,
@@ -33,9 +35,10 @@ from deltaomni.train_sanity import _atomic_json, _set_seed
 class ModelArm:
     name: str
     mode: str
+    weights: str
     model_config: Path
-    checkpoint: Path
-    checkpoint_sha256: str
+    checkpoint: Path | None
+    checkpoint_sha256: str | None
 
 
 @dataclass(frozen=True)
@@ -80,9 +83,16 @@ def load_config(path: Path) -> QAConfig:
             ModelArm(
                 name=str(value["name"]),
                 mode=str(value["mode"]),
+                weights=str(value.get("weights", "fine_tuned")),
                 model_config=resolve(value["model_config"]),
-                checkpoint=resolve(value["checkpoint"]),
-                checkpoint_sha256=str(value["checkpoint_sha256"]),
+                checkpoint=(
+                    None if value.get("checkpoint") is None else resolve(value["checkpoint"])
+                ),
+                checkpoint_sha256=(
+                    None
+                    if value.get("checkpoint_sha256") is None
+                    else str(value["checkpoint_sha256"])
+                ),
             )
             for value in raw["arms"]
         ),
@@ -114,7 +124,28 @@ def load_config(path: Path) -> QAConfig:
         "cross_video",
         "memory_removed",
     }
-    if any(arm.mode not in valid_modes or len(arm.checkpoint_sha256) != 64 for arm in config.arms):
+    invalid_arm = any(
+        arm.mode not in valid_modes
+        or arm.weights not in {"vanilla", "fine_tuned"}
+        or (
+            arm.weights == "vanilla"
+            and (
+                arm.mode != "full"
+                or arm.checkpoint is not None
+                or arm.checkpoint_sha256 is not None
+            )
+        )
+        or (
+            arm.weights == "fine_tuned"
+            and (
+                arm.checkpoint is None
+                or arm.checkpoint_sha256 is None
+                or len(arm.checkpoint_sha256) != 64
+            )
+        )
+        for arm in config.arms
+    )
+    if invalid_arm:
         raise ValueError("Invalid LongVideoBench QA arm")
     return config
 
@@ -147,9 +178,14 @@ class VideoCache:
 
 
 def _load_arm(arm: ModelArm, device: torch.device) -> GoalStepCaptionModel:
+    model_config = load_goalstep_config(arm.model_config)
+    if arm.weights == "vanilla":
+        caption_config = load_caption_config(model_config.caption_config)
+        single, _ = _load_caption_model(caption_config, device)
+        return GoalStepCaptionModel(single, caption_config, input_mode="full").eval()
+    assert arm.checkpoint is not None and arm.checkpoint_sha256 is not None
     if sha256_file(arm.checkpoint) != arm.checkpoint_sha256:
         raise ValueError(f"LongVideoBench arm checkpoint checksum mismatch: {arm.name}")
-    model_config = load_goalstep_config(arm.model_config)
     model = _load_goalstep(model_config, device)
     checkpoint = torch.load(arm.checkpoint, map_location="cpu", weights_only=False)
     set_peft_model_state_dict(model.single.thinker, checkpoint["lora"])
@@ -444,6 +480,7 @@ def run(
                             "question_category": question["question_category"],
                             "captions": captions,
                             "checkpoint_sha256": arm.checkpoint_sha256,
+                            "weights": arm.weights,
                             "code_revision": revision,
                             "answer_strategy": config.answer_strategy,
                         }
