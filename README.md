@@ -27,6 +27,12 @@ delta activations and caption memory without demonstrating temporal order or sou
 alignment. This is a falsified version of the stronger long-video claim, not a positive benchmark
 result. See [the complete long-video results](docs/LONG_VIDEO_RESULTS.md).
 
+The retained LongVideoBench numbers above use a fixed 120-second engineering fallback and are not
+dynamic-commit results. The final protocol trains captioning and commit timing only on Ego4D
+GoalStep, selects on Ego4D validation, and uses LongVideoBench for evaluation only. A temporary
+LongVideoBench label-trained 30-parameter calibration head is retained solely as a contaminated
+diagnostic and is excluded from every final model and claim.
+
 For each modality `m`:
 
 ```text

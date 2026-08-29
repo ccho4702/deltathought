@@ -113,6 +113,13 @@ now been inspected repeatedly and is diagnostic for future revisions, not an unt
 The standard raw/uniform-video vanilla and fine-tuned baselines also remain required; their exact
 frame budget and prompt must be fixed before the next external evaluation.
 
+Final correction: do not train on LongVideoBench. The label-consuming 603/150-video diagnostic
+split is retained only for audit, and its answer head is discarded. Train caption and commit
+components on Ego4D train, select on Ego4D validation, then freeze everything before evaluating
+LongVideoBench. Replace the fixed-120s caption schedule with actual one-second streaming commits;
+120 seconds remains only a safety refresh bound. Learned timing must be reported against oracle
+GoalStep timing and fixed-12s before it can replace the fixed scheduler.
+
 ## No-go conditions
 
 - Anchor plus compressed delta does not outperform anchor-only and shuffled-delta reconstruction.

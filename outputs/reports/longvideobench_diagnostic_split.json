@@ -1,0 +1,70 @@
+{
+  "benchmark_status": "validation_labels_consumed_for_diagnostic_training",
+  "code_revision": "bc15bf79c9b0542a005ddb5d07f9d299182c038c",
+  "coverage_questions": 1337,
+  "coverage_videos": 753,
+  "schema": "deltaomni.longvideobench_diagnostic_split_summary.v1",
+  "source_overlap": 0,
+  "splits": {
+    "train": {
+      "duration_groups": {
+        "15": 152,
+        "3600": 450,
+        "60": 138,
+        "600": 330
+      },
+      "question_categories": {
+        "E2O": 43,
+        "E3E": 85,
+        "O2E": 73,
+        "O3O": 56,
+        "S2A": 66,
+        "S2E": 77,
+        "S2O": 51,
+        "SAA": 53,
+        "SOS": 74,
+        "SSS": 80,
+        "T2A": 62,
+        "T2E": 59,
+        "T2O": 56,
+        "T3E": 60,
+        "T3O": 59,
+        "TAA": 60,
+        "TOS": 56
+      },
+      "questions": 1070,
+      "videos": 603,
+      "windows": 2750
+    },
+    "validation": {
+      "duration_groups": {
+        "15": 37,
+        "3600": 114,
+        "60": 34,
+        "600": 82
+      },
+      "question_categories": {
+        "E2O": 22,
+        "E3E": 9,
+        "O2E": 14,
+        "O3O": 10,
+        "S2A": 22,
+        "S2E": 16,
+        "S2O": 21,
+        "SAA": 19,
+        "SOS": 7,
+        "SSS": 17,
+        "T2A": 17,
+        "T2E": 6,
+        "T2O": 20,
+        "T3E": 13,
+        "T3O": 15,
+        "TAA": 22,
+        "TOS": 17
+      },
+      "questions": 267,
+      "videos": 150,
+      "windows": 718
+    }
+  }
+}

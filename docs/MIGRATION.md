@@ -18,6 +18,10 @@ Prepared: 2026-08-29
 - Resumable LongVideoBench evaluator and first seven-arm run: `61d14b1`
 - Untouched-Qwen and stronger delta-control implementation: `8d688ec`
 - Extended eleven-arm LongVideoBench result: `f57ba1c`
+- Ego4D multi-negative caption objective: `5b04951`
+- Source-disjoint LongVideoBench diagnostic split: `bc15bf7`
+- Real Ego4D commit-timing trainer: `5ad0aaa`
+- Sharded Ego-trained LongVideoBench logits: `320095f`
 - Ego4D video-only result runs: `ego4d-goalstep-full-caption-800step-main` and
   `ego4d-goalstep-delta-caption-800step-main`
 - Migration handoff tag: `migration-20260826-v2`
@@ -59,6 +63,12 @@ The retained Ego4D training runs are:
 - `outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/`
   - checkpoint `checkpoints/step-000800.pt`
   - SHA-256 `713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2`
+- `outputs/real_pilots/ego4d_goalstep_caption_multineg/ego4d-goalstep-delta-multineg-800step-main/`
+  - checkpoint `checkpoints/step-000800.pt`
+  - SHA-256 `05c036baafba32e3e9fb391cc436fa96acd41dbc7155e3fc68f20871a508760c`
+- `outputs/real_pilots/ego4d_commit_timing/ego4d-commit-timing-2000step-main/`
+  - checkpoint `checkpoints/step-002000.pt`
+  - SHA-256 `ec5fd70140d236eccdb6c844068b0f93f5f82d1b114e05936d01cfe287df5569`
 
 The regenerable LongVideoBench native-token cache is
 `intermediates/cache/omni_longvideobench/manifest.json`: 753 videos, 3,468 windows, 358,853

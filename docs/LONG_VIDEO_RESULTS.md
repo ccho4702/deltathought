@@ -99,4 +99,27 @@ second untouched long-video benchmark. Audio extension remains deferred.
 - Bootstrap analysis is deterministic; a full rerun reproduced report SHA-256
   `ed676a4b51c43bd808a3e37c90e0fe52bf9354d459c01437dc6b6fc9105a17f4`.
 - Final verification: `uv run --frozen ruff check src tests` and
-  `uv run --frozen pytest -q` (`148 passed`).
+  `uv run --frozen pytest -q` (currently `155 passed`).
+
+## Subsequent Ego4D-only diagnostics and protocol correction
+
+The multi-negative Ego4D run improved normal-vs-cross caption F1 and made normal teacher-forced NLL
+lower than zero, cross-video, and permuted controls, but it still failed order-sensitive generation
+and the preregistered memory margin. The separate real-event commit head used official GoalStep
+ends and learned delta-dependent exact boundaries, but its ±3-second F1 remained below a fixed
+12-second scheduler. Neither component currently supports a positive learned-timing claim.
+
+The LongVideoBench cache split each original variable-duration video into at-most-120-second safety
+windows and the evaluator created exactly one caption event at each window end. LongVideoBench does
+provide total video duration, timestamped subtitles, QA, and referring positions, but no visual
+event captions or caption commit times. Thus 120 seconds was an implementation fallback, not an
+original annotation. All results in this document are fixed-120s diagnostics, not streaming
+dynamic-commit results.
+
+A later label-consuming diagnostic split and 30-parameter answer head are retained to show that
+supervised answer calibration changed validation accuracy only from `47.57%` to `49.06%`; the
+paired change was inconclusive. This head is not part of the model. The corrected final protocol
+uses only Ego4D train for learned weights and Ego4D validation for selection. LongVideoBench returns
+to evaluation-only status. A new raw streaming cache must retain the actual FULL embedding whenever
+an Ego4D-trained commit policy fires; fixed-12s and learned timing are evaluated side by side, and
+120 seconds is only a forced safety refresh upper bound.

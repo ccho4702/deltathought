@@ -84,3 +84,19 @@ results. The later untouched-weight commit baseline, anchor-only, norm-matched-n
 within-window-permutation controls are explicitly post-hoc diagnostics. They must not be described
 as preregistered confirmation, and the repeatedly inspected LongVideoBench validation split must
 not be used to select a revised objective and then presented as an untouched final evaluation.
+
+## Final training-source correction (2026-08-30)
+
+- Ego4D GoalStep train is the only source of caption, commit, LoRA, adapter, and timing supervision.
+- Ego4D validation reports oracle-GT, learned, and fixed-12s timing; it may select the retained
+  model but never enters gradient updates.
+- LongVideoBench is evaluation-only. The temporary 603/150-video label diagnostic and its
+  30-parameter calibration head are contaminated diagnostics and are excluded.
+- LongVideoBench has total duration and timestamped subtitles but no visual caption/commit labels.
+  Subtitle ends are not substituted for video commit ground truth.
+- The earlier one-caption-per-120-second evaluator is deprecated. In the replacement evaluator,
+  an Ego4D-trained policy decides commits from one-second deltas; caption tokens remain in the same
+  KV; the current FULL is retained at each commit; 120 seconds is only a forced safety refresh.
+- Model and threshold choices are frozen using Ego4D before any replacement LongVideoBench result
+  is read. Because the old validation labels were repeatedly inspected, new LongVideoBench results
+  are external generalization diagnostics rather than untouched test claims.

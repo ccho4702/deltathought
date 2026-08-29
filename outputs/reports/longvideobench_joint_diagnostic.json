@@ -1,0 +1,102 @@
+{
+  "benchmark_status": "validation_labels_consumed_for_diagnostic_training",
+  "calibrated_choice_head": {
+    "train": {
+      "accuracy": 0.48504671454429626,
+      "by_duration": {
+        "15": {
+          "accuracy": 0.506578947368421,
+          "questions": 152
+        },
+        "3600": {
+          "accuracy": 0.45111111111111113,
+          "questions": 450
+        },
+        "60": {
+          "accuracy": 0.5,
+          "questions": 138
+        },
+        "600": {
+          "accuracy": 0.5151515151515151,
+          "questions": 330
+        }
+      },
+      "questions": 1070,
+      "videos": 603
+    },
+    "validation": {
+      "accuracy": 0.4906367063522339,
+      "by_duration": {
+        "15": {
+          "accuracy": 0.5405405405405406,
+          "questions": 37
+        },
+        "3600": {
+          "accuracy": 0.4473684210526316,
+          "questions": 114
+        },
+        "60": {
+          "accuracy": 0.5588235294117647,
+          "questions": 34
+        },
+        "600": {
+          "accuracy": 0.5,
+          "questions": 82
+        }
+      },
+      "questions": 267,
+      "videos": 150
+    }
+  },
+  "choice_head_parameters": 30,
+  "ego4d_checkpoint_sha256": "05c036baafba32e3e9fb391cc436fa96acd41dbc7155e3fc68f20871a508760c",
+  "raw_choice_logits": {
+    "train": {
+      "accuracy": 0.48224300146102905,
+      "by_duration": {
+        "15": {
+          "accuracy": 0.5,
+          "questions": 152
+        },
+        "3600": {
+          "accuracy": 0.44222222222222224,
+          "questions": 450
+        },
+        "60": {
+          "accuracy": 0.5,
+          "questions": 138
+        },
+        "600": {
+          "accuracy": 0.5212121212121212,
+          "questions": 330
+        }
+      },
+      "questions": 1070,
+      "videos": 603
+    },
+    "validation": {
+      "accuracy": 0.4756554365158081,
+      "by_duration": {
+        "15": {
+          "accuracy": 0.4864864864864865,
+          "questions": 37
+        },
+        "3600": {
+          "accuracy": 0.43859649122807015,
+          "questions": 114
+        },
+        "60": {
+          "accuracy": 0.5294117647058824,
+          "questions": 34
+        },
+        "600": {
+          "accuracy": 0.5,
+          "questions": 82
+        }
+      },
+      "questions": 267,
+      "videos": 150
+    }
+  },
+  "schema": "deltaomni.longvideobench_joint_diagnostic.v1"
+}

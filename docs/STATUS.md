@@ -175,6 +175,29 @@ configuration is not justified before training explicitly against cross-video an
 negatives. `vanilla_commit` isolates untouched weights under the method's input interface; a
 standard raw/uniform-video vanilla evaluation is still required for an external baseline claim.
 
+The Ego4D-only 800-step multi-negative revision is complete. On 496 GoalStep validation caption
+events, normal/cross/zero/permuted word-F1 was `0.1337/0.1044/0.0294/0.1379`; normal NLL
+`2.7258` beat cross `2.7718`, permuted `2.7691`, and zero `5.8618`. Likelihood separation and
+source-specific generation improved, but permuted generation remained better and continuous
+same-KV F1 `0.1337` did not clear reset `0.1304` by the fixed memory margin. The run is complete,
+finite, exactly resumable, and failed overall. Checkpoint SHA-256 is
+`05c036baafba32e3e9fb391cc436fa96acd41dbc7155e3fc68f20871a508760c`.
+
+The first real Ego4D commit-timing head also completed 2,000 steps. Exact F1 was `0.1643`, beating
+zero `0.1196`, cross-video `0.1154`, and fixed-12s `0.0610`; at ±3 seconds it reached only
+`0.2061`, below fixed-12s `0.3633`. Delta content helps locate exact boundaries, but the learned
+policy is not yet a better practical scheduler. Checkpoint SHA-256 is
+`ec5fd70140d236eccdb6c844068b0f93f5f82d1b114e05936d01cfe287df5569`.
+
+A source-disjoint LongVideoBench label diagnostic used 603 videos/1,070 QA for a 30-parameter
+choice calibration head and 150 videos/267 QA for validation. Raw/calibrated validation accuracy
+was `47.57/49.06%` (`+1.50` points, cluster 95% CI `[-0.75, 3.85]`, paired p=`0.344`). This did
+not establish a supervised QA gain. More importantly, the prior evaluator generated one caption at
+the end of each fixed 120-second cache window; 120 seconds came from an engineering context bound,
+not LongVideoBench annotations. These results are now explicitly named fixed-120s diagnostics.
+The calibration head is excluded. Final training is Ego4D-only; LongVideoBench labels, subtitles,
+categories, durations, and QA do not affect weights, thresholds, prompts, commits, or selection.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a
