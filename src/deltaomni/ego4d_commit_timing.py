@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import random
@@ -49,6 +50,8 @@ class TimingConfig:
     output_root: Path
     log_root: Path
     report_path: Path
+    dev_fraction: float = 0.0
+    threshold_candidates: tuple[float, ...] = ()
 
 
 def load_config(path: Path) -> TimingConfig:
@@ -61,6 +64,10 @@ def load_config(path: Path) -> TimingConfig:
 
     paths = {"cache_manifest", "output_root", "log_root", "report_path"}
     values = {key: resolve(value) if key in paths else value for key, value in raw.items()}
+    if "threshold_candidates" in values:
+        values["threshold_candidates"] = tuple(
+            float(value) for value in values["threshold_candidates"]
+        )
     config = TimingConfig(**values)
     positive = (
         config.cpu_threads,
@@ -81,7 +88,29 @@ def load_config(path: Path) -> TimingConfig:
         raise ValueError("Ego4D commit timing controls must be positive")
     if config.resume not in {"auto", "never"}:
         raise ValueError("Invalid Ego4D commit timing resume mode")
+    if not 0 <= config.dev_fraction < 1 or any(
+        not 0 < threshold < 1 for threshold in config.threshold_candidates
+    ):
+        raise ValueError("Invalid Ego4D commit timing source-dev controls")
     return config
+
+
+def source_dev_split(
+    records: list[dict[str, Any]], seed: int, dev_fraction: float
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    if dev_fraction == 0:
+        return records, []
+    sources = sorted(
+        {str(record["source_group_id"]) for record in records},
+        key=lambda source: hashlib.sha256(f"{seed}:{source}".encode()).hexdigest(),
+    )
+    dev_count = max(1, round(len(sources) * dev_fraction))
+    dev_sources = set(sources[:dev_count])
+    fit = [record for record in records if record["source_group_id"] not in dev_sources]
+    dev = [record for record in records if record["source_group_id"] in dev_sources]
+    if not fit or not dev or {r["source_group_id"] for r in fit} & dev_sources:
+        raise ValueError("Invalid Ego4D source-dev split")
+    return fit, dev
 
 
 class TimingDataset:
@@ -197,10 +226,16 @@ def _metrics(counts: tuple[int, int, int]) -> dict[str, float]:
 
 
 @torch.no_grad()
-def evaluate(model: CommitHead, data: TimingDataset, config: TimingConfig) -> dict[str, Any]:
+def evaluate(
+    model: CommitHead,
+    data: TimingDataset,
+    config: TimingConfig,
+    threshold: float | None = None,
+) -> dict[str, Any]:
     model.eval()
     device = next(model.parameters()).device
     count = min(config.evaluation_windows, len(data))
+    selected_threshold = config.threshold if threshold is None else threshold
     totals = {
         name: {tolerance: [0, 0, 0] for tolerance in (0, 1, 3)}
         for name in ("normal", "zero", "cross_video", "fixed_interval")
@@ -227,7 +262,7 @@ def evaluate(model: CommitHead, data: TimingDataset, config: TimingConfig) -> di
                     )
                 )
             )
-            predictions[name] = logits.sigmoid() >= config.threshold
+            predictions[name] = logits.sigmoid() >= selected_threshold
         fixed = torch.zeros_like(batch["valid"])
         fixed[:, config.fixed_interval_seconds - 1 :: config.fixed_interval_seconds] = True
         predictions["fixed_interval"] = fixed
@@ -283,7 +318,11 @@ def run(config_path: Path, run_id: str | None, stop_after_step: int | None) -> d
     manifest = json.loads(config.cache_manifest.read_text(encoding="utf-8"))
     if manifest.get("schema") != "deltaomni.omni_ego4d_goalstep_manifest.v2":
         raise ValueError("Unexpected Ego4D commit timing cache")
-    train = TimingDataset(manifest["splits"]["train"], config.cache_entries)
+    fit_records, dev_records = source_dev_split(
+        manifest["splits"]["train"], config.seed, config.dev_fraction
+    )
+    train = TimingDataset(fit_records, config.cache_entries)
+    development = TimingDataset(dev_records, config.cache_entries) if dev_records else None
     validation = TimingDataset(manifest["splits"]["validation"], config.cache_entries)
     device = torch.device(config.device)
     model = CommitHead(config.delta_width, config.hidden_width).to(device)
@@ -373,7 +412,20 @@ def run(config_path: Path, run_id: str | None, stop_after_step: int | None) -> d
         result = {"run_id": selected, "status": "interrupted", "step": final_step}
         _atomic_json(run_dir / "status.json", result)
         return result
-    final = evaluate(model, validation, config)
+    selection = {}
+    selected_threshold = config.threshold
+    if development is not None:
+        candidates = config.threshold_candidates or (config.threshold,)
+        for threshold in candidates:
+            selection[str(threshold)] = evaluate(model, development, config, threshold)
+        selected_threshold = max(
+            candidates,
+            key=lambda threshold: (
+                selection[str(threshold)]["normal"]["tolerance_3s"]["f1"],
+                threshold,
+            ),
+        )
+    final = evaluate(model, validation, config, selected_threshold)
     normal = final["normal"]["tolerance_3s"]["f1"]
     checks = {
         "normal_beats_zero": normal
@@ -390,6 +442,12 @@ def run(config_path: Path, run_id: str | None, stop_after_step: int | None) -> d
         "status": "complete",
         "initial": initial,
         "final": final,
+        "source_dev": {
+            "fit_windows": len(fit_records),
+            "dev_windows": len(dev_records),
+            "selected_threshold": selected_threshold,
+            "selection": selection,
+        },
         "checks": checks,
         "passed": all(checks.values()),
         "training_seconds": time.perf_counter() - started,

@@ -2,7 +2,12 @@ from pathlib import Path
 
 import torch
 
-from deltaomni.ego4d_commit_timing import TimingDataset, _event_counts, load_config
+from deltaomni.ego4d_commit_timing import (
+    TimingDataset,
+    _event_counts,
+    load_config,
+    source_dev_split,
+)
 
 
 def test_ego4d_timing_targets_actual_event_ends() -> None:
@@ -36,3 +41,22 @@ def test_ego4d_timing_configs_use_real_dynamic_cache() -> None:
     assert full.max_steps == 2000
     assert full.evaluation_windows == 481
     assert full.fixed_interval_seconds == 12
+
+    source_dev = load_config(Path("configs/ego4d_commit_timing_source_dev.yaml"))
+    assert source_dev.dev_fraction == 0.1
+    assert source_dev.threshold_candidates == (0.5, 0.6, 0.7, 0.8, 0.9)
+
+
+def test_ego4d_timing_source_dev_split_is_group_disjoint() -> None:
+    records = [
+        {"source_group_id": f"source-{source}", "window_id": f"{source}-{window}"}
+        for source in range(20)
+        for window in range(2)
+    ]
+    fit, dev = source_dev_split(records, seed=42, dev_fraction=0.1)
+
+    assert len(dev) == 4
+    assert len(fit) == 36
+    fit_sources = {record["source_group_id"] for record in fit}
+    dev_sources = {record["source_group_id"] for record in dev}
+    assert not (fit_sources & dev_sources)
