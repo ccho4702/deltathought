@@ -1,6 +1,6 @@
 # Server migration handoff
 
-Prepared: 2026-08-27
+Prepared: 2026-08-29
 
 ## Source repository
 
@@ -15,6 +15,9 @@ Prepared: 2026-08-27
 - Matched MSR-VTT raw/delta/continuous-KV results: `387fd72`
 - Ego4D dynamic cache and matched full/delta trainers: `c60d3a6`
 - Frozen LongVideoBench analysis contract: `ac3941e`
+- Resumable LongVideoBench evaluator and first seven-arm run: `61d14b1`
+- Untouched-Qwen and stronger delta-control implementation: `8d688ec`
+- Extended eleven-arm LongVideoBench result: `f57ba1c`
 - Ego4D video-only result runs: `ego4d-goalstep-full-caption-800step-main` and
   `ego4d-goalstep-delta-caption-800step-main`
 - Migration handoff tag: `migration-20260826-v2`
@@ -45,6 +48,29 @@ Raw files are not stored in Git and were never modified by DeltaOmni.
 Ego4D and LongVideoBench are used read-only from existing shared official copies under
 `configs/ego4d_media_policy.yaml` and `configs/longvideobench_media_policy.yaml`. Never back up or
 migrate access credentials with the project.
+
+## Current video-only long-video milestone
+
+The retained Ego4D training runs are:
+
+- `outputs/real_pilots/ego4d_goalstep_full_caption/ego4d-goalstep-full-caption-800step-main/`
+  - checkpoint `checkpoints/step-000800.pt`
+  - SHA-256 `d117aeccaf0fafaee37663fba44cfbce05866ec4c05a0ba776099ef494f45b04`
+- `outputs/real_pilots/ego4d_goalstep_caption/ego4d-goalstep-delta-caption-800step-main/`
+  - checkpoint `checkpoints/step-000800.pt`
+  - SHA-256 `713a022832c794fa2eea6845539f848c947111e054c4d47dc2060ef59d1360b2`
+
+The regenerable LongVideoBench native-token cache is
+`intermediates/cache/omni_longvideobench/manifest.json`: 753 videos, 3,468 windows, 358,853
+one-second blocks, 1,337 QA, and approximately 3.75 GB. The complete compact comparison is tracked
+at `outputs/reports/longvideobench_video_qa_analysis_extended.json`; per-arm compact reports retain
+their evaluation code revisions. Raw predictions, cache tensors, logs, and checkpoints remain
+ignored by Git.
+
+This is not yet a complete server-migration backup. Before moving servers, copy the two
+non-regenerable Ego4D checkpoints and compact run metadata/logs to a new
+`/mnt/nfs_shared_data/project_backups/deltathought/<base-commit>/` directory, create and verify
+`SHA256SUMS`, update this document with that exact path, and create the annotated migration tag.
 
 AudioCaps annotations are pinned at
 `/mnt/nfs_shared_data/dataset/deltathought/raw/audiocaps` revision

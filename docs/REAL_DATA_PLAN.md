@@ -102,6 +102,17 @@ threshold selection, prompt development, or commit construction. Predeclare vani
 fine-tuned full-video, no-delta, ordered-delta, zero-delta, cross-video shuffled-delta, and
 caption-memory shuffle controls before opening aggregate validation results.
 
+Observed outcome (2026-08-29): the first full LongVideoBench run and post-hoc diagnostics do not
+authorize progression by dataset/config sweep alone. Ordered delta beat anchor-only and
+norm-matched noise, and continuous caption KV beat memory removal, but ordered delta was
+indistinguishable from cross-video and exactly tied within-window permutation. It also tied an
+untouched-weight Qwen commit baseline. The next training revision must learn on Ego4D train with
+source-disjoint and order-corrupted negative deltas, select only on Ego4D validation, and freeze a
+second untouched long-video evaluation before examining its aggregate labels. LongVideoBench has
+now been inspected repeatedly and is diagnostic for future revisions, not an untouched final set.
+The standard raw/uniform-video vanilla and fine-tuned baselines also remain required; their exact
+frame budget and prompt must be fixed before the next external evaluation.
+
 ## No-go conditions
 
 - Anchor plus compressed delta does not outperform anchor-only and shuffled-delta reconstruction.

@@ -137,8 +137,9 @@ LongVideoBench release `60d1c89...` is indexed directly from its 151 GB split ta
 extraction. The frozen manifest covers all 1,337 validation questions, 753 source videos, 17
 question categories, and four duration groups. The final analyzer preregisters ten arms and rejects
 any incomplete or duplicate prediction set before computing overall/category/duration accuracy,
-video-cluster bootstrap intervals, and paired exact tests. Actual model predictions wait only on
-the prerequisite Ego4D checkpoints.
+video-cluster bootstrap intervals, and paired exact tests. This was the pre-execution contract;
+the implemented-arm deviations and post-hoc diagnostics are recorded below and in
+`docs/LONG_VIDEO_RESULTS.md`.
 
 The first complete video-only LongVideoBench evaluation is finished on all 1,337 validation
 questions from 753 videos. DeltaThought scored `0.4817`, the matched full-token commit model

@@ -18,6 +18,15 @@ A scaled four-class SSV2 study uses 512 training, 64 search-validation, and 64 u
 per class with eight frames per clip. Its scope is these direction-sensitive actions, not general
 video understanding.
 
+The current end-to-end video-only milestone trains variable-duration Ego4D GoalStep caption
+commits and evaluates 1,337 LongVideoBench questions from 753 videos. DeltaThought scored `48.17%`,
+but untouched Qwen under the same commit/KV interface scored `48.09%`. Ordered delta significantly
+beat anchor-only and norm-matched noise, and same-KV memory beat memory removal; it did not beat
+cross-video, reversed, or within-window-permuted delta. The current model therefore uses learned
+delta activations and caption memory without demonstrating temporal order or source-specific
+alignment. This is a falsified version of the stronger long-video claim, not a positive benchmark
+result. See [the complete long-video results](docs/LONG_VIDEO_RESULTS.md).
+
 For each modality `m`:
 
 ```text
@@ -136,6 +145,7 @@ and selected large migration backups.
 - [Data and model provenance](docs/DATA_POLICY.md)
 - [Real-data gated execution plan](docs/REAL_DATA_PLAN.md)
 - [Long-video preregistered protocol](docs/LONG_VIDEO_PROTOCOL.md)
+- [Long-video video-only results and decision](docs/LONG_VIDEO_RESULTS.md)
 - [Current status and retained metrics](docs/STATUS.md)
 - [First real-data pilot results](docs/REAL_PILOT_RESULTS.md)
 - [Server migration handoff](docs/MIGRATION.md)
