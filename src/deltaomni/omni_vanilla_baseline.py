@@ -71,7 +71,6 @@ class BaselineConfig:
     output_root: Path
     log_root: Path
     report_path: Path
-    comparison_report: Path
 
 
 def load_config(path: Path) -> BaselineConfig:
@@ -93,7 +92,6 @@ def load_config(path: Path) -> BaselineConfig:
         "output_root",
         "log_root",
         "report_path",
-        "comparison_report",
     }
     values = {key: resolve(value) if key in path_fields else value for key, value in raw.items()}
     values["runtime"] = RuntimeConfig(**raw["runtime"])
@@ -458,16 +456,6 @@ def _consolidate(
         control: [row for row in multiple_choice if row["control"] == control]
         for control in config.nextqa_control_modes
     }
-    multimodal = multiple_choice_by_control["multimodal"]
-    comparison = None
-    if config.comparison_report.is_file():
-        current = json.loads(config.comparison_report.read_text(encoding="utf-8"))
-        comparison = {
-            "report": str(config.comparison_report),
-            "delta_joint_head_test_accuracy": current["final"]["test"]["accuracy"],
-            "vanilla_raw_omni_test_accuracy": _mean(multimodal, "correct"),
-            "warning": "The delta result is a trained lightweight classifier, not Qwen LoRA.",
-        }
     revision = subprocess.run(
         ["git", "rev-parse", "HEAD"],
         cwd=config.omni_config.parent.parent,
@@ -511,7 +499,6 @@ def _consolidate(
             "word_f1": _mean(captions, "word_f1"),
             "rouge_l": _mean(captions, "rouge_l"),
         },
-        "comparison": comparison,
         "mean_generation_latency_seconds": _mean(rows, "generation_latency_seconds"),
         "hardware": hardware,
         "software": {"torch": torch.__version__, "transformers": transformers.__version__},

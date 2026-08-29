@@ -2,7 +2,7 @@ GPU_IDS ?= 0,1,2,3
 NPROC_PER_NODE ?= 4
 EVAL_GPU_ID ?= 0
 
-.PHONY: setup lint test sanity verify provenance data-audit data-audit-report annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong audit-longvideobench split-longvideobench-diagnostic analyze-longvideobench-qa evaluate-longvideobench-video-smoke preprocess-ego4d-goalstep-smoke preprocess-ego4d-goalstep cache-ego4d-goalstep-smoke cache-ego4d-goalstep cache-longvideobench-smoke cache-longvideobench ego4d-goalstep-caption-smoke ego4d-goalstep-caption ego4d-goalstep-caption-multineg-smoke ego4d-goalstep-caption-multineg ego4d-commit-timing-smoke ego4d-commit-timing ego4d-goalstep-full-caption-smoke ego4d-goalstep-full-caption backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot nextqa-readiness nextqa-joint-cache-v2 nextqa-joint-cache-s3 nextqa-vanilla-controls-v2 nextqa-vanilla-controls-analysis nextqa-video-lora-smoke nextqa-video-lora-train nextqa-stage3-preflight msrvtt-raw-caption-smoke msrvtt-raw-caption msrvtt-raw-caption-overfit msrvtt-raw-caption-compare msrvtt-continuous-caption-smoke msrvtt-continuous-caption report verify-code verify-research verify-all
+.PHONY: setup lint test sanity verify provenance data-audit data-audit-report annotation-audit preprocess-nextqa preprocess-ssv2 preprocess-audioset-strong audit-longvideobench analyze-longvideobench-qa evaluate-longvideobench-video-smoke preprocess-ego4d-goalstep-smoke preprocess-ego4d-goalstep cache-ego4d-goalstep-smoke cache-ego4d-goalstep cache-longvideobench-smoke cache-longvideobench ego4d-goalstep-caption-smoke ego4d-goalstep-caption ego4d-goalstep-caption-multineg-smoke ego4d-goalstep-caption-multineg ego4d-commit-timing-smoke ego4d-commit-timing ego4d-goalstep-full-caption-smoke ego4d-goalstep-full-caption backbone-smoke omni-backbone-smoke language-smoke ssv2-pilot ssv2-caption-pilot ssv2-semantic-pilot ssv2-semantic-token-4gpu ssv2-semantic-token-16frames-4gpu ssv2-delta-search ssv2-semantic-caption ssv2-semantic-caption-16frames ssv2-generated-caption-16frames ssv2-resampler-pilot delta-setting-sweep audioset-timing-pilot nextqa-reconstruction-pilot nextqa-readiness nextqa-joint-cache-v2 nextqa-joint-cache-s3 nextqa-vanilla-controls-v2 nextqa-vanilla-controls-analysis nextqa-video-lora-smoke nextqa-video-lora-train nextqa-stage3-preflight msrvtt-raw-caption-smoke msrvtt-raw-caption msrvtt-raw-caption-overfit msrvtt-raw-caption-compare msrvtt-continuous-caption-smoke msrvtt-continuous-caption report verify-code verify-research verify-all
 
 setup:
 	uv sync --frozen --group dev
@@ -45,10 +45,6 @@ preprocess-msrvtt:
 
 audit-longvideobench:
 	uv run --frozen deltaomni-audit-longvideobench
-
-split-longvideobench-diagnostic:
-	uv run --frozen deltaomni-split-longvideobench-diagnostic \
-		--config configs/longvideobench_diagnostic_split.yaml
 
 analyze-longvideobench-qa:
 	uv run --frozen deltaomni-analyze-longvideobench-qa \

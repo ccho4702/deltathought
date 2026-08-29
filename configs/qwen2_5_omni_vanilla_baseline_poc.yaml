@@ -26,4 +26,3 @@ run_id: qwen2-5-omni-vanilla-controls-v2
 output_root: outputs/baselines/qwen2_5_omni_vanilla_controls_v2
 log_root: logs/experiments
 report_path: outputs/reports/qwen2_5_omni_vanilla_controls_v2.json
-comparison_report: outputs/reports/nextqa_joint_head_poc.json

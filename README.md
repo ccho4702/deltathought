@@ -37,14 +37,15 @@ For each modality `m`:
 
 ```text
 d_t^m = DeltaEncoder_m(z_(t-1)^m, z_t^m)
-S_t^m = Accumulate_m(S_(t-1)^m, d_t^m)
-z_hat_t^m = Reconstruct_m(A_k^m, S_t^m)
+V_(k,t)^m = [A_k^m, d_(k+1)^m, ..., d_t^m]
 ```
 
 `A_k` is the full embedding at the last caption commit/refresh. Each delta compares immediately
-consecutive embeddings. A caption commit does not clear the Thinker context: its generated tokens
-remain in the same autoregressive KV cache and later delta chunks continue from that state. A FULL
-refreshes the visual anchor after every caption while retaining the caption in language memory.
+consecutive embeddings. The active Qwen path concatenates every new delta since the anchor; it does
+not yet maintain the historical substitute-backbone's fixed-size accumulated state. A caption
+commit does not clear the Thinker context: generated caption tokens and earlier visual tokens remain
+in the same autoregressive KV cache. A replacement streaming design must separate persistent
+language memory from refreshable visual state before claiming constant-memory accumulation.
 
 ```text
 <FULL_A> <FULL_V>

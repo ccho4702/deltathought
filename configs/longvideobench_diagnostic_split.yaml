@@ -1,5 +1,0 @@
-seed: 42
-source_manifest: intermediates/cache/omni_longvideobench/manifest.json
-train_fraction: 0.8
-output_manifest: intermediates/canonical/longvideobench/60d1c89/diagnostic_train_validation.json
-report_path: outputs/reports/longvideobench_diagnostic_split.json

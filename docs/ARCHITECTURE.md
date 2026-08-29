@@ -1,5 +1,12 @@
 # DeltaOmni architecture and verification contract
 
+The bounded `delta_slots` state below describes the historical DINOv2/CLAP substitute-backbone
+experiments. It is not the current native-Qwen caption/QA implementation. The active Qwen path
+uses a FULL anchor followed by every one-token delta since the last commit, so visual prefix length
+grows with the commit interval. Its same KV also retains earlier visual tokens as well as caption
+tokens. Fixed-size visual accumulation and selective visual-KV refresh are pending requirements,
+not verified properties.
+
 ## Research questions
 
 1. Can bounded delta states retain consecutive full modality embeddings?

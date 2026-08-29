@@ -62,7 +62,6 @@ def test_config_rejects_invalid_duration_range(tmp_path: Path) -> None:
         "output_root": "outputs",
         "log_root": "logs",
         "report_path": "report.json",
-        "comparison_report": "comparison.json",
     }
     path = tmp_path / "config.yaml"
     path.write_text(__import__("yaml").safe_dump(config), encoding="utf-8")

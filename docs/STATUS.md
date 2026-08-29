@@ -198,6 +198,15 @@ not LongVideoBench annotations. These results are now explicitly named fixed-120
 The calibration head is excluded. Final training is Ego4D-only; LongVideoBench labels, subtitles,
 categories, durations, and QA do not affect weights, thresholds, prompts, commits, or selection.
 
+Legacy cleanup removed the standalone fixed-period AudioCaps `streaming_commit_train` PoC, the
+LongVideoBench label-split/multi-negative diagnostic entrypoints, and the obsolete NExT-QA
+lightweight joint-head trainer plus its coupling into the vanilla-Qwen report. Their compact
+negative-result reports remain tracked for audit, while Git history preserves deleted producers.
+`streaming_sequence.CommitHead` remains because the active Ego4D timing trainer imports that shared
+primitive. The architecture documentation now distinguishes historical bounded DINO/CLAP states
+from the active native-Qwen path, which currently concatenates deltas and has no fixed-size visual
+state or selective visual-KV eviction.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a
