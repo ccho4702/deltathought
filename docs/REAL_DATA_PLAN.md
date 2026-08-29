@@ -120,6 +120,17 @@ LongVideoBench. Replace the fixed-120s caption schedule with actual one-second s
 120 seconds remains only a safety refresh bound. Learned timing must be reported against oracle
 GoalStep timing and fixed-12s before it can replace the fixed scheduler.
 
+## R5 — Intermediate descriptions plus distinct final targets
+
+Shot2Story human train is the next supervised source because the same multi-shot video contains
+shot-level visual captions and a separate whole-video summary. Shot ends provide original commit
+boundaries. Validation/test QA remain held out. MovieChat-1K supplies global and timestamped
+breakpoint QA for long-video transfer, but only one whole-video caption and no intermediate caption
+sequence; it is evaluation-only. Do not consume MovieChat test labels for training. The gated
+12.41-TB train distribution requires a separate storage/access decision and is not an implicit
+dependency of the current stage. Full source, revision, license, paths, controls, and success gates
+are fixed in `docs/SHOT2STORY_MOVIECHAT_PLAN.md`.
+
 ## No-go conditions
 
 - Anchor plus compressed delta does not outperform anchor-only and shuffled-delta reconstruction.

@@ -216,6 +216,15 @@ degraded ±3s F1 to `0.1601` while NLL rose to `4.9539`; longer training overfit
 The retained timing candidate is therefore the 2,000-step source-dev run, but it still fails the
 fixed-rate gate and cannot yet drive the final streaming evaluator.
 
+The next data stage is pinned to Shot2Story and MovieChat-1K. Shot2Story official annotations
+(`d6b3d44...`, 1.10 GB) and cached videos (`0e214ae...`, 167.38 GB) are downloading to the
+DeltaThought NAS raw root. MovieChat official test (`beab351...`, 17.12 GB) is downloading in
+parallel. MovieChat train is gated and reports 12.41 TB, which would leave the shared NAS near
+capacity; it is blocked pending authenticated access and a dedicated storage allocation. The final
+contract uses Shot2Story human shot captions and whole summaries for training, Shot2Story QA for
+held-out multi-shot evaluation, and MovieChat global/breakpoint QA for frozen external evaluation.
+MovieChat's single whole-video dense caption is not misrepresented as intermediate supervision.
+
 ## Integrity correction and execution gate (2026-08-28)
 
 An audit of the rapid Stage 3 path found that its batch-local `roll(1)` delta control was not a

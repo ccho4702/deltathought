@@ -153,6 +153,7 @@ and selected large migration backups.
 - [Real-data gated execution plan](docs/REAL_DATA_PLAN.md)
 - [Long-video preregistered protocol](docs/LONG_VIDEO_PROTOCOL.md)
 - [Long-video video-only results and decision](docs/LONG_VIDEO_RESULTS.md)
+- [Shot2Story and MovieChat execution plan](docs/SHOT2STORY_MOVIECHAT_PLAN.md)
 - [Current status and retained metrics](docs/STATUS.md)
 - [First real-data pilot results](docs/REAL_PILOT_RESULTS.md)
 - [Server migration handoff](docs/MIGRATION.md)
