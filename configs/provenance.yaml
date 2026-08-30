@@ -298,6 +298,28 @@ resources:
       configs/longvideobench_media_policy.yaml. Use validation only as frozen final evaluation;
       test labels are not public, and benchmark content never enters training or model selection.
 
+  shot2story:
+    kind: dataset
+    role: multi_shot_caption_summary_and_qa
+    official_source: true
+    peer_reviewed: true
+    recognized_standard: true
+    benchmark_adoption: true
+    license_status: verified
+    license: CC-BY-NC-SA-4.0-annotations-plus-source-video-rights
+    source_url: https://huggingface.co/datasets/mhan/Shot2Story-134K
+    evidence:
+      github_stars: null
+      huggingface_downloads: 631
+      paper_citations: null
+    evidence_urls:
+      paper: https://arxiv.org/abs/2312.10300
+      github: https://github.com/bytedance/Shot2Story
+      videos: https://huggingface.co/mhan/shot2story-videos
+    restriction: >-
+      Internal non-commercial research only under configs/shot2story_media_policy.yaml; annotations
+      are CC BY-NC-SA 4.0 and original videos are never redistributed.
+
   activitynet_captions:
     kind: dataset
     role: timestamped_video_section_caption_candidate

@@ -1,0 +1,21 @@
+schema: deltaomni.media_policy.v1
+dataset: shot2story
+resource_name: shot2story
+media_origin: Official Shot2Story cached multi-shot release downloaded from the author-linked repository
+official_sources:
+  dataset: https://huggingface.co/datasets/mhan/Shot2Story-134K
+  videos: https://huggingface.co/mhan/shot2story-videos
+  code: https://github.com/bytedance/Shot2Story
+  paper: https://arxiv.org/abs/2312.10300
+local_root: /mnt/nfs_shared_data/dataset/deltathought/raw/shot2story
+rights_basis:
+  usage_condition: internal non-commercial research under the official annotation and source-video terms
+  media_scope: official cached multi-shot videos and human/GPTV annotations
+project_policy:
+  use_scope: internal non-commercial research
+  raw_media_redistribution: prohibited
+  recoverable_embedding_redistribution: prohibited
+  publication_requires_per_item_license_audit: true
+  allowed_public_outputs: [source_code, aggregate_metrics, non_recoverable_summaries]
+required_citations: [Shot2Story-ICLR-2025]
+reviewed_at: 2026-08-31
