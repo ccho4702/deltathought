@@ -33,6 +33,12 @@ GoalStep, selects on Ego4D validation, and uses LongVideoBench for evaluation on
 LongVideoBench label-trained 30-parameter calibration head is retained solely as a contaminated
 diagnostic and is excluded from every final model and claim.
 
+Shot2Story raw/canonical preparation and a native-Qwen smoke are complete. Caption-only training can
+memorize 64 training windows but does not make prior shot captions useful: after 800 steps,
+continuous validation word-F1 was `0.3061` versus reset-each `0.3279`, and validation NLL degraded.
+The next valid trainer must supervise the distinct whole-video summary after the shot-caption stream;
+caption-only full-data training is intentionally blocked.
+
 For each modality `m`:
 
 ```text

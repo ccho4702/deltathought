@@ -25,6 +25,9 @@ Prepared: 2026-08-29
 - Ego4D source-dev timing selection: `bcd6b70`
 - Ten-thousand-step timing overfit diagnostic: `0bd7c32`
 - Legacy diagnostic cleanup: `b36d264`
+- Shot2Story source/policy and smoke cache config: `51d7cdb`
+- Shot2Story caption smoke: `1bdf060`
+- Shot2Story long overfit diagnostic: `2685725`
 - Ego4D video-only result runs: `ego4d-goalstep-full-caption-800step-main` and
   `ego4d-goalstep-delta-caption-800step-main`
 - Migration handoff tag: `migration-20260826-v2`
@@ -49,8 +52,15 @@ uv run pytest -q
 - Existing shared VGGSound media: `/mnt/nfs_shared_data/dataset/omniembed/vggsound`
 - Existing shared Ego4D media/annotations: `/mnt/nfs_shared_data/dataset/ego4d_540`
 - Existing shared LongVideoBench split-tar release: `/mnt/nfs_shared_data/dataset/LongVideoBench`
+- Shot2Story official raw root: `/mnt/nfs_shared_data/dataset/deltathought/raw/shot2story`
+- MovieChat-1K official test root: `/mnt/nfs_shared_data/dataset/deltathought/raw/moviechat_1k/test-beab351`
 
 Raw files are not stored in Git and were never modified by DeltaOmni.
+
+Shot2Story canonical manifest:
+`intermediates/canonical/shot2story/official-human-d6b3d44-video-0e214ae-schema-v2/manifest.json`
+(SHA-256 `e03fac091389f2788229ebc8738f01037530d86084af0c531562b46d1c1d77dc`).
+The canonical files and Qwen cache are regenerable and are not migration backups.
 
 Ego4D and LongVideoBench are used read-only from existing shared official copies under
 `configs/ego4d_media_policy.yaml` and `configs/longvideobench_media_policy.yaml`. Never back up or
@@ -87,6 +97,14 @@ one-second blocks, 1,337 QA, and approximately 3.75 GB. The complete compact com
 at `outputs/reports/longvideobench_video_qa_analysis_extended.json`; per-arm compact reports retain
 their evaluation code revisions. Raw predictions, cache tensors, logs, and checkpoints remain
 ignored by Git.
+
+Shot2Story diagnostic checkpoints are local and not selected final models:
+
+- `outputs/real_pilots/shot2story_caption_smoke/shot2story-caption-smoke-main/checkpoints/step-000040.pt`
+  - SHA-256 `d6d5b6d324c33909453424a3b138c253db66e53baa91a418c1f181adf9bfb28b`
+- `outputs/real_pilots/shot2story_caption_overfit/shot2story-caption-overfit-800step-main/checkpoints/step-000800.pt`
+  - SHA-256 `c736564770ac55213138ba1c7a364fccd64b23cbd47e30ca3a88c8e77165e9a3`
+  - negative overfit result; do not use as a final initialization without an explicit ablation
 
 This is not yet a complete server-migration backup. Before moving servers, copy the two
 non-regenerable Ego4D checkpoints and compact run metadata/logs to a new

@@ -77,3 +77,19 @@ evaluation-only. The 17 GB test release must not be split for final training.
   reducing Thinker visual/KV tokens.
 - Shot2Story results establish multi-shot composition only. MovieChat evaluates long-video transfer;
   neither substitutes for a future dataset with dense intermediate captions and hour-scale QA.
+
+## Execution status (2026-09-02)
+
+- Official downloads and extraction: complete.
+- Raw coverage: train/validation/test `36,951/1,982/4,025`, missing media zero.
+- Canonical episodes: 42,958; validation/test QA `4,642/6,465`.
+- Native-Qwen smoke cache: 80 windows, 1,549 blocks, 348 commits, 199 MB.
+- 40-step caption smoke: failed memory and order generation gates.
+- 800-step 64-window overfit: training memorized, validation NLL worsened, reset remained better.
+- Decision: do not scale the caption-only objective. Implement whole-summary supervision and QA
+  memory controls before any full-data training.
+
+Retained checkpoint SHA-256 values:
+
+- 40-step smoke: `d6d5b6d324c33909453424a3b138c253db66e53baa91a418c1f181adf9bfb28b`
+- 800-step overfit: `c736564770ac55213138ba1c7a364fccd64b23cbd47e30ca3a88c8e77165e9a3`

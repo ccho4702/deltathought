@@ -216,14 +216,24 @@ degraded ±3s F1 to `0.1601` while NLL rose to `4.9539`; longer training overfit
 The retained timing candidate is therefore the 2,000-step source-dev run, but it still fails the
 fixed-rate gate and cannot yet drive the final streaming evaluator.
 
-The next data stage is pinned to Shot2Story and MovieChat-1K. Shot2Story official annotations
-(`d6b3d44...`, 1.10 GB) and cached videos (`0e214ae...`, 167.38 GB) are downloading to the
-DeltaThought NAS raw root. MovieChat official test (`beab351...`, 17.12 GB) is downloading in
-parallel. MovieChat train is gated and reports 12.41 TB, which would leave the shared NAS near
-capacity; it is blocked pending authenticated access and a dedicated storage allocation. The final
-contract uses Shot2Story human shot captions and whole summaries for training, Shot2Story QA for
-held-out multi-shot evaluation, and MovieChat global/breakpoint QA for frozen external evaluation.
-MovieChat's single whole-video dense caption is not misrepresented as intermediate supervision.
+The Shot2Story/MovieChat raw stage is complete. Shot2Story official annotations (`d6b3d44...`) and
+133,820 cached multi-shot videos (`0e214ae...`) were downloaded and safely extracted; all 36,951
+human-train, 1,982 validation, and 4,025 test annotations have media, and 96/96 distributed decode
+samples passed. Canonicalization produced 42,958 episodes with real media hashes, FPS-derived shot
+times, human shot captions, distinct whole summaries, and 4,642/6,465 validation/test QA. Canonical
+manifest SHA-256 is `e03fac091389f2788229ebc8738f01037530d86084af0c531562b46d1c1d77dc`.
+MovieChat official test (`beab351...`, 17.12 GB) is also local; gated 12.41-TB train remains blocked.
+
+The native-Qwen Shot2Story smoke cache contains 64 train and 16 validation windows, 1,549 one-second
+blocks, 348 human shot commits, and 199 MB of verified tensors. A 40-step caption-only smoke improved
+continuous word-F1 from `0.1438` to `0.2884` but reset `0.3198` and permuted `0.3068` remained
+higher. Extending from that checkpoint for 800 steps drove training normal NLL to `0.0013` while
+validation continuous/reset/permuted/cross/zero word-F1 was
+`0.3061/0.3279/0.3030/0.3000/0.2855`; validation normal NLL worsened from `1.8974` to `2.9743`.
+This is explicit overfit and proves that longer local-caption training does not create useful shared
+language memory. Caption-only full training is blocked. The next trainer must append the distinct
+human `whole_caption` target after all shot captions and evaluate held-out QA with generated, absent,
+reset, GT, shuffled, and wrong-video caption memory.
 
 ## Integrity correction and execution gate (2026-08-28)
 

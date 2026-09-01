@@ -1,0 +1,138 @@
+{
+  "code_revision": "22a95d5492cf4fd198cdbc30bc993c0d998632ce",
+  "created_at_utc": "2026-08-30T17:26:00.074969+00:00",
+  "dataset": "shot2story",
+  "dataset_revision": "official-human-d6b3d44-video-0e214ae-schema-v2",
+  "episode_schema": "deltaomni.episode.v2",
+  "preprocessing_config_sha256": "a7a15f5a4f9126c97ed8120c55b16b35f19cb96a643481dc441318fc4a9a3373",
+  "schema": "deltaomni.dataset_manifest.v2",
+  "source_files": [
+    {
+      "path": "intermediates/canonical/shot2story/official-d6b3d44/annotation_index.json",
+      "sha256": "c60ceb5465a1a1a55c16b0b3b99deadda794489213abc1ad79e5335d56687931"
+    },
+    {
+      "path": "intermediates/canonical/shot2story/official-d6b3d44/media_metadata.json",
+      "sha256": "f70ea645c1ecef5b2cbc98f769b995eef671942e16f254e5c3a467ab9734ab66"
+    }
+  ],
+  "splits": {
+    "test": {
+      "bytes": 32753050,
+      "coverage": {
+        "caption_annotation_available": {
+          "audio": 0,
+          "image": 0,
+          "joint": 4025,
+          "video": 4025
+        },
+        "caption_items": {
+          "audio": 0,
+          "image": 0,
+          "joint": 4025,
+          "video": 15913
+        },
+        "episodes": 4025,
+        "event_annotation_available": 0,
+        "event_items": 0,
+        "media": {
+          "audio": 0,
+          "image": 0,
+          "video": 4025
+        },
+        "qa_annotation_available": 4025,
+        "qa_items": 6465,
+        "text_annotation_available": {
+          "ocr": 0,
+          "subtitle": 0,
+          "transcript": 0
+        },
+        "text_items": {
+          "ocr": 0,
+          "subtitle": 0,
+          "transcript": 0
+        }
+      },
+      "path": "test.jsonl",
+      "sha256": "ce145eb09974e42217955d998f0a4f0798f0899e943fbdb566527691751ca719"
+    },
+    "train": {
+      "bytes": 283408219,
+      "coverage": {
+        "caption_annotation_available": {
+          "audio": 0,
+          "image": 0,
+          "joint": 36951,
+          "video": 36951
+        },
+        "caption_items": {
+          "audio": 0,
+          "image": 0,
+          "joint": 36951,
+          "video": 156679
+        },
+        "episodes": 36951,
+        "event_annotation_available": 0,
+        "event_items": 0,
+        "media": {
+          "audio": 0,
+          "image": 0,
+          "video": 36951
+        },
+        "qa_annotation_available": 36951,
+        "qa_items": 0,
+        "text_annotation_available": {
+          "ocr": 0,
+          "subtitle": 0,
+          "transcript": 0
+        },
+        "text_items": {
+          "ocr": 0,
+          "subtitle": 0,
+          "transcript": 0
+        }
+      },
+      "path": "train.jsonl",
+      "sha256": "d52f138915aaf5ed52060ed87c6727825576ee11ae77867787ea4d363bec565e"
+    },
+    "validation": {
+      "bytes": 17098856,
+      "coverage": {
+        "caption_annotation_available": {
+          "audio": 0,
+          "image": 0,
+          "joint": 1982,
+          "video": 1982
+        },
+        "caption_items": {
+          "audio": 0,
+          "image": 0,
+          "joint": 1982,
+          "video": 8046
+        },
+        "episodes": 1982,
+        "event_annotation_available": 0,
+        "event_items": 0,
+        "media": {
+          "audio": 0,
+          "image": 0,
+          "video": 1982
+        },
+        "qa_annotation_available": 1982,
+        "qa_items": 4642,
+        "text_annotation_available": {
+          "ocr": 0,
+          "subtitle": 0,
+          "transcript": 0
+        },
+        "text_items": {
+          "ocr": 0,
+          "subtitle": 0,
+          "transcript": 0
+        }
+      },
+      "path": "validation.jsonl",
+      "sha256": "d6860e2ebe45094c8f8f8ec87fa80b5c074afce5b379299d47ea533b0116fac3"
+    }
+  }
+}

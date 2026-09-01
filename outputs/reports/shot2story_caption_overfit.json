@@ -1,0 +1,1240 @@
+{
+  "checks": {
+    "continuous_beats_cross_video": true,
+    "continuous_beats_permuted": true,
+    "continuous_beats_reset": false,
+    "continuous_beats_zero": true,
+    "continuous_improves": true,
+    "normal_nll_beats_cross_video": true,
+    "normal_nll_beats_permuted": false,
+    "normal_nll_beats_zero": false
+  },
+  "completed_at_utc": "2026-08-30T20:46:04.718066+00:00",
+  "final": {
+    "caption_events": 56,
+    "examples": [
+      {
+        "continuous": [
+          "The video first shows a young man sitting in a room, looking out the window. He has a beard and is wearing a black jacket. The ABC DETRO",
+          "The video first shows a young man in an office, wearing a white shirt and tie, speaking to the camera. The ABC DETROIT logo is in the"
+        ],
+        "cross_video": [
+          "This is a close-up shot of a piece of paper with writing on it. The paper is placed next to a pen. There is some text at the bottom",
+          "This is a close-up shot of a computer screen displaying an image with writing on it. The paper is placed next to a pen. There is some text at"
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:gd5dj7m72sA.2.mp4:shot:0",
+            "commit_seconds": 4.1041,
+            "delta_end": 4,
+            "delta_start": 0,
+            "end_seconds": 4.1041,
+            "start_seconds": 0.0,
+            "text": "With the camera zooming in, a woman sitting next to a window in an office is saying something."
+          },
+          {
+            "caption_id": "shot2story:gd5dj7m72sA.2.mp4:shot:1",
+            "commit_seconds": 21.087733,
+            "delta_end": 21,
+            "delta_start": 4,
+            "end_seconds": 21.087733,
+            "start_seconds": 4.1041,
+            "text": "This is a close-up shot of a woman holding a letter and saying something. Her name is Kim Russell. She is wearing a blue top. With the camera switching and zooming in, a woman is sitting at a desk in an office."
+          }
+        ],
+        "final_answers": {
+          "continuous": "A man in an office speaks to the camera, then the camera shifts to a close-up of a lunch bag on a desk, which is full of sandwiches.",
+          "cross_video": "A close-up shot of a computer screen displaying an image with writing on it.",
+          "permuted": "is an indoor scene. A man wearing a gas mask sits at a desk talking. Around an armed man shooting.",
+          "reset_each": "The camera then cuts to an empty restaurant with a",
+          "zero": "A man is sitting in a library reading a book. He has a beard. The camera is on the other side of the glass. There is a woman talking"
+        },
+        "permuted": [
+          "The first frame is an indoor scene. A man wearing glasses and a beard sits at a desk, talking. The second frame is an image of a man with",
+          "The first frame is an indoor scene. A man wearing a gas mask sits at a desk talking. Around the corner is an armed man shooting. The second frame"
+        ],
+        "reset_each": [
+          "The video first shows a young man sitting in a room, looking out the window. He has a beard and is wearing a black jacket. The ABC DETRO",
+          "In a news interview a woman in blue sits at a table with a piece of paper in front of her. The camera then cuts to an empty restaurant with a"
+        ],
+        "source_id": "gd5dj7m72sA.2.mp4",
+        "window_id": "validation:gd5dj7m72sA.2.mp4:0000",
+        "zero": [
+          "A man is sitting in a library reading a book. He has a beard. The camera is on the other side of the glass. There is a woman talking",
+          "A man is sitting in a library reading a book. He has a beard. The camera is on the other side of the glass. There is a woman talking"
+        ]
+      },
+      {
+        "continuous": [
+          "There is a close-up shot of an electronic device with several lights on it. The lights are flashing in a specific pattern.",
+          "The video shows a close-up shot of a laptop screen displaying a video editing software. The cursor is seen double-clicking on a file named \"Sound Test\"",
+          "The video shows a close-up shot of a laptop screen displaying a music player with a song titled \"Rise\" by EDX playing in the background. The"
+        ],
+        "cross_video": [
+          "The video shows a close-up of an electronic device with flashing lights, followed by a person holding a small device with an antenna.",
+          "The video shows a person holding a small device with an antenna, followed by a close-up of a laptop screen displaying a game. Then the camera focuses on the",
+          "The video shows a person pointing at a laptop screen displaying a game, followed by a shot of the person's hand and arm, and then the camera focuses on"
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:BxKE5GFVkEU.27.mp4:shot:0",
+            "commit_seconds": 1.4347666666666667,
+            "delta_end": 1,
+            "delta_start": 0,
+            "end_seconds": 1.4347666666666667,
+            "start_seconds": 0.0,
+            "text": "There is a router on the wooden table with a cable next to the router and the cable is plugged into a machine on the side."
+          },
+          {
+            "caption_id": "shot2story:BxKE5GFVkEU.27.mp4:shot:1",
+            "commit_seconds": 21.3213,
+            "delta_end": 21,
+            "delta_start": 1,
+            "end_seconds": 21.3213,
+            "start_seconds": 1.4347666666666667,
+            "text": "The laptop screen shows various parameters, the language is English, and then the computer screen shows a dashboard with pointers and numbers on it, and the pointers are moving. The last scene of the video shows a hand holding a black pen and writing on a white sheet of paper."
+          },
+          {
+            "caption_id": "shot2story:BxKE5GFVkEU.27.mp4:shot:2",
+            "commit_seconds": 23.289933,
+            "delta_end": 23,
+            "delta_start": 21,
+            "end_seconds": 23.289933,
+            "start_seconds": 21.3213,
+            "text": "The video shows a computer screen displaying a speedometer."
+          }
+        ],
+        "final_answers": {
+          "continuous": "The video shows a close-up shot of a laptop screen displaying a music player with a song titled \"Rise\" by EDX playing in the background. The",
+          "cross_video": "The video shows a person pointing at a laptop screen displaying a game, followed by a shot of the person's hand and arm, and then the camera focuses on",
+          "permuted": "A person's hand holding a pen pointing at the screen.",
+          "reset_each": "There is a screenshot of a computer game with a speedometer on it. The background is dark. There is some text at the top of the screen, but",
+          "zero": "There is a close-up shot of a person flipping through the pages on their computer."
+        },
+        "permuted": [
+          "There is a close-up shot of an electronic device with several lights on it. The lights are flashing in a specific pattern.",
+          "This video shows a computer screen displaying a game or software application. The screen is open to a certain page with text and an image. There is a green button",
+          "This video shows a close-up of a computer screen displaying a window with a lot of text on it. There is a person's hand holding a pen pointing at"
+        ],
+        "reset_each": [
+          "There is a close-up shot of an electronic device with several lights on it. The lights are flashing in a specific pattern.",
+          "First up is the shot of a laptop's inside. There is some writing on the screen. Then the camera moves to a table on which some wires are placed",
+          "There is a screenshot of a computer game with a speedometer on it. The background is dark. There is some text at the top of the screen, but"
+        ],
+        "source_id": "BxKE5GFVkEU.27.mp4",
+        "window_id": "validation:BxKE5GFVkEU.27.mp4:0000",
+        "zero": [
+          "There is a close-up shot of electronic equipment with blue and red lights on it.",
+          "There is a close-up shot of electronic equipment with blue and red lights on it.",
+          "There is a close-up shot of a person flipping through the pages on their computer."
+        ]
+      },
+      {
+        "continuous": [
+          "A person holds a package of meat, which is placed on a table. The package is opened, and the camera is focused on the raw meat inside.",
+          "A close-up shot of a bowl of food is shown, with shredded vegetables such as carrots and cabbage on a plate. The camera then shifts to a blue cup",
+          "A person holds two small, round, white objects in their hand. The camera is focused on the objects, which have a golden design on them.",
+          "A close-up shot of a leafy green vegetable is shown. The camera then pans out to show a person holding the vegetable in their hand."
+        ],
+        "cross_video": [
+          "There is a woman carrying a bag and entering a grocery store. In the kitchen there is a woman preparing food and putting the ingredients in a pot on the stove",
+          "In the kitchen the woman is carrying a bowl and sitting next to other kitchen items.",
+          "The woman is holding a pair of white gloves and sitting at a table with some kitchen items in front of her.",
+          "There is a woman carrying a bowl and sitting next to other kitchen items."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:49Ll_6MScy4.3.mp4:shot:0",
+            "commit_seconds": 7.674333333333333,
+            "delta_end": 7,
+            "delta_start": 0,
+            "end_seconds": 7.674333333333333,
+            "start_seconds": 0.0,
+            "text": "In the video, this is a close-up shot of a person pointing to a box of bacon and some rosemary in a blue cup."
+          },
+          {
+            "caption_id": "shot2story:49Ll_6MScy4.3.mp4:shot:1",
+            "commit_seconds": 9.509500000000001,
+            "delta_end": 9,
+            "delta_start": 7,
+            "end_seconds": 9.509500000000001,
+            "start_seconds": 7.674333333333333,
+            "text": "In the video, this is a close-up shot of a person pointing to a plastic kettle of water."
+          },
+          {
+            "caption_id": "shot2story:49Ll_6MScy4.3.mp4:shot:2",
+            "commit_seconds": 12.3123,
+            "delta_end": 12,
+            "delta_start": 9,
+            "end_seconds": 12.3123,
+            "start_seconds": 9.509500000000001,
+            "text": "In the video, this is a close-up shot of two chicken stock cubes."
+          },
+          {
+            "caption_id": "shot2story:49Ll_6MScy4.3.mp4:shot:3",
+            "commit_seconds": 15.048366666666666,
+            "delta_end": 15,
+            "delta_start": 12,
+            "end_seconds": 15.048366666666666,
+            "start_seconds": 12.3123,
+            "text": "In the video, this is a close-up shot of a quarter of shredded cabbage."
+          }
+        ],
+        "final_answers": {
+          "continuous": "A close-up shot of a leafy green vegetable is shown. The camera then pans out to show a person holding the vegetable in their hand.",
+          "cross_video": "A woman is carrying a bowl and sitting next to other kitchen items.",
+          "permuted": "The camera zooms in on a green leafy vegetable with frilled edges.",
+          "reset_each": "There is a close-up shot of a cabbage tree. There is music in the background.",
+          "zero": "A person is pointing to a package of raw meat on a table."
+        },
+        "permuted": [
+          "A person is holding a package of meat. The back of the package is facing the camera. Then the front of the package is facing the camera. The person",
+          "A blue bowl contains shredded vegetables. The camera then moves to a white bowl that contains green vegetables.",
+          "A person is holding white lotus leaves that have been cut in half.",
+          "Then camera zooms in on a green leafy vegetable with frilled edges."
+        ],
+        "reset_each": [
+          "A person holds a package of meat, which is placed on a table. The package is opened, and the camera is focused on the raw meat inside.",
+          "There is a close-up of a bowl with chopped vegetables in it.",
+          "In the video, a person holds up two pieces of fabric with small heart prints. One piece is placed over the other. They are white with yellow hearts.",
+          "There is a close-up shot of a cabbage tree. There is music in the background."
+        ],
+        "source_id": "49Ll_6MScy4.3.mp4",
+        "window_id": "validation:49Ll_6MScy4.3.mp4:0000",
+        "zero": [
+          "A person is pointing to a package of raw meat on a table.",
+          "A person is pointing to a package of raw meat on a table.",
+          "A person is pointing to a package of raw meat on a table.",
+          "A person is pointing to a package of raw meat on a table."
+        ]
+      },
+      {
+        "continuous": [
+          "In the first scene, Joker stands beside Batman, and they are in the room. In the second scene, two queens stand beside each other, and they are",
+          "The scene shows Harlequin standing in the room. Joker appears beside her. Then, Harlequin turns around and points at a man standing far away.",
+          "The scene shows two queens sitting at the table in the room. The queen in green turns her head and speaks. Then the other queen turns around. Joker appears"
+        ],
+        "cross_video": [
+          "In a street in a city, a group of criminals led by a clown character walks away from a police car. There are also some civilians in the street.",
+          "In a street in a city, a group of criminals led by a clown character walks away from a police car. There are also some civilians in the street.",
+          "In a street in a city, a group of criminals led by a clown character walks away from a police car. There are also some civilians in the street."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:nZEJ9QIMcSY.15.mp4:shot:0",
+            "commit_seconds": 5.5055,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 5.5055,
+            "start_seconds": 0.0,
+            "text": "This is a cartoon video. At the beginning, a newspaper with two cartoon characters in the middle is exhibited. Then the scene changes, and a male character with orange hair speaks with a character in the clown's uniform."
+          },
+          {
+            "caption_id": "shot2story:nZEJ9QIMcSY.15.mp4:shot:1",
+            "commit_seconds": 8.008,
+            "delta_end": 8,
+            "delta_start": 5,
+            "end_seconds": 8.008,
+            "start_seconds": 5.5055,
+            "text": "This is a cartoon video. A character in a clown's uniform leaves a hall and throws a piece of black cloth on the floor. There are many other characters sitting at the chairs in line looking at the character in a clown's uniform."
+          },
+          {
+            "caption_id": "shot2story:nZEJ9QIMcSY.15.mp4:shot:2",
+            "commit_seconds": 13.26325,
+            "delta_end": 13,
+            "delta_start": 8,
+            "end_seconds": 13.26325,
+            "start_seconds": 8.008,
+            "text": "This is a cartoon video. At the beginning, a character in a clown's uniform walks beside a female character in green and gives her a green thing. Some people in uniforms sit behind them. Then the scene changes and some cartoon pictures with some conversation bubbles are exhibited. There are two female characters. One has green skin and orange hair. The other has blond hair."
+          }
+        ],
+        "final_answers": {
+          "continuous": "The last visual event is \"Joker appears beside the two queens\".",
+          "cross_video": "The last visual event is: In a street in a city, a group of criminals led by a clown character walks away from a police car. There are also",
+          "permuted": "A man in a suit holds a phone to his ear",
+          "reset_each": "In this animated clip, a woman with red hair in a green dress sits at a table, talks, and taps her leg. There are three men sitting at",
+          "zero": "An animated scene with two characters and the text 'QUEENS OF CRIME' is shown."
+        },
+        "permuted": [
+          "In this video, the Joker from the cartoon world is seen talking to two police officers at a gas station, with a gun in his hand. There are two",
+          "In this video, a man in a gray suit stands in a dark room with a candle in his hand, and then he turns around and walks away. The",
+          "In this video, a woman in a green dress sits at a desk and talks. The camera then cuts to a man in a suit holding a phone to his"
+        ],
+        "reset_each": [
+          "In the first scene, Joker stands beside Batman, and they are in the room. In the second scene, two queens stand beside each other, and they are",
+          "In this video, a man dressed in red and black is standing with his back turned. He turns around and talks to two other people, one of whom is",
+          "In this animated clip, a woman with red hair in a green dress sits at a table, talks, and taps her leg. There are three men sitting at"
+        ],
+        "source_id": "nZEJ9QIMcSY.15.mp4",
+        "window_id": "validation:nZEJ9QIMcSY.15.mp4:0000",
+        "zero": [
+          "The image shows an animated scene with two characters depicted, one of whom appears to have a jester's hat. The text 'QUEENS OF CRIME'",
+          "The image shows an animated scene with two characters depicted, one of whom appears to have a jester's hat. The text 'QUEENS OF CRIME'",
+          "The image shows an animated scene with two characters depicted, one of whom appears to have a jester's hat. The text 'QUEENS OF CRIME'"
+        ]
+      },
+      {
+        "continuous": [
+          "The video shows a soccer video game being played, with the camera following the ball as it moves across the field. The players are wearing red and white jerseys,",
+          "The video shows a close-up of a soccer game, with the ball being kicked into the goal and the players celebrating. The players are wearing red and white jerseys",
+          "The video shows a soccer game being played, with the camera following the ball as it moves across the field. The players are wearing red and white jerseys,"
+        ],
+        "cross_video": [
+          "A person is playing a soccer video game, the ball goes in the goal and the crowd cheers.",
+          "A person is playing a soccer video game, the ball goes in the goal and the crowd cheers. Then the camera pans to show the entire field of play with",
+          "A person is playing a soccer video game, the ball goes in the goal and the crowd cheers. Then the camera pans to show the entire field of play with"
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:ElFAO8U3mEc.27.mp4:shot:0",
+            "commit_seconds": 6.2729333333333335,
+            "delta_end": 6,
+            "delta_start": 0,
+            "end_seconds": 6.2729333333333335,
+            "start_seconds": 0.0,
+            "text": "A football match is going on. There are players in different positions on the field. The camera keeps zooming in on the field. A large number of spectators around the field are watching the game."
+          },
+          {
+            "caption_id": "shot2story:ElFAO8U3mEc.27.mp4:shot:1",
+            "commit_seconds": 10.276933333333334,
+            "delta_end": 10,
+            "delta_start": 6,
+            "end_seconds": 10.276933333333334,
+            "start_seconds": 6.2729333333333335,
+            "text": "A football match is going on. A player wearing a white jersey is raising his hands and cheering. A player from the same team pushes him down and lies on top of him, raising his hands and cheering."
+          },
+          {
+            "caption_id": "shot2story:ElFAO8U3mEc.27.mp4:shot:2",
+            "commit_seconds": 15.181833,
+            "delta_end": 15,
+            "delta_start": 10,
+            "end_seconds": 15.181833,
+            "start_seconds": 10.343666666666667,
+            "text": "The auditorium is full of spectators watching the game, and the camera pans to the football field and follows the movement of the players."
+          }
+        ],
+        "final_answers": {
+          "continuous": "The video shows a soccer game being played, with the camera following the ball as it moves across the field. The players are wearing red and white jerseys,",
+          "cross_video": "The camera pans to show the entire field of play with both teams.",
+          "permuted": "A player scores a goal.",
+          "reset_each": "A hockey game is being played on an ice rink, shown from a top-down perspective. The players are wearing helmets and are skating around the rink,",
+          "zero": "In a video game, a soccer player kicks the ball toward the goal, then the score is shown on the screen."
+        },
+        "permuted": [
+          "This is a video game of a soccer match being played.",
+          "This is a close-up shot of a soccer match with a player scoring a goal and the crowd cheering.",
+          "This is a video game of a soccer match being played. Two teams of players are running on the field and passing the ball to each other."
+        ],
+        "reset_each": [
+          "The video shows a soccer video game being played, with the camera following the ball as it moves across the field. The players are wearing red and white jerseys,",
+          "In this video, a player scores a goal in a soccer video game, and the crowd is cheering.",
+          "A hockey game is being played on an ice rink, shown from a top-down perspective. The players are wearing helmets and are skating around the rink,"
+        ],
+        "source_id": "ElFAO8U3mEc.27.mp4",
+        "window_id": "validation:ElFAO8U3mEc.27.mp4:0000",
+        "zero": [
+          "In a video game, a soccer player kicks the ball toward the goal, then the score is shown on the screen.",
+          "In a video game, a soccer player kicks the ball toward the goal, then the score is shown on the screen.",
+          "In a video game, a soccer player kicks the ball toward the goal, then the score is shown on the screen."
+        ]
+      },
+      {
+        "continuous": [
+          "There is a basketball game being played in a stadium. There are many spectators in the stands. There are two teams on the court, one in white jerseys and",
+          "A basketball player in a white jersey is flying through the air above the court, preparing to score a basket. There are a few spectators watching him in",
+          "There is a basketball game being played in a stadium. There are many spectators in the stands. There are two teams on the court, one in white jerseys and",
+          "A basketball player in a white jersey holds the ball and is being chased by players in red jerseys. There are a few spectators watching him in the"
+        ],
+        "cross_video": [
+          "There is a replay of a basketball game being played in an indoor stadium. There is a graphic at the end.",
+          "There is a replay of a basketball game being played in an indoor stadium. There is a graphic at the end.",
+          "An American football game is being played in an indoor stadium. There is a graphic at the end.",
+          "There is a replay of a basketball game being played in an indoor stadium. There is a graphic at the end."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:lFneTOMUU9A.1.mp4:shot:0",
+            "commit_seconds": 5.038366666666667,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 5.038366666666667,
+            "start_seconds": 0.0,
+            "text": "There is a group of basketball players playing a basketball game in a stadium. What's more, there is a crowd of people in the stands watching the game. The players wear red and white jerseys with numbers on the back. At the bottom left of the scene, there is a mark. Beside the mark, there is a blue logo with notes, and then changes to a red note. After a player's goal, there is a scoreboard at the bottom of the scene."
+          },
+          {
+            "caption_id": "shot2story:lFneTOMUU9A.1.mp4:shot:1",
+            "commit_seconds": 6.2729333333333335,
+            "delta_end": 6,
+            "delta_start": 5,
+            "end_seconds": 6.2729333333333335,
+            "start_seconds": 5.038366666666667,
+            "text": "A player in a red jersey with a number 1 runs to high-five with his teammates. In the stands, there is a crowd of people watching the game. Behind the man in a red jersey. There is a person in a black T-shirt recording the game while lying against a board with a logo and notes. At the bottom left of the scene, there is a mark. Beside the mark, there is a red mark with some notes. A scoreboard is covered by the red mark."
+          },
+          {
+            "caption_id": "shot2story:lFneTOMUU9A.1.mp4:shot:2",
+            "commit_seconds": 11.277933333333333,
+            "delta_end": 11,
+            "delta_start": 6,
+            "end_seconds": 11.277933333333333,
+            "start_seconds": 6.2729333333333335,
+            "text": "There is a group of basketball players playing a basketball game in a stadium. Except for the players, there are also several referees. What's more, there is a crowd of people in the stands watching the game. The players wear red and white jerseys with numbers on the back. At the bottom left of the scene, there is a mark. Beside the mark, there is a red mark and it disappears later. In the end, there is a complete scoreboard with some information on it at the bottom of the scene."
+          },
+          {
+            "caption_id": "shot2story:lFneTOMUU9A.1.mp4:shot:3",
+            "commit_seconds": 13.146466666666667,
+            "delta_end": 13,
+            "delta_start": 11,
+            "end_seconds": 13.146466666666667,
+            "start_seconds": 11.277933333333333,
+            "text": "At first, there is a basketball player in a red jersey running through the crowd of players. Then the scene changes to an overall view of the basketball game. There are ten players in total. In the stands, there is a crowd of people watching the game. t the bottom left of the scene, there is a mark. Beside the mark, there is a scoreboard with some information on it."
+          }
+        ],
+        "final_answers": {
+          "continuous": "A basketball player in a white jersey holds the ball and is being chased by players in red jerseys. There are a few spectators watching him in the",
+          "cross_video": "An American football game is being played in an indoor stadium. There is a graphic at the end.",
+          "permuted": "A player in a white shirt shoots and scores, and his teammates celebrate.",
+          "reset_each": "There are two men's basketball teams playing on a court. The audience are watching the show with intensity. There is a advert display on the screen.",
+          "zero": "A basketball game is being played."
+        },
+        "permuted": [
+          "There is a basketball game being played in a stadium. There are many spectators in the stands. There is a replay of a basketball game being played.",
+          "This is a basketball game. There are two players in white shirts and two players in red shirts on the court. The audience is in the stands. The words",
+          "This is a basketball game. There are two players in white shirts and two players in red shirts on the court. The audience is in the stands. A player",
+          "This is a basketball game. There are many players on the court and many spectators in the stands. The words on the screen read, 'PAC 1"
+        ],
+        "reset_each": [
+          "There is a basketball game being played in a stadium. There are many spectators in the stands. There are two teams on the court, one in white jerseys and",
+          "This is a video of a men's basketball game. The players are wearing jerseys with numbers on them. There is a crowd watching from the stands.",
+          "A basketball game is being played in an arena. The players are wearing red and white jerseys. There is a player in black jersey is falling down after the game",
+          "There are two men's basketball teams playing on a court. The audience are watching the show with intensity. There is a advert display on the screen."
+        ],
+        "source_id": "lFneTOMUU9A.1.mp4",
+        "window_id": "validation:lFneTOMUU9A.1.mp4:0000",
+        "zero": [
+          "A basketball game is being played.",
+          "A basketball game is being played.",
+          "A basketball game is being played.",
+          "A basketball game is being played."
+        ]
+      },
+      {
+        "continuous": [
+          "The video shows a still image of a forest with the words SQUAD LEADER in capital letters on the left side of the screen, followed by an American",
+          "The video shows a 3D animation of a soldier carrying another soldier on his back and walking through a field, with the words SQUAD LEADER on",
+          "The video shows a still image of a forest with the words SQUAD LEADER in capital letters on the left side of the screen, followed by an American"
+        ],
+        "cross_video": [
+          "The video shows a man in green military fatigues standing in a forest, looking and speaking, and then there is a black military bag sitting on the ground",
+          "The video shows a man in green military fatigues standing in a forest with 3 other men, looking and speaking, and then there is a black military",
+          "The video shows a man in green military fatigues standing in a forest with 2 other men, looking and speaking, and then there is a black military"
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:lPxHfpIQetg.4.mp4:shot:0",
+            "commit_seconds": 5.9059,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 5.9059,
+            "start_seconds": 0.0,
+            "text": "First is an accelerated shot of a man walking in the forest. Then, the man stands in a forest with trees all around him. He is wearing camouflage clothing and has a rifle in his hand. Finally, an accelerated shot shows the man leaving and the other man walking in the forest. Some information appears at the top of the screen."
+          },
+          {
+            "caption_id": "shot2story:lPxHfpIQetg.4.mp4:shot:1",
+            "commit_seconds": 11.011000000000001,
+            "delta_end": 11,
+            "delta_start": 5,
+            "end_seconds": 11.011000000000001,
+            "start_seconds": 5.9059,
+            "text": "A man squats and looks at the paper in his hand. Then he gets up and walks forward. He is wearing camouflage clothing and has a rifle. Some information appears at the top of the screen."
+          },
+          {
+            "caption_id": "shot2story:lPxHfpIQetg.4.mp4:shot:2",
+            "commit_seconds": 16.983633,
+            "delta_end": 16,
+            "delta_start": 11,
+            "end_seconds": 16.983633,
+            "start_seconds": 11.011000000000001,
+            "text": "First is a quick shot of a man walking forward with a piece of paper. Then, there is an accelerated shot of a man walking in the forest, and he takes a book out of his clothes. Next is the quick shot of a man leaving with a book. Finally, there is an accelerated shot of a man with a gun walking through a forest. Some information appears at the top of the screen."
+          }
+        ],
+        "final_answers": {
+          "continuous": "The video shows a 3D animation of a soldier carrying another soldier on his back and walking through a field, with the words SQUAD LEADER on",
+          "cross_video": "The video shows a man in green military fatigues standing in a forest with 2 other men, looking and speaking, and then there is a black military",
+          "permuted": "showing a still image of a soldier firing a rifle with smoke and\u5f39 shells in the background. On the right side of the screen are the words",
+          "reset_each": "It's a video of a dense forest with music playing in the background, and the video then cuts to a man sitting at a desk with a laptop in front",
+          "zero": "A forest with the words SQUAD LEADER in white letters above and to the left of the trees."
+        },
+        "permuted": [
+          "The video shows a still image of a forest with the words SQUAD LEADER in capital letters on the left side of the screen. As the video goes",
+          "The video shows a 3D image of a soldier firing a rifle with smoke and\u5f39 shells in the background. On the right side of the screen are the",
+          "The video shows a still image of a forest with the words PLATOON CHIEF on the left side of the screen. As the video goes on,"
+        ],
+        "reset_each": [
+          "The video shows a still image of a forest with the words SQUAD LEADER in capital letters on the left side of the screen, followed by an American",
+          "An army soldier in green moves the forest with a rifle in his hand. There is some text on the screen. Then the soldier disappears, leaving only the trees",
+          "The video shows a dense forest with music playing in the background, and the video then cuts to a man sitting at a desk with a laptop in front of him"
+        ],
+        "source_id": "lPxHfpIQetg.4.mp4",
+        "window_id": "validation:lPxHfpIQetg.4.mp4:0000",
+        "zero": [
+          "A forest with the words SQUAD LEADER in white letters above and to the left of the trees.",
+          "A forest with the words SQUAD LEADER in white letters above and to the left of the trees.",
+          "A forest with the words SQUAD LEADER in white letters above and to the left of the trees."
+        ]
+      },
+      {
+        "continuous": [
+          "A woman with long curly hair wearing a yellow dress speaks on a purple and blue gradient background. The scene then shifts to a warehouse with white shelves and boxes labeled",
+          "A man in a black suit speaks in front of a white background with a round hole in the center.",
+          "A woman with short blonde hair wearing a black and white top speaks, then the scene shifts to a woman with long curly hair wearing a yellow dress speaking on a"
+        ],
+        "cross_video": [
+          "There is a list of images of people with questions marks over their faces. Then a woman in a yellow dress stands in front of a gradient blue background and speaks",
+          "An audience in a large room watch an event on a screen. Then a man in a black suit and white shirt stands in front of a blue background and speaks",
+          "There is a list of images of people with questions marks over their faces. Then a woman in blue dress and green hair sits at a desk and speaks"
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:_czhNhBXOD0.7.mp4:shot:0",
+            "commit_seconds": 5.6723333333333334,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 5.6723333333333334,
+            "start_seconds": 0.0,
+            "text": "It's a woman in a flower-printed blouse standing on a stage in front of a gradient-blue background. The woman speaks to the camera with hand gestures. There is a $99 print on the left of the screen. Then it's an image of a man standing in front of a white background presenting a new product. The audience is listening attentively."
+          },
+          {
+            "caption_id": "shot2story:_czhNhBXOD0.7.mp4:shot:1",
+            "commit_seconds": 7.1738333333333335,
+            "delta_end": 7,
+            "delta_start": 5,
+            "end_seconds": 7.1738333333333335,
+            "start_seconds": 5.6723333333333334,
+            "text": "It's a woman in a flower-printed blouse standing on a stage in front of a gradient-blue background. The woman speaks to the camera with hand gestures."
+          },
+          {
+            "caption_id": "shot2story:_czhNhBXOD0.7.mp4:shot:2",
+            "commit_seconds": 11.1111,
+            "delta_end": 11,
+            "delta_start": 7,
+            "end_seconds": 11.1111,
+            "start_seconds": 7.1738333333333335,
+            "text": "First, it's the side profile of a woman lying back on a sofa. She is smiling and holding one arm. There is a lamp next to her and a shelf with frames and books in the behind. The scene shifts to a woman in a flower-printed blouse standing on a stage in front of a gradient-blue background."
+          }
+        ],
+        "final_answers": {
+          "continuous": "A woman with long curly hair wearing a yellow dress speaks on a purple and blue gradient background.",
+          "cross_video": "A woman in blue dress and green hair sits at a desk and speaks",
+          "permuted": "A woman with long curly hair wearing a yellow top is talking to the camera.",
+          "reset_each": "In the video, a woman in a yellow shirt is sitting and talking. She has short hair and is wearing earrings. There is a wall with pictures behind her",
+          "zero": "A woman with long curly hair wearing a yellow dress speaks to the camera with her hands on her waist. The background is blue and purple."
+        },
+        "permuted": [
+          "A woman with long curly hair wearing a yellow top is talking to the camera. The scene then shifts to a warehouse with white shelves and boxes. There is white",
+          "A man in a navy blue suit and white shirt is talking in front of a blue box with the word \"Center\" on it.",
+          "A woman with blonde hair wearing a blue top is talking with her arms crossed in front of her. The scene then shifts to a woman with long curly hair wearing"
+        ],
+        "reset_each": [
+          "A woman with long curly hair wearing a yellow dress speaks on a purple and blue gradient background. The scene then shifts to a warehouse with white shelves and boxes labeled",
+          "In the video, a man in black dress and coat is speaking in front of an audience in a lecture room.",
+          "In the video, a woman in a yellow shirt is sitting and talking. She has short hair and is wearing earrings. There is a wall with pictures behind her"
+        ],
+        "source_id": "_czhNhBXOD0.7.mp4",
+        "window_id": "validation:_czhNhBXOD0.7.mp4:0000",
+        "zero": [
+          "A woman with long curly hair wearing a yellow dress speaks to the camera with her hands on her waist. The background is blue and purple.",
+          "A woman with long curly hair wearing a yellow dress speaks to the camera with her hands on her waist. The background is blue and purple.",
+          "A woman with long curly hair wearing a yellow dress speaks to the camera with her hands on her waist. The background is blue and purple."
+        ]
+      }
+    ],
+    "final_answer_metrics": {
+      "continuous": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.21775564010727222,
+        "word_f1": 0.2995974394693965
+      },
+      "cross_video": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.21524119981279233,
+        "word_f1": 0.27838392562921205
+      },
+      "permuted": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.1790769304409609,
+        "word_f1": 0.24369492771449042
+      },
+      "reset_each": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.23013250149684428,
+        "word_f1": 0.3205676596984748
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.18063735478907514,
+        "word_f1": 0.24413614484223298
+      }
+    },
+    "final_answer_probe": "last_completed_event_from_same_kv",
+    "metrics": {
+      "continuous": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.2215547177678836,
+        "word_f1": 0.30612986681506926
+      },
+      "cross_video": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.22510944312465958,
+        "word_f1": 0.2999889472361686
+      },
+      "permuted": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.21619710199356024,
+        "word_f1": 0.3030421149728298
+      },
+      "reset_each": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.2389419320839357,
+        "word_f1": 0.3279471266621012
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.21953851238472408,
+        "word_f1": 0.2855374921728991
+      }
+    },
+    "nll": {
+      "cross_video": 2.9969893363306586,
+      "normal": 2.9743125419986374,
+      "permuted": 2.97066937617349,
+      "zero": 2.8159151153185977
+    },
+    "nll_windows": 16
+  },
+  "initial": {
+    "caption_events": 56,
+    "examples": [
+      {
+        "continuous": [
+          "A man is sitting in a chair and talking to the camera.",
+          "A woman is talking to the camera in a room."
+        ],
+        "cross_video": [
+          "A man is talking about a letter.",
+          "A man is talking about a letter."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:gd5dj7m72sA.2.mp4:shot:0",
+            "commit_seconds": 4.1041,
+            "delta_end": 4,
+            "delta_start": 0,
+            "end_seconds": 4.1041,
+            "start_seconds": 0.0,
+            "text": "With the camera zooming in, a woman sitting next to a window in an office is saying something."
+          },
+          {
+            "caption_id": "shot2story:gd5dj7m72sA.2.mp4:shot:1",
+            "commit_seconds": 21.087733,
+            "delta_end": 21,
+            "delta_start": 4,
+            "end_seconds": 21.087733,
+            "start_seconds": 4.1041,
+            "text": "This is a close-up shot of a woman holding a letter and saying something. Her name is Kim Russell. She is wearing a blue top. With the camera switching and zooming in, a woman is sitting at a desk in an office."
+          }
+        ],
+        "final_answers": {
+          "continuous": "A woman is talking to the camera in a room.",
+          "cross_video": "A man is talking about a letter.",
+          "permuted": "A woman is talking to the camera in a room.",
+          "reset_each": "A woman is talking about a man who is in a room with a table and a chair. The man is holding a piece of paper and there is a camera",
+          "zero": "A man is sitting at a table in a restaurant."
+        },
+        "permuted": [
+          "A man is sitting in a chair and talking to the camera.",
+          "A woman is talking to the camera in a room."
+        ],
+        "reset_each": [
+          "A man is sitting in a chair and talking to the camera.",
+          "A woman is talking about a man who is in a room with a table and a chair. The man is holding a piece of paper and there is a camera"
+        ],
+        "source_id": "gd5dj7m72sA.2.mp4",
+        "window_id": "validation:gd5dj7m72sA.2.mp4:0000",
+        "zero": [
+          "A man is sitting at a table in a restaurant.",
+          "A man is sitting at a table in a restaurant."
+        ]
+      },
+      {
+        "continuous": [
+          "The video shows a close-up of a white electronic device with several lights on it, and then it transitions to a view of a computer screen displaying a blue and",
+          "The video shows a close-up of a computer screen displaying a blue and white interface with a progress bar and a message that reads \"Please wait while we load the",
+          "The video shows a close-up of a computer screen displaying a blue and white interface with a progress bar and a message that reads \"Please wait while we load the"
+        ],
+        "cross_video": [
+          "The video shows a close-up of a white electronic device with several lights on it. The camera then pans to the right, revealing a computer monitor displaying a Windows",
+          "The video shows a close-up of a white electronic device with several lights on it. The camera then pans to the right, revealing a computer monitor displaying a Windows",
+          "The video shows a close-up of a white electronic device with several lights on it. The camera then pans to the right, revealing a computer monitor displaying a Windows"
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:BxKE5GFVkEU.27.mp4:shot:0",
+            "commit_seconds": 1.4347666666666667,
+            "delta_end": 1,
+            "delta_start": 0,
+            "end_seconds": 1.4347666666666667,
+            "start_seconds": 0.0,
+            "text": "There is a router on the wooden table with a cable next to the router and the cable is plugged into a machine on the side."
+          },
+          {
+            "caption_id": "shot2story:BxKE5GFVkEU.27.mp4:shot:1",
+            "commit_seconds": 21.3213,
+            "delta_end": 21,
+            "delta_start": 1,
+            "end_seconds": 21.3213,
+            "start_seconds": 1.4347666666666667,
+            "text": "The laptop screen shows various parameters, the language is English, and then the computer screen shows a dashboard with pointers and numbers on it, and the pointers are moving. The last scene of the video shows a hand holding a black pen and writing on a white sheet of paper."
+          },
+          {
+            "caption_id": "shot2story:BxKE5GFVkEU.27.mp4:shot:2",
+            "commit_seconds": 23.289933,
+            "delta_end": 23,
+            "delta_start": 21,
+            "end_seconds": 23.289933,
+            "start_seconds": 21.3213,
+            "text": "The video shows a computer screen displaying a speedometer."
+          }
+        ],
+        "final_answers": {
+          "continuous": "The video shows a close-up of a computer screen displaying a blue and white interface with a progress bar and a message that reads \"Please wait while we load the",
+          "cross_video": "The video shows a close-up of a white electronic device with several lights on it. The camera then pans to the right, revealing a computer monitor displaying a Windows",
+          "permuted": "The video shows a close-up of a computer screen displaying a blue and white interface with a progress bar and a message that reads \"Please wait while we load the",
+          "reset_each": "The video shows a speedometer on a computer screen.",
+          "zero": "A white box with blue lights on it is sitting on a table."
+        },
+        "permuted": [
+          "The video shows a close-up of a white electronic device with several lights on it, and then it transitions to a view of a computer screen displaying a blue and",
+          "The video shows a close-up of a computer screen displaying a blue and white interface with a progress bar and a message that reads \"Please wait while we load the",
+          "The video shows a close-up of a computer screen displaying a blue and white interface with a progress bar and a message that reads \"Please wait while we load the"
+        ],
+        "reset_each": [
+          "The video shows a close-up of a white electronic device with several lights on it, and then it transitions to a view of a computer screen displaying a blue and",
+          "The video shows a close-up of a laptop screen displaying a video game. The game appears to be a first-person shooter, with a gun visible in the foreground",
+          "The video shows a speedometer on a computer screen."
+        ],
+        "source_id": "BxKE5GFVkEU.27.mp4",
+        "window_id": "validation:BxKE5GFVkEU.27.mp4:0000",
+        "zero": [
+          "A white box with blue lights on it is sitting on a table.",
+          "A white box with blue lights on it is sitting on a table.",
+          "A white box with blue lights on it is sitting on a table."
+        ]
+      },
+      {
+        "continuous": [
+          "A person is holding a package of meat and then opens it to show the contents.",
+          "A person is holding a bowl of food and then pours it into a blue cup.",
+          "A person is holding a piece of paper with a heart pattern on it.",
+          "A person is holding a piece of lettuce."
+        ],
+        "cross_video": [
+          "A man is holding a package of meat. He is standing in a kitchen with a woman. The woman is holding a bowl of food.",
+          "A man is holding a package of meat. He is standing in a kitchen with a woman. The woman is holding a bowl of food.",
+          "A man is holding a package of meat. He is standing in a kitchen with a woman. The woman is holding a bowl of food.",
+          "A man is holding a package of meat. He is standing in a kitchen with a woman. The woman is holding a bowl of food."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:49Ll_6MScy4.3.mp4:shot:0",
+            "commit_seconds": 7.674333333333333,
+            "delta_end": 7,
+            "delta_start": 0,
+            "end_seconds": 7.674333333333333,
+            "start_seconds": 0.0,
+            "text": "In the video, this is a close-up shot of a person pointing to a box of bacon and some rosemary in a blue cup."
+          },
+          {
+            "caption_id": "shot2story:49Ll_6MScy4.3.mp4:shot:1",
+            "commit_seconds": 9.509500000000001,
+            "delta_end": 9,
+            "delta_start": 7,
+            "end_seconds": 9.509500000000001,
+            "start_seconds": 7.674333333333333,
+            "text": "In the video, this is a close-up shot of a person pointing to a plastic kettle of water."
+          },
+          {
+            "caption_id": "shot2story:49Ll_6MScy4.3.mp4:shot:2",
+            "commit_seconds": 12.3123,
+            "delta_end": 12,
+            "delta_start": 9,
+            "end_seconds": 12.3123,
+            "start_seconds": 9.509500000000001,
+            "text": "In the video, this is a close-up shot of two chicken stock cubes."
+          },
+          {
+            "caption_id": "shot2story:49Ll_6MScy4.3.mp4:shot:3",
+            "commit_seconds": 15.048366666666666,
+            "delta_end": 15,
+            "delta_start": 12,
+            "end_seconds": 15.048366666666666,
+            "start_seconds": 12.3123,
+            "text": "In the video, this is a close-up shot of a quarter of shredded cabbage."
+          }
+        ],
+        "final_answers": {
+          "continuous": "A person is holding a piece of lettuce.",
+          "cross_video": "A man is holding a package of meat. He is standing in a kitchen with a woman. The woman is holding a bowl of food.",
+          "permuted": "The video shows a close-up of a hand holding a leafy green vegetable, possibly kale. The camera then zooms in on the vegetable, showing its texture",
+          "reset_each": "Close-up of a green leafy vegetable",
+          "zero": "A person is holding a package of meat."
+        },
+        "permuted": [
+          "The video shows a close-up of a package of meat on a table, with a hand pointing at it. The camera then zooms in on the package,",
+          "The video shows a close-up of a bowl filled with chopped vegetables, including carrots and onions. The camera then zooms in on a small blue cup filled with",
+          "The video shows a close-up of a hand holding two small, round, white objects with gold designs on them. The camera then zooms in on one of",
+          "The video shows a close-up of a hand holding a leafy green vegetable, possibly kale. The camera then zooms in on the vegetable, showing its texture"
+        ],
+        "reset_each": [
+          "A person is holding a package of meat and then opens it to show the contents.",
+          "A person is showing a bowl of food.",
+          "The video shows a person holding a white and gold object.",
+          "The video shows a close-up of a green leafy vegetable, possibly kale, with a hand holding it. The background is blurred, focusing attention on the leaf"
+        ],
+        "source_id": "49Ll_6MScy4.3.mp4",
+        "window_id": "validation:49Ll_6MScy4.3.mp4:0000",
+        "zero": [
+          "A person is holding a package of meat.",
+          "A person is holding a package of meat.",
+          "A person is holding a package of meat.",
+          "A person is holding a package of meat."
+        ]
+      },
+      {
+        "continuous": [
+          "The video shows a cartoon of a man and a woman.",
+          "The video shows a cartoon of a man and a woman. The man is holding a gun and pointing it at the woman.",
+          "The video shows a cartoon of a man and a woman. The man is holding a gun and pointing it at the woman."
+        ],
+        "cross_video": [
+          "A cartoon of a train with a lot of people on it.",
+          "A cartoon of a train with a lot of people on it.",
+          "A cartoon of a train with a lot of people on it."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:nZEJ9QIMcSY.15.mp4:shot:0",
+            "commit_seconds": 5.5055,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 5.5055,
+            "start_seconds": 0.0,
+            "text": "This is a cartoon video. At the beginning, a newspaper with two cartoon characters in the middle is exhibited. Then the scene changes, and a male character with orange hair speaks with a character in the clown's uniform."
+          },
+          {
+            "caption_id": "shot2story:nZEJ9QIMcSY.15.mp4:shot:1",
+            "commit_seconds": 8.008,
+            "delta_end": 8,
+            "delta_start": 5,
+            "end_seconds": 8.008,
+            "start_seconds": 5.5055,
+            "text": "This is a cartoon video. A character in a clown's uniform leaves a hall and throws a piece of black cloth on the floor. There are many other characters sitting at the chairs in line looking at the character in a clown's uniform."
+          },
+          {
+            "caption_id": "shot2story:nZEJ9QIMcSY.15.mp4:shot:2",
+            "commit_seconds": 13.26325,
+            "delta_end": 13,
+            "delta_start": 8,
+            "end_seconds": 13.26325,
+            "start_seconds": 8.008,
+            "text": "This is a cartoon video. At the beginning, a character in a clown's uniform walks beside a female character in green and gives her a green thing. Some people in uniforms sit behind them. Then the scene changes and some cartoon pictures with some conversation bubbles are exhibited. There are two female characters. One has green skin and orange hair. The other has blond hair."
+          }
+        ],
+        "final_answers": {
+          "continuous": "The video shows a cartoon of a man and a woman. The man is holding a gun and pointing it at the woman.",
+          "cross_video": "A cartoon of a train with a lot of people on it.",
+          "permuted": "The video shows a cartoon scene with a man and a woman in a room. The man is holding a gun and pointing it at the woman.",
+          "reset_each": "The last visual event was a man in a suit holding a gun.",
+          "zero": "A cartoon of a woman in a mask is shown."
+        },
+        "permuted": [
+          "The video shows a cartoon scene with a man and a woman in a room. The man is holding a gun and pointing it at the woman.",
+          "The video shows a cartoon scene with a man and a woman in a room. The man is holding a gun and pointing it at the woman.",
+          "The video shows a cartoon scene with a man and a woman in a room. The man is holding a gun and pointing it at the woman."
+        ],
+        "reset_each": [
+          "The video shows a cartoon of a man and a woman.",
+          "In the video, a character is standing in a room, holding a gun and pointing it at another character.",
+          "In the video, a woman with red hair is sitting at a table, and a man in a suit is standing next to her. The man is holding a"
+        ],
+        "source_id": "nZEJ9QIMcSY.15.mp4",
+        "window_id": "validation:nZEJ9QIMcSY.15.mp4:0000",
+        "zero": [
+          "A cartoon of a woman in a mask is shown.",
+          "A cartoon of a woman in a mask is shown.",
+          "A cartoon of a woman in a mask is shown."
+        ]
+      },
+      {
+        "continuous": [
+          "A soccer video game is being played.",
+          "A soccer video game is being played.",
+          "A soccer video game is being played."
+        ],
+        "cross_video": [
+          "A soccer video game is being played.",
+          "A soccer video game is being played.",
+          "A soccer video game is being played."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:ElFAO8U3mEc.27.mp4:shot:0",
+            "commit_seconds": 6.2729333333333335,
+            "delta_end": 6,
+            "delta_start": 0,
+            "end_seconds": 6.2729333333333335,
+            "start_seconds": 0.0,
+            "text": "A football match is going on. There are players in different positions on the field. The camera keeps zooming in on the field. A large number of spectators around the field are watching the game."
+          },
+          {
+            "caption_id": "shot2story:ElFAO8U3mEc.27.mp4:shot:1",
+            "commit_seconds": 10.276933333333334,
+            "delta_end": 10,
+            "delta_start": 6,
+            "end_seconds": 10.276933333333334,
+            "start_seconds": 6.2729333333333335,
+            "text": "A football match is going on. A player wearing a white jersey is raising his hands and cheering. A player from the same team pushes him down and lies on top of him, raising his hands and cheering."
+          },
+          {
+            "caption_id": "shot2story:ElFAO8U3mEc.27.mp4:shot:2",
+            "commit_seconds": 15.181833,
+            "delta_end": 15,
+            "delta_start": 10,
+            "end_seconds": 15.181833,
+            "start_seconds": 10.343666666666667,
+            "text": "The auditorium is full of spectators watching the game, and the camera pans to the football field and follows the movement of the players."
+          }
+        ],
+        "final_answers": {
+          "continuous": "A soccer video game is being played.",
+          "cross_video": "A soccer video game is being played.",
+          "permuted": "A soccer video game is being played.",
+          "reset_each": "The video shows a soccer game with players in white and red jerseys playing on a green field.",
+          "zero": "A man is playing a video game."
+        },
+        "permuted": [
+          "A soccer video game is being played.",
+          "A soccer video game is being played.",
+          "A soccer video game is being played."
+        ],
+        "reset_each": [
+          "A soccer video game is being played.",
+          "The video shows a soccer game with a player in a white jersey scoring a goal.",
+          "The video shows a soccer game with players in white and red jerseys playing on a green field."
+        ],
+        "source_id": "ElFAO8U3mEc.27.mp4",
+        "window_id": "validation:ElFAO8U3mEc.27.mp4:0000",
+        "zero": [
+          "A man is playing a video game.",
+          "A man is playing a video game.",
+          "A man is playing a video game."
+        ]
+      },
+      {
+        "continuous": [
+          "A basketball player makes a slam dunk.",
+          "A basketball player makes a slam dunk.",
+          "A basketball player makes a slam dunk.",
+          "A basketball player makes a slam dunk."
+        ],
+        "cross_video": [
+          "The video shows a basketball game with a player making a slam dunk.",
+          "The video shows a basketball game with a player making a slam dunk.",
+          "The video shows a basketball game with a player making a slam dunk.",
+          "The video shows a basketball game with a player making a slam dunk."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:lFneTOMUU9A.1.mp4:shot:0",
+            "commit_seconds": 5.038366666666667,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 5.038366666666667,
+            "start_seconds": 0.0,
+            "text": "There is a group of basketball players playing a basketball game in a stadium. What's more, there is a crowd of people in the stands watching the game. The players wear red and white jerseys with numbers on the back. At the bottom left of the scene, there is a mark. Beside the mark, there is a blue logo with notes, and then changes to a red note. After a player's goal, there is a scoreboard at the bottom of the scene."
+          },
+          {
+            "caption_id": "shot2story:lFneTOMUU9A.1.mp4:shot:1",
+            "commit_seconds": 6.2729333333333335,
+            "delta_end": 6,
+            "delta_start": 5,
+            "end_seconds": 6.2729333333333335,
+            "start_seconds": 5.038366666666667,
+            "text": "A player in a red jersey with a number 1 runs to high-five with his teammates. In the stands, there is a crowd of people watching the game. Behind the man in a red jersey. There is a person in a black T-shirt recording the game while lying against a board with a logo and notes. At the bottom left of the scene, there is a mark. Beside the mark, there is a red mark with some notes. A scoreboard is covered by the red mark."
+          },
+          {
+            "caption_id": "shot2story:lFneTOMUU9A.1.mp4:shot:2",
+            "commit_seconds": 11.277933333333333,
+            "delta_end": 11,
+            "delta_start": 6,
+            "end_seconds": 11.277933333333333,
+            "start_seconds": 6.2729333333333335,
+            "text": "There is a group of basketball players playing a basketball game in a stadium. Except for the players, there are also several referees. What's more, there is a crowd of people in the stands watching the game. The players wear red and white jerseys with numbers on the back. At the bottom left of the scene, there is a mark. Beside the mark, there is a red mark and it disappears later. In the end, there is a complete scoreboard with some information on it at the bottom of the scene."
+          },
+          {
+            "caption_id": "shot2story:lFneTOMUU9A.1.mp4:shot:3",
+            "commit_seconds": 13.146466666666667,
+            "delta_end": 13,
+            "delta_start": 11,
+            "end_seconds": 13.146466666666667,
+            "start_seconds": 11.277933333333333,
+            "text": "At first, there is a basketball player in a red jersey running through the crowd of players. Then the scene changes to an overall view of the basketball game. There are ten players in total. In the stands, there is a crowd of people watching the game. t the bottom left of the scene, there is a mark. Beside the mark, there is a scoreboard with some information on it."
+          }
+        ],
+        "final_answers": {
+          "continuous": "A basketball player makes a slam dunk.",
+          "cross_video": "The video shows a basketball game with a player making a slam dunk.",
+          "permuted": "A basketball player makes a slam dunk.",
+          "reset_each": "A basketball player makes a basket.",
+          "zero": "A basketball game is being played."
+        },
+        "permuted": [
+          "A basketball player makes a slam dunk.",
+          "A basketball player makes a slam dunk.",
+          "A basketball player makes a slam dunk.",
+          "A basketball player makes a slam dunk."
+        ],
+        "reset_each": [
+          "A basketball player makes a slam dunk.",
+          "A basketball game is being played.",
+          "A basketball player makes a slam dunk.",
+          "A basketball player makes a basket."
+        ],
+        "source_id": "lFneTOMUU9A.1.mp4",
+        "window_id": "validation:lFneTOMUU9A.1.mp4:0000",
+        "zero": [
+          "A basketball game is being played.",
+          "A basketball game is being played.",
+          "A basketball game is being played.",
+          "A basketball game is being played."
+        ]
+      },
+      {
+        "continuous": [
+          "The video shows a video game screen with a soldier holding a gun. The screen displays the words \"SQUAD LEADER\" and \"SQUAD SUPPORT",
+          "The video shows a video game screen with a soldier holding a gun. The screen displays the words \"SQUAD LEADER\" and \"SQUAD SUPPORT",
+          "The video shows a video game screen with a soldier holding a gun. The screen displays the words \"SQUAD LEADER\" and \"SQUAD SUPPORT"
+        ],
+        "cross_video": [
+          "A man in a blue shirt is standing in a forest and talking.",
+          "A man in a blue shirt is standing in a forest and talking.",
+          "A man in a blue shirt is standing in a forest and talking."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:lPxHfpIQetg.4.mp4:shot:0",
+            "commit_seconds": 5.9059,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 5.9059,
+            "start_seconds": 0.0,
+            "text": "First is an accelerated shot of a man walking in the forest. Then, the man stands in a forest with trees all around him. He is wearing camouflage clothing and has a rifle in his hand. Finally, an accelerated shot shows the man leaving and the other man walking in the forest. Some information appears at the top of the screen."
+          },
+          {
+            "caption_id": "shot2story:lPxHfpIQetg.4.mp4:shot:1",
+            "commit_seconds": 11.011000000000001,
+            "delta_end": 11,
+            "delta_start": 5,
+            "end_seconds": 11.011000000000001,
+            "start_seconds": 5.9059,
+            "text": "A man squats and looks at the paper in his hand. Then he gets up and walks forward. He is wearing camouflage clothing and has a rifle. Some information appears at the top of the screen."
+          },
+          {
+            "caption_id": "shot2story:lPxHfpIQetg.4.mp4:shot:2",
+            "commit_seconds": 16.983633,
+            "delta_end": 16,
+            "delta_start": 11,
+            "end_seconds": 16.983633,
+            "start_seconds": 11.011000000000001,
+            "text": "First is a quick shot of a man walking forward with a piece of paper. Then, there is an accelerated shot of a man walking in the forest, and he takes a book out of his clothes. Next is the quick shot of a man leaving with a book. Finally, there is an accelerated shot of a man with a gun walking through a forest. Some information appears at the top of the screen."
+          }
+        ],
+        "final_answers": {
+          "continuous": "The video shows a video game screen with a soldier holding a gun. The screen displays the words \"SQUAD LEADER\" and \"SQUAD SUPPORT",
+          "cross_video": "A man in a blue shirt is standing in a forest and talking.",
+          "permuted": "The video shows a video game screen with a soldier holding a gun. The screen displays the words \"SQUAD LEADER\" and \"SQUAD SUPPORT",
+          "reset_each": "The video shows a forest with a man in a white shirt standing in the middle of it.",
+          "zero": "The video shows a forest with the words squad leader."
+        },
+        "permuted": [
+          "The video shows a video game screen with a soldier holding a gun. The screen displays the words \"SQUAD LEADER\" and \"SQUAD SUPPORT",
+          "The video shows a video game screen with a soldier holding a gun. The screen displays the words \"SQUAD LEADER\" and \"SQUAD SUPPORT",
+          "The video shows a video game screen with a soldier holding a gun. The screen displays the words \"SQUAD LEADER\" and \"SQUAD SUPPORT"
+        ],
+        "reset_each": [
+          "The video shows a video game screen with a soldier holding a gun. The screen displays the words \"SQUAD LEADER\" and \"SQUAD SUPPORT",
+          "The video shows a man in a forest, and then a man in a military uniform is shown in a forest. The video then shows a man in a military",
+          "The video shows a forest with a man in a white shirt standing in the middle of it."
+        ],
+        "source_id": "lPxHfpIQetg.4.mp4",
+        "window_id": "validation:lPxHfpIQetg.4.mp4:0000",
+        "zero": [
+          "The video shows a forest with the words squad leader.",
+          "The video shows a forest with the words squad leader.",
+          "The video shows a forest with the words squad leader."
+        ]
+      },
+      {
+        "continuous": [
+          "A woman with long red hair is talking about a business.",
+          "A man in a black suit is talking.",
+          "A woman with long red hair is talking."
+        ],
+        "cross_video": [
+          "A woman in a yellow shirt is talking about a business.",
+          "A man in a black shirt is talking about a business.",
+          "A woman in a yellow shirt is talking about a business."
+        ],
+        "events": [
+          {
+            "caption_id": "shot2story:_czhNhBXOD0.7.mp4:shot:0",
+            "commit_seconds": 5.6723333333333334,
+            "delta_end": 5,
+            "delta_start": 0,
+            "end_seconds": 5.6723333333333334,
+            "start_seconds": 0.0,
+            "text": "It's a woman in a flower-printed blouse standing on a stage in front of a gradient-blue background. The woman speaks to the camera with hand gestures. There is a $99 print on the left of the screen. Then it's an image of a man standing in front of a white background presenting a new product. The audience is listening attentively."
+          },
+          {
+            "caption_id": "shot2story:_czhNhBXOD0.7.mp4:shot:1",
+            "commit_seconds": 7.1738333333333335,
+            "delta_end": 7,
+            "delta_start": 5,
+            "end_seconds": 7.1738333333333335,
+            "start_seconds": 5.6723333333333334,
+            "text": "It's a woman in a flower-printed blouse standing on a stage in front of a gradient-blue background. The woman speaks to the camera with hand gestures."
+          },
+          {
+            "caption_id": "shot2story:_czhNhBXOD0.7.mp4:shot:2",
+            "commit_seconds": 11.1111,
+            "delta_end": 11,
+            "delta_start": 7,
+            "end_seconds": 11.1111,
+            "start_seconds": 7.1738333333333335,
+            "text": "First, it's the side profile of a woman lying back on a sofa. She is smiling and holding one arm. There is a lamp next to her and a shelf with frames and books in the behind. The scene shifts to a woman in a flower-printed blouse standing on a stage in front of a gradient-blue background."
+          }
+        ],
+        "final_answers": {
+          "continuous": "A woman with long red hair is talking.",
+          "cross_video": "A woman in a yellow shirt is talking about a business.",
+          "permuted": "A woman in a yellow dress is talking about a business.",
+          "reset_each": "A woman in a yellow shirt is talking to a man in a blue shirt.",
+          "zero": "A woman with long red hair is talking."
+        },
+        "permuted": [
+          "A woman in a yellow dress is talking about a business.",
+          "A woman in a yellow dress is talking about a business.",
+          "A woman in a yellow dress is talking about a business."
+        ],
+        "reset_each": [
+          "A woman with long red hair is talking about a business.",
+          "A man in a black suit is standing in front of a large audience. He is talking about a new product.",
+          "A woman in a yellow shirt is talking to a man in a blue shirt."
+        ],
+        "source_id": "_czhNhBXOD0.7.mp4",
+        "window_id": "validation:_czhNhBXOD0.7.mp4:0000",
+        "zero": [
+          "A woman with long red hair is talking.",
+          "A woman with long red hair is talking.",
+          "A woman with long red hair is talking."
+        ]
+      }
+    ],
+    "final_answer_metrics": {
+      "continuous": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.21413302959607572,
+        "word_f1": 0.27135343223142877
+      },
+      "cross_video": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.17193267720626934,
+        "word_f1": 0.2014721991831776
+      },
+      "permuted": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.22549361036558954,
+        "word_f1": 0.2859778852243362
+      },
+      "reset_each": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.2703917426642901,
+        "word_f1": 0.3381177386101634
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 16.0,
+        "rouge_l": 0.17071305794091907,
+        "word_f1": 0.2040261074460152
+      }
+    },
+    "final_answer_probe": "last_completed_event_from_same_kv",
+    "metrics": {
+      "continuous": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.21614401106409167,
+        "word_f1": 0.2883501509101763
+      },
+      "cross_video": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.20143925841347463,
+        "word_f1": 0.24604984440130664
+      },
+      "permuted": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.2337581823511873,
+        "word_f1": 0.3067687027833917
+      },
+      "reset_each": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.2459176794583809,
+        "word_f1": 0.31980643831419225
+      },
+      "zero": {
+        "exact_match": 0.0,
+        "examples": 56.0,
+        "rouge_l": 0.19708318754304016,
+        "word_f1": 0.23655643292166587
+      }
+    },
+    "nll": {
+      "cross_video": 1.9605042035534572,
+      "normal": 1.8974343783634293,
+      "permuted": 1.9037664179214422,
+      "zero": 2.089068976315585
+    },
+    "nll_windows": 16
+  },
+  "passed": false,
+  "run_id": "shot2story-caption-overfit-800step-main",
+  "schema": "deltaomni.ego4d_goalstep_caption_lora.v1",
+  "status": "complete",
+  "training_seconds": 3085.8669901788235
+}

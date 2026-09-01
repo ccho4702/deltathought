@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "schema": "deltaomni.shot2story_raw_audit.v1",
+  "splits": {
+    "test": {
+      "annotations": 4025,
+      "decode_failures": [],
+      "decode_sample_attempted": 32,
+      "decode_sample_passed": 32,
+      "media_missing": 0,
+      "media_present": 4025,
+      "missing_examples": []
+    },
+    "train": {
+      "annotations": 36951,
+      "decode_failures": [],
+      "decode_sample_attempted": 32,
+      "decode_sample_passed": 32,
+      "media_missing": 0,
+      "media_present": 36951,
+      "missing_examples": []
+    },
+    "validation": {
+      "annotations": 1982,
+      "decode_failures": [],
+      "decode_sample_attempted": 32,
+      "decode_sample_passed": 32,
+      "media_missing": 0,
+      "media_present": 1982,
+      "missing_examples": []
+    }
+  }
+}
